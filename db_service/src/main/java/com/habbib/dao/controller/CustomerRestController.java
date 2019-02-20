@@ -24,30 +24,30 @@ public class CustomerRestController {
 	@Autowired
 	private ShopInfoRepository shopInfo;
 	
-	@RequestMapping(path="/save-customer")
+	@RequestMapping(path="/save-customer",method=RequestMethod.POST)
 	public void saveCustomer(@RequestBody Customerinfo cust) {
 		
 		customerInfo.save(cust);
 	}
 	
-	@RequestMapping(path="/delete-customer/{id}")
+	@RequestMapping(path="/delete-customer/{id}", method=RequestMethod.DELETE)
 	public void deleteCustomer(@PathVariable("id") int id) {
 		customerInfo.deleteById(id);
 	}
 	
-	@RequestMapping(path="/fetch/all-customer")
+	@RequestMapping(path="/fetch/all-customer", method=RequestMethod.GET)
 	public List<Customerinfo> findAllCustomer() {
 		List<Customerinfo> customerList = customerInfo.findAll();
 		return customerList;
 	}
 	
-	@RequestMapping(path="/fetch/customerById/{id}")
+	@RequestMapping(path="/fetch/customerById/{id}", method=RequestMethod.GET)
 	public Optional<Customerinfo> findByCustId(@PathVariable("id") int customerId) {
 		Optional<Customerinfo> customer =  customerInfo.findById(customerId);
 		return customer;
 	}
 	
-	@RequestMapping(path="/update-customer")
+	@RequestMapping(path="/update-customer",method=RequestMethod.PUT)
 	public void uddateCustomer(@RequestBody Customerinfo customer) {
 		customerInfo.save(customer);
 	}

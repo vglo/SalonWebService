@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.habbib.dao.JPArepository.ModuleInfoRepository;
@@ -22,12 +23,12 @@ public class RoleController {
 	private RoleRepository role;
 	
 	
-	@RequestMapping(path="/delete-role/{id}")
+	@RequestMapping(path="/delete-role/{id}", method=RequestMethod.DELETE)
 	public void deleteModule(@PathVariable("id") int id) {
 		role.deleteById(id);
 	}
 	
-	@RequestMapping(path="/fetch/all-roles")
+	@RequestMapping(path="/fetch/all-roles",method=RequestMethod.GET)
 	public List<Role> findAllRoles() {
 		List<Role> roleList = role.findAll();
 		return roleList;
