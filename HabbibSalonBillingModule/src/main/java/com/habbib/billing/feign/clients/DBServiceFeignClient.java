@@ -13,13 +13,14 @@ import com.habbib.billing.feign.client.fallback.DBServiceFallback;
 import com.habbib.billing.model.Bill;
 import com.habbib.billing.model.Customerinfo;
 import com.habbib.billing.model.Salonservice;
+import com.habbib.billing.response.model.BillResponse;
 
 
 @FeignClient(name="db-service", fallback = DBServiceFallback.class)
 public interface DBServiceFeignClient {
 
 	@RequestMapping(value="/dao/save-bill")
-	public void  saveBill(@RequestBody Bill bill);
+	public void  saveBill(@RequestBody BillResponse bill);
 	
 	@RequestMapping(value="/dao/find/all-bills")
 	public List<Bill> findAllBills();

@@ -13,6 +13,7 @@ import com.habbib.billing.feign.clients.DBServiceFeignClient;
 import com.habbib.billing.model.Bill;
 import com.habbib.billing.model.Customerinfo;
 import com.habbib.billing.model.Salonservice;
+import com.habbib.billing.response.model.BillResponse;
 
 /**
  * @author yash
@@ -25,7 +26,7 @@ public class DBServiceFallback implements DBServiceFeignClient {
 	 * @see com.habbib.billing.feign.clients.DBServiceFeignClient#saveBill(com.habbib.billing.model.Bill)
 	 */
 	@Override
-	public void saveBill(Bill bill) {
+	public void saveBill(BillResponse bill) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -70,7 +71,6 @@ public class DBServiceFallback implements DBServiceFeignClient {
 	 */
 	@Override
 	public Optional<Bill> findByBillNum(String billNumber) {
-		
 		return null;
 	}
 

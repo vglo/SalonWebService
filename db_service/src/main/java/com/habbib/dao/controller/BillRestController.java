@@ -26,7 +26,7 @@ public class BillRestController {
 		billRepository.save(bill);
 	}
 	
-	@RequestMapping(value="/find/all-bills")
+	@RequestMapping(value="/find/all-bills",method=RequestMethod.GET)
 	public List<Bill> findAllBills(){
 		return billRepository.findAll();
 		

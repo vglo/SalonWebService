@@ -7,25 +7,30 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.habbib.billing.feign.clients.DBServiceFeignClient;
 import com.habbib.billing.feign.clients.SmsServiceFeignClient;
 import com.habbib.billing.model.Bill;
-import com.habbib.billing.model.Billhasservice;
 import com.habbib.billing.model.Customerinfo;
 import com.habbib.billing.model.Salonservice;
+import com.habbib.billing.request.model.BillHasService;
+import com.habbib.billing.request.model.BillRequest;
 import com.habbib.billing.response.DefaultMessage;
+import com.habbib.billing.response.model.BillResponse;
 import com.habbib.billing.service.Billing;
 import com.habbib.billing.util.DateAndTimeUtil;
 
@@ -57,55 +62,55 @@ public class BillingController {
 	
 	@RequestMapping(value="/save-bill",method=RequestMethod.POST)
 	@ExceptionHandler
-	public ResponseEntity<DefaultMessage<Bill>> saveBill(@RequestBody Bill bill) {
+	public ResponseEntity<DefaultMessage<Bill>> saveBill(@ModelAttribute BillRequest billRequest) {
 		DefaultMessage<Bill> dfault = new DefaultMessage<Bill>();
-		List<Integer> billServiceIds = new ArrayList<Integer>();
-		List<Billhasservice> serviceList = new ArrayList<Billhasservice>();
+		List<BillHasService> serviceList = new ArrayList<BillHasService>();
+		BillResponse billResponse = new BillResponse();
 		double totalBillAfterGST =0;
 		Map<Optional<Salonservice>, Integer> serviceQuantityMap = new HashMap<Optional<Salonservice>, Integer>();
 		try {
 		LOG.info("Inside save bill method #BillingController");
 		LOG.info("start Billing #BillingController");
 		
-		serviceList = bill.getBillHasService();
-		for(Billhasservice billHasService: serviceList ) {
+		serviceList = billRequest.getBillHasService();
+		for(BillHasService billHasService: serviceList ) {
 		Optional<Salonservice> serviceInfoList = dbserviceFeignClient.getServiceInfo(billHasService.getServiceId());
 			//Map for storing key as serviceInfo and Value as quantity
 			if(null != serviceInfoList) 
-			serviceQuantityMap.put(serviceInfoList, billHasService.getQuantity());
+			serviceQuantityMap.put(serviceInfoList, billHasService.getQuant());
 		}
-		bill.setTotal(billing.calculateBill(serviceQuantityMap));
-		LOG.info("Total Service pay is"+bill.getTotal());
+		billResponse.setTotal(billing.calculateBill(serviceQuantityMap));
+		LOG.info("Total Service pay is"+billResponse.getTotal());
 		
-		if(0 != bill.getCgstPer() && 0 != bill.getSgstPer())
+		if(0 != billRequest.getCgstPer() && 0 != billRequest.getSgstPer())
 		{
 			LOG.info("GST calculation");
-			bill.setSgstVal(bill.getTotal()*bill.getSgstPer()/100);
-			bill.setCsgtVal(bill.getTotal()*bill.getCgstPer()/100);
-			bill.setGrandTotal(bill.getTotal()+bill.getSgstVal() + bill.getCsgtVal()); 
+			billResponse.setSgstVal(billResponse.getTotal()*billRequest.getSgstPer()/100);
+			billResponse.setCsgtVal(billResponse.getTotal()*billRequest.getCgstPer()/100);
+			billResponse.setGrandTotal(billResponse.getTotal()+billResponse.getSgstVal() + billResponse.getCsgtVal()); 
 		}
-		if(0 != bill.getDiscountPer()) {
+		if(0 != billRequest.getDescountPer()) {
 			LOG.info("DiscountCalculation "+totalBillAfterGST);
-			bill.setDiscountVal(bill.getTotal()*(bill.getDiscountPer()/100));
-			bill.setGrandTotal(bill.getGrandTotal() - bill.getDiscountVal());
+			billResponse.setDiscountVal(billResponse.getTotal()*(billRequest.getDescountPer()/100));
+			billResponse.setGrandTotal(billResponse.getGrandTotal() - billResponse.getDiscountVal());
 		}	
 		
-		if(0 != bill.getGrandTotal()) {
-			bill.setDate(utilObj.formateDate());
-			bill.setTime(LocalTime.now().toString());
-			bill.setBillNo(utilObj.generateBillNumber());
-			dbserviceFeignClient.saveBill(bill);
+		if(0 != billResponse.getGrandTotal()) {
+			billResponse.setDate(utilObj.formateDate());
+			billResponse.setTime(LocalTime.now().toString());
+			billResponse.setBillNo(utilObj.generateBillNumber());
+			dbserviceFeignClient.saveBill(billResponse);
 		}
 		 Optional<Bill> checkNullBill =  
-	                 dbserviceFeignClient.findByBillNum(bill.getBillNo());   
+	                 dbserviceFeignClient.findByBillNum(billResponse.getBillNo());   
 		 if(checkNullBill.isPresent()) {
 			 dfault.setResponseCode("200");
 			 dfault.setResponseMessage("The bill generated successfully");
 			 dfault.setResponse(checkNullBill.get());
 			 ResponseEntity<DefaultMessage<Bill>> responseEntity = ResponseEntity.ok(dfault);
-			 Optional<Customerinfo> custObj = dbserviceFeignClient.findByCustId(bill.getCustomerId());
+			 Optional<Customerinfo> custObj = dbserviceFeignClient.findByCustId(billRequest.getCustomerId());
 			 if(custObj.isPresent()) {
-				 String msg = "Thank You For Visiting our Salon"+custObj.get().getFirstName()+"\n We Hoped you like our service.\n Total: "+bill.getGrandTotal()+"\n Please Visit Again. Thanks";
+				 String msg = "Thank You For Visiting our Salon"+custObj.get().getFirstName()+"\n We Hoped you like our service.\n Total: "+billResponse.getGrandTotal()+"\n Please Visit Again. Thanks";
 				// smsService.emailSenderWithoutAttch(custObj.get().getEmail(),msg , "Your Invoice of current purchase is");
 			 }
 			 return responseEntity;
@@ -120,17 +125,20 @@ public class BillingController {
 		  
 				  
 		}catch(Exception exception) {
+			dfault.setResponseCode("201");
 			dfault.setResponseMessage(exception.getLocalizedMessage());
+			
 			//return ResponseEntity.badRequest();
 		}
-		return null;
+		ResponseEntity<DefaultMessage<Bill>> responseEntity = ResponseEntity.ok(dfault);
+		return responseEntity;
 	}
 	
 	/*
 	 * 
 	 */
-	@RequestMapping(path="/fetch-salon-services/{id}", method=RequestMethod.GET)
-	public ResponseEntity<List<Salonservice>> fetchAllSalonService(@PathVariable("id") int shopId){
+	@RequestMapping(path="/fetch-salon-services", method=RequestMethod.GET)
+	public ResponseEntity<List<Salonservice>> fetchAllSalonService(@RequestParam(value="shopId", required=true) int shopId){
 		List<Salonservice> listOfServices = dbserviceFeignClient.getSalonServices(shopId);
 		if (null != listOfServices && listOfServices.size()>0) {
 			ResponseEntity<List<Salonservice>> responseEntity = ResponseEntity.ok(listOfServices);
@@ -140,8 +148,8 @@ public class BillingController {
 	}
 	
 	
-	@RequestMapping(path="/fetch-customer-list/{shopId}", method=RequestMethod.GET)
-	public ResponseEntity<List<Customerinfo>> fetchAllCustomerByShopId(@PathVariable int shopId){
+	@RequestMapping(path="/fetch-customer-list", method=RequestMethod.GET)
+	public ResponseEntity<List<Customerinfo>> fetchAllCustomerByShopId(@RequestParam(value="shopId", required=true) int shopId){
 		List<Customerinfo> customerList = dbserviceFeignClient.findByShopId(shopId);
 		ResponseEntity<List<Customerinfo>> responseEntity = ResponseEntity.ok(customerList);
 		return responseEntity;

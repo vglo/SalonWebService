@@ -41,13 +41,8 @@ public class Bill {
 
 	private double total;
 	
-	private int customerId;
-	
-	private int shopId;
-	
 	private List<Billhasservice> billHasService;
 	
-	private int  servingStaffId;
 
 	public Bill() {
 	}
@@ -149,38 +144,6 @@ public class Bill {
 	}
 
 	
-
-	/**
-	 * @return the customerId
-	 */
-	public int getCustomerId() {
-		return customerId;
-	}
-
-	/**
-	 * @param customerId the customerId to set
-	 */
-	public void setCustomerId(int customerId) {
-		this.customerId = customerId;
-	}
-
-
-	/**
-	 * @return the shopId
-	 */
-	public int getShopId() {
-		return shopId;
-	}
-
-	/**
-	 * @param shopId the shopId to set
-	 */
-	public void setShopId(int shopId) {
-		this.shopId = shopId;
-	}
-
-
-
 	/**
 	 * @return the billHasService
 	 */
@@ -195,19 +158,5 @@ public class Bill {
 		this.billHasService = billHasService;
 	}
 
-	/**
-	 * @return the servingStaffId
-	 */
-	public int getServingStaffId() {
-		return servingStaffId;
-	}
-
-	/**
-	 * @param servingStaffId the servingStaffId to set
-	 */
-	public void setServingStaffId(int servingStaffId) {
-		this.servingStaffId = servingStaffId;
-	}
-
-	
+		
 }
