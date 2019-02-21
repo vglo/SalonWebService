@@ -22,8 +22,9 @@ public class BillRestController {
 	private BillRepository billRepository;
 	
 	@RequestMapping(value="/save-bill", method=RequestMethod.POST)
-	public void  saveBill(@RequestBody Bill bill) {
-		billRepository.save(bill);
+	public Bill saveBill(@RequestBody Bill bill) {
+		Bill newbill = billRepository.save(bill);
+		return newbill;
 	}
 	
 	@RequestMapping(value="/find/all-bills",method=RequestMethod.GET)

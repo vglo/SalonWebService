@@ -85,6 +85,11 @@ public class Shopinfo implements Serializable {
 	@OneToMany(mappedBy="shopinfo")
 	private List<Staffinfo> staffinfos;
 
+	//bi-directional many-to-one association to Appointment
+	@JsonIgnore
+	@OneToMany(mappedBy="shopinfo")
+	private List<Appointment> appointments;
+
 	public Shopinfo() {
 	}
 
@@ -282,6 +287,28 @@ public class Shopinfo implements Serializable {
 		staffinfo.setShopinfo(null);
 
 		return staffinfo;
+	}
+
+	public List<Appointment> getAppointments() {
+		return this.appointments;
+	}
+
+	public void setAppointments(List<Appointment> appointments) {
+		this.appointments = appointments;
+	}
+
+	public Appointment addAppointment(Appointment appointment) {
+		getAppointments().add(appointment);
+		appointment.setShopinfo(this);
+
+		return appointment;
+	}
+
+	public Appointment removeAppointment(Appointment appointment) {
+		getAppointments().remove(appointment);
+		appointment.setShopinfo(null);
+
+		return appointment;
 	}
 
 }

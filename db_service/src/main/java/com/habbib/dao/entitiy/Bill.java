@@ -58,8 +58,8 @@ public class Bill implements Serializable {
 	private Shopinfo shopinfo;
 
 	//bi-directional many-to-one association to Staffinfo
-	@ManyToOne
 	@JsonIgnore
+	@ManyToOne
 	@JoinColumn(name="servingStaff")
 	private Staffinfo staffinfo;
 
@@ -67,6 +67,12 @@ public class Bill implements Serializable {
 	@JsonIgnore
 	@OneToMany(mappedBy="bill")
 	private List<Billhasservice> billhasservices;
+
+	//bi-directional many-to-one association to Paymenttype
+	@JsonIgnore
+	@ManyToOne
+	@JoinColumn(name="paymentType")
+	private Paymenttype paymenttype;
 
 	public Bill() {
 	}
@@ -211,6 +217,14 @@ public class Bill implements Serializable {
 		billhasservice.setBill(null);
 
 		return billhasservice;
+	}
+
+	public Paymenttype getPaymenttype() {
+		return this.paymenttype;
+	}
+
+	public void setPaymenttype(Paymenttype paymenttype) {
+		this.paymenttype = paymenttype;
 	}
 
 }

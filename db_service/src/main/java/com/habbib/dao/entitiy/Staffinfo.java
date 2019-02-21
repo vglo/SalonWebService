@@ -45,8 +45,8 @@ public class Staffinfo implements Serializable {
 	private Role roleBean;
 
 	//bi-directional many-to-one association to Shopinfo
-	@ManyToOne
 	@JsonIgnore
+	@ManyToOne
 	@JoinColumn(name="shopId")
 	private Shopinfo shopinfo;
 

@@ -46,6 +46,11 @@ public class Customerinfo implements Serializable {
 	@JoinColumn(name="shopId")
 	private Shopinfo shopinfo;
 
+	//bi-directional many-to-one association to Appointment
+	@JsonIgnore
+	@OneToMany(mappedBy="customerinfo")
+	private List<Appointment> appointments;
+
 	public Customerinfo() {
 	}
 
@@ -133,6 +138,28 @@ public class Customerinfo implements Serializable {
 
 	public void setShopinfo(Shopinfo shopinfo) {
 		this.shopinfo = shopinfo;
+	}
+
+	public List<Appointment> getAppointments() {
+		return this.appointments;
+	}
+
+	public void setAppointments(List<Appointment> appointments) {
+		this.appointments = appointments;
+	}
+
+	public Appointment addAppointment(Appointment appointment) {
+		getAppointments().add(appointment);
+		appointment.setCustomerinfo(this);
+
+		return appointment;
+	}
+
+	public Appointment removeAppointment(Appointment appointment) {
+		getAppointments().remove(appointment);
+		appointment.setCustomerinfo(null);
+
+		return appointment;
 	}
 
 }

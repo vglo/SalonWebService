@@ -25,9 +25,9 @@ public class CustomerRestController {
 	private ShopInfoRepository shopInfo;
 	
 	@RequestMapping(path="/save-customer",method=RequestMethod.POST)
-	public void saveCustomer(@RequestBody Customerinfo cust) {
-		
-		customerInfo.save(cust);
+	public Customerinfo saveCustomer(@RequestBody Customerinfo cust) {
+		Customerinfo cust1 = customerInfo.save(cust);
+		return cust1;
 	}
 	
 	@RequestMapping(path="/delete-customer/{id}", method=RequestMethod.DELETE)
@@ -48,8 +48,9 @@ public class CustomerRestController {
 	}
 	
 	@RequestMapping(path="/update-customer",method=RequestMethod.PUT)
-	public void uddateCustomer(@RequestBody Customerinfo customer) {
-		customerInfo.save(customer);
+	public Customerinfo uddateCustomer(@RequestBody Customerinfo customer) {
+		Customerinfo updatedCustomer = customerInfo.save(customer);
+		return updatedCustomer;
 	}
 	
 	@RequestMapping(path="/find-by-shop-id/{shopId}", method=RequestMethod.GET)
@@ -57,5 +58,11 @@ public class CustomerRestController {
 		Shopinfo shop = shopInfo.getOne(shopId);
 		List<Customerinfo> customerList = customerInfo.findByShopinfo(shop);
 		return customerList;
+	}
+	
+	@RequestMapping(path="/find-by-mobile/{mobileNum}",method=RequestMethod.GET)
+	public List<Customerinfo> findByCustomerMob(@PathVariable String mobileNum){
+		List<Customerinfo> custList = customerInfo.findByMobile(mobileNum);
+		return custList;
 	}
 }
