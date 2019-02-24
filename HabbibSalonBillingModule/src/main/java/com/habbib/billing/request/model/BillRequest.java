@@ -28,7 +28,7 @@ public class BillRequest {
 	
 	private int shopId;
 	
-	private String type;
+	private int type;
 	
 	
 	
@@ -37,14 +37,14 @@ public class BillRequest {
 	/**
 	 * @return the type
 	 */
-	public String getType() {
+	public int getType() {
 		return type;
 	}
 
 	/**
 	 * @param type the type to set
 	 */
-	public void setType(String type) {
+	public void setType(int type) {
 		this.type = type;
 	}
 

@@ -1,5 +1,10 @@
 package com.habbib.dao.service;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -79,4 +84,30 @@ public class DBService {
 		return shopDetails;
 	}
 	
+	public Date formateDate() {
+		try {
+		Date date = new Date();
+		DateFormat df = new SimpleDateFormat("yyyy-dd-MM");
+		String newDate = df.format(date);
+		
+			return df.parse(newDate);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return null;
+		
+	}
+	
+	public Date formateDate(String date) {
+		try {
+		DateFormat df = new SimpleDateFormat("yyyy-dd-MM");
+		Date newDate = df.parse(date);
+		
+			return newDate;
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return null;
+		
+	}
 }

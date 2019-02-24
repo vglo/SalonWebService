@@ -10,10 +10,10 @@ import java.util.Optional;
 import org.springframework.stereotype.Component;
 
 import com.habbib.billing.dbrequest.model.BillRequest;
-import com.habbib.billing.dbrequest.model.BillhasserviceRequest;
 import com.habbib.billing.feign.clients.DBServiceFeignClient;
 import com.habbib.billing.model.Bill;
 import com.habbib.billing.model.Customerinfo;
+import com.habbib.billing.model.Paymenttype;
 import com.habbib.billing.model.Salonservice;
 
 /**
@@ -105,6 +105,33 @@ public class DBServiceFallback implements DBServiceFeignClient {
 	 */
 	@Override
 	public Optional<Customerinfo> findByCustId(int customerId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.habbib.billing.feign.clients.DBServiceFeignClient#filterByDateRange(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public List<Bill> filterByDateRange(String startDate, String endDate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.habbib.billing.feign.clients.DBServiceFeignClient#filterByDate()
+	 */
+	@Override
+	public List<Bill> filterByDate() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.habbib.billing.feign.clients.DBServiceFeignClient#fetchAllPaymentType()
+	 */
+	@Override
+	public List<Paymenttype> fetchAllPaymentType() {
 		// TODO Auto-generated method stub
 		return null;
 	}

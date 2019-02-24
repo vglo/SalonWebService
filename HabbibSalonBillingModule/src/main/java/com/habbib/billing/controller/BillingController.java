@@ -20,9 +20,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.habbib.billing.dbrequest.model.BillhasserviceRequest;
 import com.habbib.billing.feign.clients.DBServiceFeignClient;
 import com.habbib.billing.feign.clients.SmsServiceFeignClient;
 import com.habbib.billing.model.Bill;
+import com.habbib.billing.model.Paymenttype;
 import com.habbib.billing.model.Salonservice;
 import com.habbib.billing.request.model.BillHasService;
 import com.habbib.billing.request.model.BillRequest;
@@ -62,6 +64,8 @@ public class BillingController {
 		DefaultMessage<Bill> dfault = new DefaultMessage<Bill>();
 		List<BillHasService> serviceList = new ArrayList<BillHasService>();
 		com.habbib.billing.dbrequest.model.BillRequest billResponse = new com.habbib.billing.dbrequest.model.BillRequest();
+		List<BillhasserviceRequest> billHasServiceList = new ArrayList<BillhasserviceRequest>();
+		
 		double totalBillAfterGST =0;
 		Map<Optional<Salonservice>, Integer> serviceQuantityMap = new HashMap<Optional<Salonservice>, Integer>();
 		try {
@@ -71,11 +75,20 @@ public class BillingController {
 		serviceList = billRequest.getBillHasService();
 		for(BillHasService billHasService: serviceList ) {
 		Optional<Salonservice> serviceInfoList = dbserviceFeignClient.getServiceInfo(billHasService.getServiceId());
-			//Map for storing key as serviceInfo and Value as quantity
-			if(null != serviceInfoList) 
-			serviceQuantityMap.put(serviceInfoList, billHasService.getQuant());
+		
+		//Map for storing key as serviceInfo and Value as quantity
+			if(null != serviceInfoList) {
+				for(BillhasserviceRequest addObject : billHasServiceList) {
+					addObject.setIdSalonService(serviceInfoList.get().getIdSalonService());
+					addObject.setQuantity(billHasService.getQuant());
+					billHasServiceList.add(addObject);
+				}
+				serviceQuantityMap.put(serviceInfoList, billHasService.getQuant());
+			}
+			
 		}
 		billResponse.setTotal(billing.calculateBill(serviceQuantityMap));
+		billResponse.setBillhasservices(billHasServiceList);
 		LOG.info("Total Service pay is"+billResponse.getTotal());
 		
 		
@@ -96,6 +109,10 @@ public class BillingController {
 			billResponse.setDate(utilObj.formateDate());
 			billResponse.setTime(LocalTime.now().toString());
 			billResponse.setBillNo(utilObj.generateBillNumber());
+			billResponse.setIdCustomerInfo(billRequest.getCustomerId());
+			billResponse.setIdPaymentType(billRequest.getType());
+			billResponse.setIdShopInfo(billRequest.getShopId());
+			billResponse.setIdStaffInfo(billRequest.getServiceStaffId());
 			
 		}
 		Bill bill = dbserviceFeignClient.saveBill(billResponse);
@@ -126,9 +143,20 @@ public class BillingController {
 	}
 	
 	@RequestMapping(path="/find-all/bills",method=RequestMethod.GET)
-	public List<Bill> fetchAllBills() {
-		List<Bill> bills = dbserviceFeignClient.findAllBills();
-		return bills;
+	public DefaultMessage<List<Bill>> fetchAllBills() {
+		DefaultMessage<List<Bill>> defaultResponse = new DefaultMessage<List<Bill>>();
+		List<Bill> listofBills = dbserviceFeignClient.findAllBills();
+		if(listofBills.size()>=0 && listofBills != null) {
+			defaultResponse.setResponse(listofBills);
+	 		defaultResponse.setResponseCode("200");
+	 		defaultResponse.setResponseMessage("PLease find the list of all bills ");
+	 		
+		}else {
+			defaultResponse.setResponse(listofBills);
+	 		defaultResponse.setResponseCode("200");
+	 		defaultResponse.setResponseMessage("No bills are avilable");
+		}
+		return defaultResponse;
 	}
 	
 	/*
@@ -145,6 +173,47 @@ public class BillingController {
 	}
 	
 	
+	@RequestMapping(path="/fetch-bill/date-range",method=RequestMethod.GET)
+	public DefaultMessage<List<Bill>> filterByDateRange(@RequestParam String startDate,@RequestParam String endDate){
+		if(startDate == null || endDate == null)
+			throw new NullPointerException();
+		DefaultMessage<List<Bill>> defaultResponse = new DefaultMessage<List<Bill>>();
+		List<Bill> listofBills = dbserviceFeignClient.filterByDateRange(startDate, endDate);
+		if(listofBills.size()>=0 && listofBills != null) {
+			defaultResponse.setResponse(listofBills);
+	 		defaultResponse.setResponseCode("200");
+	 		defaultResponse.setResponseMessage("PLease find the list of bills from given date range");
+	 		
+		}else {
+			defaultResponse.setResponse(listofBills);
+	 		defaultResponse.setResponseCode("200");
+	 		defaultResponse.setResponseMessage("No bills are avilable for given date range");
+		}
+ 		
+		return defaultResponse;
+	}
+	
+	
+	@RequestMapping(path="/fetch-bill/today",method=RequestMethod.GET)
+	public DefaultMessage<List<Bill>> getBillsofToday(){
+		DefaultMessage<List<Bill>> defaultResponse = new DefaultMessage<List<Bill>>();
+		List<Bill> listofBills = dbserviceFeignClient.filterByDate();
+		if(listofBills.size()>=0 && listofBills != null) {
+			defaultResponse.setResponse(listofBills);
+	 		defaultResponse.setResponseCode("200");
+	 		defaultResponse.setResponseMessage("PLease find the list of bills from given date range");
+	 		
+		}else {
+			defaultResponse.setResponse(listofBills);
+	 		defaultResponse.setResponseCode("200");
+	 		defaultResponse.setResponseMessage("No bills are avilable. Bill list is empty");
+		}
+ 		
+		return defaultResponse;
+
+	}
+	
+	
 	@RequestMapping(value="/edit-bill/{id}",method=RequestMethod.PUT)
 	@ResponseBody
 	public void editBill(@PathVariable("id") String id) {
@@ -152,8 +221,22 @@ public class BillingController {
 	}
 	
 	@RequestMapping(path="/fetch-payment-type",method=RequestMethod.GET)
-	public void fetchPaymentTypes() {
-		
+	public DefaultMessage<List<Paymenttype>> fetchPaymentTypes() {
+		DefaultMessage<List<Paymenttype>> defaultResponse = new DefaultMessage<List<Paymenttype>>();
+		List<Paymenttype> paymentTypeList = dbserviceFeignClient.fetchAllPaymentType();
+		if(paymentTypeList.size()>=0 && paymentTypeList != null) {
+			defaultResponse.setResponse(paymentTypeList);
+	 		defaultResponse.setResponseCode("200");
+	 		defaultResponse.setResponseMessage("PLease find the list of all payment types");
+	 		
+		}else {
+			defaultResponse.setResponse(paymentTypeList);
+	 		defaultResponse.setResponseCode("200");
+	 		defaultResponse.setResponseMessage("payment type list is empty");
+		}
+ 		
+		return defaultResponse;
+
 	}
 	
 }
