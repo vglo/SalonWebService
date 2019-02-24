@@ -11,8 +11,6 @@ import java.util.Date;
 public class AppointmentRequest  {
 
 	
-	private int idAppointment;
-
 	private Date date;
 
 	private String time;
@@ -24,13 +22,7 @@ public class AppointmentRequest  {
 	public AppointmentRequest() {
 	}
 
-	public int getIdAppointment() {
-		return this.idAppointment;
-	}
-
-	public void setIdAppointment(int idAppointment) {
-		this.idAppointment = idAppointment;
-	}
+	
 
 	public Date getDate() {
 		return this.date;

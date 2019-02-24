@@ -142,22 +142,6 @@ public class BillingController {
 		return responseEntity;
 	}
 	
-	@RequestMapping(path="/find-all/bills",method=RequestMethod.GET)
-	public DefaultMessage<List<Bill>> fetchAllBills() {
-		DefaultMessage<List<Bill>> defaultResponse = new DefaultMessage<List<Bill>>();
-		List<Bill> listofBills = dbserviceFeignClient.findAllBills();
-		if(listofBills.size()>=0 && listofBills != null) {
-			defaultResponse.setResponse(listofBills);
-	 		defaultResponse.setResponseCode("200");
-	 		defaultResponse.setResponseMessage("PLease find the list of all bills ");
-	 		
-		}else {
-			defaultResponse.setResponse(listofBills);
-	 		defaultResponse.setResponseCode("200");
-	 		defaultResponse.setResponseMessage("No bills are avilable");
-		}
-		return defaultResponse;
-	}
 	
 	/*
 	 * 
@@ -174,11 +158,11 @@ public class BillingController {
 	
 	
 	@RequestMapping(path="/fetch-bill/date-range",method=RequestMethod.GET)
-	public DefaultMessage<List<Bill>> filterByDateRange(@RequestParam String startDate,@RequestParam String endDate){
+	public DefaultMessage<List<Bill>> filterByDateRange(@RequestParam String startDate,@RequestParam String endDate,@RequestParam int shopId){
 		if(startDate == null || endDate == null)
 			throw new NullPointerException();
 		DefaultMessage<List<Bill>> defaultResponse = new DefaultMessage<List<Bill>>();
-		List<Bill> listofBills = dbserviceFeignClient.filterByDateRange(startDate, endDate);
+		List<Bill> listofBills = dbserviceFeignClient.filterByDateRange(startDate, endDate,shopId);
 		if(listofBills.size()>=0 && listofBills != null) {
 			defaultResponse.setResponse(listofBills);
 	 		defaultResponse.setResponseCode("200");
@@ -195,9 +179,9 @@ public class BillingController {
 	
 	
 	@RequestMapping(path="/fetch-bill/today",method=RequestMethod.GET)
-	public DefaultMessage<List<Bill>> getBillsofToday(){
+	public DefaultMessage<List<Bill>> getBillsofToday(@RequestParam int shopId){
 		DefaultMessage<List<Bill>> defaultResponse = new DefaultMessage<List<Bill>>();
-		List<Bill> listofBills = dbserviceFeignClient.filterByDate();
+		List<Bill> listofBills = dbserviceFeignClient.filterByDate(shopId);
 		if(listofBills.size()>=0 && listofBills != null) {
 			defaultResponse.setResponse(listofBills);
 	 		defaultResponse.setResponseCode("200");
@@ -237,6 +221,24 @@ public class BillingController {
  		
 		return defaultResponse;
 
+	}
+	
+	@RequestMapping(path="/fetch-bill/shop-id",method=RequestMethod.GET)
+	public DefaultMessage<List<Bill>> fetchBillByShopId(@RequestParam int shopId){
+		DefaultMessage<List<Bill>> defaultResponse = new DefaultMessage<List<Bill>>();
+		List<Bill> listofBills = dbserviceFeignClient.findBillByShopId(shopId);
+		if(listofBills.size()>=0 && listofBills != null) {
+			defaultResponse.setResponse(listofBills);
+	 		defaultResponse.setResponseCode("200");
+	 		defaultResponse.setResponseMessage("PLease find the list of bills from given date range");
+	 		
+		}else {
+			defaultResponse.setResponse(listofBills);
+	 		defaultResponse.setResponseCode("200");
+	 		defaultResponse.setResponseMessage("No bills are avilable. Bill list is empty");
+		}
+ 		
+		return defaultResponse;
 	}
 	
 }

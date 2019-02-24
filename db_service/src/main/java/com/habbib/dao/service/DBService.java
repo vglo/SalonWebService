@@ -13,13 +13,12 @@ import com.habbib.dao.JPArepository.PaymentTypeRepository;
 import com.habbib.dao.JPArepository.ShopInfoRepository;
 import com.habbib.dao.JPArepository.ShopTypeRepository;
 import com.habbib.dao.JPArepository.StaffInfoRepository;
+import com.habbib.dao.entitiy.Appointment;
 import com.habbib.dao.entitiy.Bill;
-import com.habbib.dao.entitiy.Billhasservice;
 import com.habbib.dao.entitiy.Customerinfo;
-import com.habbib.dao.entitiy.Paymenttype;
 import com.habbib.dao.entitiy.Shopinfo;
+import com.habbib.dao.model.AppointmentRequest;
 import com.habbib.dao.model.BillRequest;
-import com.habbib.dao.model.BillhasserviceRequest;
 import com.habbib.dao.model.CustomerRequest;
 import com.habbib.dao.model.ShopinfoRequest;
 
@@ -109,5 +108,14 @@ public class DBService {
 		}
 		return null;
 		
+	}
+
+	public Appointment convertAppoitmentEntityToModel(AppointmentRequest appointmentReq) {
+		Appointment appoitment = new Appointment();
+		appoitment.setDate(appointmentReq.getDate());
+		appoitment.setTime(appointmentReq.getTime());
+		appoitment.setShopinfo(daoShop.findById(appointmentReq.getIdShopInfo()).get());
+		appoitment.setCustomerinfo(daoCustomer.findById(appointmentReq.getIdCustomerInfo()).get());
+		return null;
 	}
 }

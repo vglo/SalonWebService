@@ -2,6 +2,7 @@ package com.habbib.dao.controller;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -17,8 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.habbib.dao.JPArepository.BillHasServiceRepository;
 import com.habbib.dao.JPArepository.BillRepository;
 import com.habbib.dao.JPArepository.SalonServiceRepository;
+import com.habbib.dao.JPArepository.ShopInfoRepository;
 import com.habbib.dao.entitiy.Bill;
 import com.habbib.dao.entitiy.Billhasservice;
+import com.habbib.dao.entitiy.Shopinfo;
 import com.habbib.dao.model.BillRequest;
 import com.habbib.dao.model.BillhasserviceRequest;
 import com.habbib.dao.service.DBService;
@@ -38,6 +41,9 @@ public class BillRestController {
 	
 	@Autowired
 	private SalonServiceRepository salonService;
+
+	@Autowired
+	private ShopInfoRepository shopinfoRepo;
 	
 	
 	@RequestMapping(value="/save-bill", method=RequestMethod.POST)
@@ -61,19 +67,27 @@ public class BillRestController {
 	}
 	
 	@RequestMapping(path="/filter-date-range",method=RequestMethod.GET)
-	public List<Bill> filterByDateRange(@RequestParam String startDate,@RequestParam String endDate){
+	public List<Bill> filterByDateRange(@RequestParam String startDate,@RequestParam String endDate,@RequestParam int shopId){
 		if(startDate == null || endDate == null )
 			throw new NullPointerException();
+		List<Bill> billsList = new ArrayList<Bill>();
+		Optional<Shopinfo> shopinfo = shopinfoRepo.findById(shopId);
+		if(shopinfo.isPresent()) {
 		 Date NewStartDate = Date.from(LocalDate.parse(startDate).atStartOfDay(ZoneId.systemDefault()).toInstant());
 		 Date NewEndDate = Date.from(LocalDate.parse(endDate).atStartOfDay(ZoneId.systemDefault()).toInstant());
-		List<Bill> billsList = billRepository.findByDateBetween(NewStartDate,NewEndDate);
+		 billsList= billRepository.findByDateBetweenAndShopinfo(NewStartDate,NewEndDate,shopinfo.get());
+		}
 		return billsList;
 	}
 	
 	@RequestMapping(path="/filter-date",method=RequestMethod.GET)
-	public List<Bill> filterByDate(){
+	public List<Bill> filterByDate(@RequestParam int shopId){
 		try {
-			List<Bill> billsList = billRepository.findByDate(dbService.formateDate());
+			List<Bill> billsList = new ArrayList<Bill>();
+			Optional<Shopinfo> shopinfo = shopinfoRepo.findById(shopId);
+			if(shopinfo.isPresent()) {
+			 billsList = billRepository.findByDateAndShopinfo(dbService.formateDate(),shopinfo.get());
+			}
 			return billsList;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -104,5 +118,12 @@ public class BillRestController {
 	public Optional<Bill> findByBillNum(@PathVariable("bill-number") String billNumber) {
 		Optional<Bill> bill =  billRepository.findByBillNo(billNumber);
 		return bill;
+	}
+	
+	@RequestMapping(path="find-bill/shop-id")
+	public List<Bill> findBillByShopId(@RequestParam int shopId){
+		Shopinfo shop = shopinfoRepo.getOne(shopId);
+		List<Bill> billList = billRepository.findByShopinfo(shop);
+		return billList;
 	}
 }

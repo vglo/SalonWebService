@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.habbib.customer.feign.client.DBServiceFeignClient;
+import com.habbib.customer.request.model.AppointmentRequest;
 import com.habbib.customer.request.model.CustomerRequest;
+import com.habbib.customer.response.model.Appointment;
 import com.habbib.customer.response.model.Customerinfo;
 import com.habbib.customer.response.model.DefaultReponse;
 import com.habbib.customer.util.Utilities;
@@ -82,24 +84,57 @@ public class CustomerController {
 	}
 	
 	@RequestMapping(path="/fetch-customer/shop-id", method=RequestMethod.GET)
-	public ResponseEntity<List<Customerinfo>> fetchAllCustomerByShopId(@RequestParam(value="shopId", required=true) int shopId){
+	public ResponseEntity<DefaultReponse<List<Customerinfo>>> fetchAllCustomerByShopId(@RequestParam(value="shopId", required=true) int shopId){
+		DefaultReponse<List<Customerinfo>> defaultResponse = new DefaultReponse<List<Customerinfo>>();
+		
 		List<Customerinfo> customerList = dbFeignClient.findByShopId(shopId);
-		ResponseEntity<List<Customerinfo>> responseEntity = ResponseEntity.ok(customerList);
-		return responseEntity;
+		
+		if(customerList.size() > 0 && customerList != null) {
+			defaultResponse.setReponseObj(customerList);
+			defaultResponse.setResponseCode(200);
+			defaultResponse.setResponseMsg("Please find the customer list with given shop id");
+			 ResponseEntity<DefaultReponse<List<Customerinfo>>> responseEntity = ResponseEntity.ok(defaultResponse);
+			 return responseEntity;
+		}else {
+			defaultResponse.setReponseObj(customerList);
+			defaultResponse.setResponseCode(200);
+			defaultResponse.setResponseMsg("customer list with given id not found");
+			 ResponseEntity<DefaultReponse<List<Customerinfo>>> responseEntity = ResponseEntity.ok(defaultResponse);
+			 return responseEntity;
+		}
 	}
 	
-	@RequestMapping(path="/fetch-customer-list", method=RequestMethod.GET)
-	public ResponseEntity<List<Customerinfo>> fetchAllCustomers(){
-		List<Customerinfo> customerList = dbFeignClient.findAllCustomer();
-		ResponseEntity<List<Customerinfo>> responseEntity = ResponseEntity.ok(customerList);
-		return responseEntity;
-	}
 	
 	@RequestMapping(path="/fetch-customer/{custId}", method=RequestMethod.GET)
-	public ResponseEntity<Customerinfo> fetchAllCustomerById(@PathVariable int custId){
+	public ResponseEntity<DefaultReponse<Customerinfo>> fetchAllCustomerById(@PathVariable int custId){
+		DefaultReponse<Customerinfo> defaultResponse = new DefaultReponse<Customerinfo>();
+		
 		Optional<Customerinfo> customerList = dbFeignClient.findByCustId(custId);
-		ResponseEntity<Customerinfo> responseEntity = ResponseEntity.ok(customerList.get());
-		return responseEntity;
+		if(customerList.isPresent()) {
+			defaultResponse.setReponseObj(customerList.get());
+			defaultResponse.setResponseCode(200);
+			defaultResponse.setResponseMsg("Please find the customer");
+			 ResponseEntity<DefaultReponse<Customerinfo>> responseEntity = ResponseEntity.ok(defaultResponse);
+			 return responseEntity;
+		}else {
+			defaultResponse.setReponseObj(customerList.get());
+			defaultResponse.setResponseCode(200);
+			defaultResponse.setResponseMsg("customer with given id not found");
+			 ResponseEntity<DefaultReponse<Customerinfo>> responseEntity = ResponseEntity.ok(defaultResponse);
+			 return responseEntity;
+		}
+		
+	}
+	
+	@RequestMapping(path="/create-appoitment",method=RequestMethod.POST)
+	public ResponseEntity<DefaultReponse<Appointment>> createAppoitment(@ModelAttribute AppointmentRequest appoitmentRequest){
+		DefaultReponse<Appointment> defaultResponse = new DefaultReponse<Appointment>();
+		Appointment appoitment = dbFeignClient.saveAppointment(appoitmentRequest);
+		defaultResponse.setReponseObj(appoitment);
+		defaultResponse.setResponseCode(200);
+		defaultResponse.setResponseMsg("Appoitment saved successfully");
+		ResponseEntity<DefaultReponse<Appointment>> response = ResponseEntity.ok(defaultResponse);
+		return response;
 	}
 	
 	

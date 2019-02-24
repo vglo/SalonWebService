@@ -52,13 +52,16 @@ public interface DBServiceFeignClient {
 	@RequestMapping(path="/dao/fetch/customerById/{id}",method=RequestMethod.GET)
 	public Optional<Customerinfo> findByCustId(@PathVariable("id") int customerId);
 	
-	@RequestMapping(path="/filter-date-range",method=RequestMethod.GET)
-	public List<Bill> filterByDateRange(@RequestParam String startDate,@RequestParam String endDate);
+	@RequestMapping(path="/dao/filter-date-range",method=RequestMethod.GET)
+	public List<Bill> filterByDateRange(@RequestParam String startDate,@RequestParam String endDate,@RequestParam int shopId);
 	
-	@RequestMapping(path="/filter-date",method=RequestMethod.GET)
-	public List<Bill> filterByDate();
+	@RequestMapping(path="/dao/filter-date",method=RequestMethod.GET)
+	public List<Bill> filterByDate(@RequestParam int shopId);
 	
-	@RequestMapping(path="/fetch-payment-types",method=RequestMethod.GET)
+	@RequestMapping(path="/dao/fetch-payment-types",method=RequestMethod.GET)
 	public List<Paymenttype> fetchAllPaymentType();
+	
+	@RequestMapping(path="/dao/find-bill/shop-id")
+	public List<Bill> findBillByShopId(@RequestParam int shopId);
 	
 }

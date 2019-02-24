@@ -9,6 +9,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Component;
 
 import com.habbib.customer.feign.client.DBServiceFeignClient;
+import com.habbib.customer.request.model.AppointmentRequest;
 import com.habbib.customer.request.model.CustomerRequest;
 import com.habbib.customer.response.model.Appointment;
 import com.habbib.customer.response.model.Customerinfo;
@@ -75,14 +76,15 @@ public class DBServiceFallback implements DBServiceFeignClient {
 		return null;
 	}
 
+
 	@Override
-	public Appointment saveAppointment(Appointment appointment) {
+	public List<Appointment> fetchAllAppoitment() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<Appointment> fetchAllAppoitment() {
+	public Appointment saveAppointment(AppointmentRequest appointment) {
 		// TODO Auto-generated method stub
 		return null;
 	}

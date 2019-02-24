@@ -20,6 +20,8 @@ import com.habbib.dao.JPArepository.ShopInfoRepository;
 import com.habbib.dao.entitiy.Appointment;
 import com.habbib.dao.entitiy.Customerinfo;
 import com.habbib.dao.entitiy.Shopinfo;
+import com.habbib.dao.model.AppointmentRequest;
+import com.habbib.dao.service.DBService;
 
 /**
  * @author yash
@@ -38,6 +40,9 @@ public class AppointmentController {
 	@Autowired
 	private CustomerInfoRepository custRepo;
 	
+	@Autowired
+	private DBService dbService;
+	
 	@RequestMapping(path="/fetch-appoitment/shop-id",method=RequestMethod.GET)
 	public List<Appointment> fetchAppointmentByshopId(@RequestParam int shopId) {
 		Optional<Shopinfo> shopinfo = shopRespo.findById(shopId);
@@ -53,7 +58,8 @@ public class AppointmentController {
 	}
 	
 	@RequestMapping(path="/create-appointment",method=RequestMethod.POST)
-	public Appointment saveAppointment(@RequestBody Appointment appointment) {
+	public Appointment saveAppointment(@RequestBody AppointmentRequest appointmentReq) {
+		Appointment appointment = dbService.convertAppoitmentEntityToModel(appointmentReq);
 		Appointment reminder = custAppointment.save(appointment);
 		return reminder;
 	}

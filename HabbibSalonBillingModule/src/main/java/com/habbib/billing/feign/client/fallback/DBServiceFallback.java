@@ -109,29 +109,40 @@ public class DBServiceFallback implements DBServiceFeignClient {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.habbib.billing.feign.clients.DBServiceFeignClient#filterByDateRange(java.lang.String, java.lang.String)
-	 */
-	@Override
-	public List<Bill> filterByDateRange(String startDate, String endDate) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	/* (non-Javadoc)
-	 * @see com.habbib.billing.feign.clients.DBServiceFeignClient#filterByDate()
-	 */
-	@Override
-	public List<Bill> filterByDate() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	/* (non-Javadoc)
 	 * @see com.habbib.billing.feign.clients.DBServiceFeignClient#fetchAllPaymentType()
 	 */
 	@Override
 	public List<Paymenttype> fetchAllPaymentType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.habbib.billing.feign.clients.DBServiceFeignClient#findBillByShopId(int)
+	 */
+	@Override
+	public List<Bill> findBillByShopId(int shopId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.habbib.billing.feign.clients.DBServiceFeignClient#filterByDateRange(java.lang.String, java.lang.String, int)
+	 */
+	@Override
+	public List<Bill> filterByDateRange(String startDate, String endDate, int shopId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.habbib.billing.feign.clients.DBServiceFeignClient#filterByDate(int)
+	 */
+	@Override
+	public List<Bill> filterByDate(int shopId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
