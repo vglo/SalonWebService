@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.habbib.shop.feign.client.DBServiceFeignClient;
 import com.habbib.shop.request.model.ShopinfoRequest;
-import com.habbib.shop.response.model.DefaultReponse;
+import com.habib.utility.DefaultMessage;
 import com.habbib.shop.response.model.Shopinfo;
 
 import feign.RetryableException;
@@ -28,14 +28,14 @@ public class ShopController {
 	private DBServiceFeignClient dbService;
 	
 	@RequestMapping(path="/save-shop-details",method=RequestMethod.POST)
-	public ResponseEntity<DefaultReponse<Shopinfo>> saveShopDetail(@ModelAttribute ShopinfoRequest shopInfo){
-		DefaultReponse<Shopinfo> defaultResponse = new DefaultReponse<Shopinfo>();
+	public ResponseEntity<DefaultMessage<Shopinfo>> saveShopDetail(@ModelAttribute ShopinfoRequest shopInfo){
+		DefaultMessage<Shopinfo> defaultResponse = new DefaultMessage<Shopinfo>();
 		try {
 		
 		Shopinfo shop = dbService.saveShopDetails(shopInfo);
-		defaultResponse.setReponseObj(shop);
-		defaultResponse.setResponseCode(200);
-		ResponseEntity<DefaultReponse<Shopinfo>> response = ResponseEntity.ok(defaultResponse);
+		defaultResponse.setResponse(shop);
+		defaultResponse.setResponseCode("200");
+		ResponseEntity<DefaultMessage<Shopinfo>> response = ResponseEntity.ok(defaultResponse);
 		return response;
 		}catch(RetryableException exception) {
 			exception.getCause();

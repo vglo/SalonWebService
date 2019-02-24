@@ -19,7 +19,7 @@ import com.habbib.customer.request.model.AppointmentRequest;
 import com.habbib.customer.request.model.CustomerRequest;
 import com.habbib.customer.response.model.Appointment;
 import com.habbib.customer.response.model.Customerinfo;
-import com.habbib.customer.response.model.DefaultReponse;
+import com.habib.utility.DefaultMessage;
 import com.habbib.customer.util.Utilities;
 
 @RestController
@@ -35,24 +35,24 @@ public class CustomerController {
 	private Utilities util;
 	
 	@RequestMapping(path="/save-customer", method=RequestMethod.POST)
-	public ResponseEntity<DefaultReponse<Customerinfo>> saveCustomer(@ModelAttribute CustomerRequest customer) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException{
-		DefaultReponse<Customerinfo> defualt = new DefaultReponse<Customerinfo>();
+	public ResponseEntity<DefaultMessage<Customerinfo>> saveCustomer(@ModelAttribute CustomerRequest customer) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException{
+		DefaultMessage<Customerinfo> defualt = new DefaultMessage<Customerinfo>();
 		List<Customerinfo> existCust = dbFeignClient.findByCustomerMob(customer.getMobile());
 		if( 0 != existCust.size() && null != existCust ) {
-			defualt.setResponseCode(201);
-			defualt.setResponseMsg("Customer not created");
-			defualt.setReponseObj(existCust.get(0));
-			ResponseEntity<DefaultReponse<Customerinfo>> response = ResponseEntity.ok(defualt);
+			defualt.setResponseCode("201");
+			defualt.setResponseMessage("Customer not created");
+			defualt.setResponse(existCust.get(0));
+			ResponseEntity<DefaultMessage<Customerinfo>> response = ResponseEntity.ok(defualt);
 			return response;
 		}else {
 			//to convert date into specific date formate 
 			customer.setDob(util.convertDateFormate(customer.getDob()));
 			//saving customer
 			Customerinfo newCust = dbFeignClient.saveCustomer(customer);
-			defualt.setResponseCode(200);
-			defualt.setResponseMsg("Customer created successfuly");
-			defualt.setReponseObj(newCust);
-			ResponseEntity<DefaultReponse<Customerinfo>> response = ResponseEntity.ok(defualt);
+			defualt.setResponseCode("200");
+			defualt.setResponseMessage("Customer created successfuly");
+			defualt.setResponse(newCust);
+			ResponseEntity<DefaultMessage<Customerinfo>> response = ResponseEntity.ok(defualt);
 			return response;
 		
 		}
@@ -62,15 +62,15 @@ public class CustomerController {
 
 	
 	@RequestMapping(path="/update-customer", method=RequestMethod.PUT)
-	public ResponseEntity<DefaultReponse<Customerinfo>> updateCustomer(@ModelAttribute Customerinfo customer) {
-		DefaultReponse<Customerinfo> defualt = new DefaultReponse<Customerinfo>();
+	public ResponseEntity<DefaultMessage<Customerinfo>> updateCustomer(@ModelAttribute Customerinfo customer) {
+		DefaultMessage<Customerinfo> defualt = new DefaultMessage<Customerinfo>();
 		if(null != customer)
 		 return ResponseEntity.ok(defualt);
 		Customerinfo newCust = dbFeignClient.uddateCustomer(customer);
-		defualt.setResponseCode(200);
-		defualt.setResponseMsg("Customer updated successfuly");
-		defualt.setReponseObj(newCust);
-		ResponseEntity<DefaultReponse<Customerinfo>> response = ResponseEntity.ok(defualt);
+		defualt.setResponseCode("200");
+		defualt.setResponseMessage("Customer updated successfuly");
+		defualt.setResponse(newCust);
+		ResponseEntity<DefaultMessage<Customerinfo>> response = ResponseEntity.ok(defualt);
 		return response;
 	
 	}
@@ -84,56 +84,56 @@ public class CustomerController {
 	}
 	
 	@RequestMapping(path="/fetch-customer/shop-id", method=RequestMethod.GET)
-	public ResponseEntity<DefaultReponse<List<Customerinfo>>> fetchAllCustomerByShopId(@RequestParam(value="shopId", required=true) int shopId){
-		DefaultReponse<List<Customerinfo>> defaultResponse = new DefaultReponse<List<Customerinfo>>();
+	public ResponseEntity<DefaultMessage<List<Customerinfo>>> fetchAllCustomerByShopId(@RequestParam(value="shopId", required=true) int shopId){
+		DefaultMessage<List<Customerinfo>> defaultResponse = new DefaultMessage<List<Customerinfo>>();
 		
 		List<Customerinfo> customerList = dbFeignClient.findByShopId(shopId);
 		
 		if(customerList.size() > 0 && customerList != null) {
-			defaultResponse.setReponseObj(customerList);
-			defaultResponse.setResponseCode(200);
-			defaultResponse.setResponseMsg("Please find the customer list with given shop id");
-			 ResponseEntity<DefaultReponse<List<Customerinfo>>> responseEntity = ResponseEntity.ok(defaultResponse);
+			defaultResponse.setResponse(customerList);
+			defaultResponse.setResponseCode("200");
+			defaultResponse.setResponseMessage("Please find the customer list with given shop id");
+			 ResponseEntity<DefaultMessage<List<Customerinfo>>> responseEntity = ResponseEntity.ok(defaultResponse);
 			 return responseEntity;
 		}else {
-			defaultResponse.setReponseObj(customerList);
-			defaultResponse.setResponseCode(200);
-			defaultResponse.setResponseMsg("customer list with given id not found");
-			 ResponseEntity<DefaultReponse<List<Customerinfo>>> responseEntity = ResponseEntity.ok(defaultResponse);
+			defaultResponse.setResponse(customerList);
+			defaultResponse.setResponseCode("200");
+			defaultResponse.setResponseMessage("customer list with given id not found");
+			 ResponseEntity<DefaultMessage<List<Customerinfo>>> responseEntity = ResponseEntity.ok(defaultResponse);
 			 return responseEntity;
 		}
 	}
 	
 	
 	@RequestMapping(path="/fetch-customer/{custId}", method=RequestMethod.GET)
-	public ResponseEntity<DefaultReponse<Customerinfo>> fetchAllCustomerById(@PathVariable int custId){
-		DefaultReponse<Customerinfo> defaultResponse = new DefaultReponse<Customerinfo>();
+	public ResponseEntity<DefaultMessage<Customerinfo>> fetchAllCustomerById(@PathVariable int custId){
+		DefaultMessage<Customerinfo> defaultResponse = new DefaultMessage<Customerinfo>();
 		
 		Optional<Customerinfo> customerList = dbFeignClient.findByCustId(custId);
 		if(customerList.isPresent()) {
-			defaultResponse.setReponseObj(customerList.get());
-			defaultResponse.setResponseCode(200);
-			defaultResponse.setResponseMsg("Please find the customer");
-			 ResponseEntity<DefaultReponse<Customerinfo>> responseEntity = ResponseEntity.ok(defaultResponse);
+			defaultResponse.setResponse(customerList.get());
+			defaultResponse.setResponseCode("200");
+			defaultResponse.setResponseMessage("Please find the customer");
+			 ResponseEntity<DefaultMessage<Customerinfo>> responseEntity = ResponseEntity.ok(defaultResponse);
 			 return responseEntity;
 		}else {
-			defaultResponse.setReponseObj(customerList.get());
-			defaultResponse.setResponseCode(200);
-			defaultResponse.setResponseMsg("customer with given id not found");
-			 ResponseEntity<DefaultReponse<Customerinfo>> responseEntity = ResponseEntity.ok(defaultResponse);
+			defaultResponse.setResponse(customerList.get());
+			defaultResponse.setResponseCode("200");
+			defaultResponse.setResponseMessage("customer with given id not found");
+			 ResponseEntity<DefaultMessage<Customerinfo>> responseEntity = ResponseEntity.ok(defaultResponse);
 			 return responseEntity;
 		}
 		
 	}
 	
 	@RequestMapping(path="/create-appoitment",method=RequestMethod.POST)
-	public ResponseEntity<DefaultReponse<Appointment>> createAppoitment(@ModelAttribute AppointmentRequest appoitmentRequest){
-		DefaultReponse<Appointment> defaultResponse = new DefaultReponse<Appointment>();
+	public ResponseEntity<DefaultMessage<Appointment>> createAppoitment(@ModelAttribute AppointmentRequest appoitmentRequest){
+		DefaultMessage<Appointment> defaultResponse = new DefaultMessage<Appointment>();
 		Appointment appoitment = dbFeignClient.saveAppointment(appoitmentRequest);
-		defaultResponse.setReponseObj(appoitment);
-		defaultResponse.setResponseCode(200);
-		defaultResponse.setResponseMsg("Appoitment saved successfully");
-		ResponseEntity<DefaultReponse<Appointment>> response = ResponseEntity.ok(defaultResponse);
+		defaultResponse.setResponse(appoitment);
+		defaultResponse.setResponseCode("200");
+		defaultResponse.setResponseMessage("Appoitment saved successfully");
+		ResponseEntity<DefaultMessage<Appointment>> response = ResponseEntity.ok(defaultResponse);
 		return response;
 	}
 	
