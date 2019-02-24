@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.habbib.shop.feign.client.DBServiceFeignClient;
 import com.habbib.shop.request.model.ShopinfoRequest;
+import com.habib.utility.DefaultMessage;
 import com.habbib.shop.response.model.Shopinfo;
-import com.habbib.utility.DefaultMessage;
 
 import feign.RetryableException;
 

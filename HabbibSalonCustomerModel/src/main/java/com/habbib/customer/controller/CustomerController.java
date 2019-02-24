@@ -19,8 +19,8 @@ import com.habbib.customer.request.model.AppointmentRequest;
 import com.habbib.customer.request.model.CustomerRequest;
 import com.habbib.customer.response.model.Appointment;
 import com.habbib.customer.response.model.Customerinfo;
+import com.habib.utility.DefaultMessage;
 import com.habbib.customer.util.Utilities;
-import com.habbib.utility.DefaultMessage;
 
 @RestController
 @RequestMapping("/customer")
