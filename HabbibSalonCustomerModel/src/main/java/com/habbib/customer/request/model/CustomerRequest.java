@@ -3,6 +3,8 @@ package com.habbib.customer.request.model;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 
 /**
  * The persistent class for the customerinfo database table.
@@ -14,6 +16,7 @@ public class CustomerRequest{
 
 	private String address;
 
+	@DateTimeFormat(pattern="dd-MM-yyyy")
 	private Date dob;
 
 	private String email;
