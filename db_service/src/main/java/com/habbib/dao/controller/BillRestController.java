@@ -120,7 +120,7 @@ public class BillRestController {
 		return bill;
 	}
 	
-	@RequestMapping(path="find-bill/shop-id")
+	@RequestMapping(path="find-bill/shop-id",method=RequestMethod.GET)
 	public List<Bill> findBillByShopId(@RequestParam int shopId){
 		Shopinfo shop = shopinfoRepo.getOne(shopId);
 		List<Bill> billList = billRepository.findByShopinfo(shop);

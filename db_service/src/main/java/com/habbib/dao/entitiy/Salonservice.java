@@ -12,8 +12,7 @@ import java.util.List;
  * The persistent class for the salonservice database table.
  * 
  */
-@Entity
-@NamedQuery(name="Salonservice.findAll", query="SELECT s FROM Salonservice s")
+@Entity(name="SalonService")
 public class Salonservice implements Serializable {
 	private static final long serialVersionUID = 1L;
 

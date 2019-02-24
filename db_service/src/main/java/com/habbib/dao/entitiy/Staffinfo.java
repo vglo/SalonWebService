@@ -13,8 +13,7 @@ import java.util.List;
  * The persistent class for the staffinfo database table.
  * 
  */
-@Entity
-@NamedQuery(name="Staffinfo.findAll", query="SELECT s FROM Staffinfo s")
+@Entity(name="StaffInfo")
 public class Staffinfo implements Serializable {
 	private static final long serialVersionUID = 1L;
 
