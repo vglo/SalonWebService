@@ -9,20 +9,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.habbib.billing.dbrequest.model.BillRequest;
 import com.habbib.billing.feign.client.fallback.DBServiceFallback;
 import com.habbib.billing.model.Bill;
 import com.habbib.billing.model.Customerinfo;
 import com.habbib.billing.model.Salonservice;
-import com.habbib.billing.response.model.BillResponse;
 
 
 @FeignClient(name="db-service", fallback = DBServiceFallback.class)
 public interface DBServiceFeignClient {
 
-	@RequestMapping(value="/dao/save-bill")
-	public void  saveBill(@RequestBody BillResponse bill);
+	@RequestMapping(value="/save-bill", method=RequestMethod.POST)
+	public Bill saveBill(@RequestBody BillRequest billModel) ;
 	
-	@RequestMapping(value="/dao/find/all-bills")
+	@RequestMapping(value="/dao/find/all-bills",method=RequestMethod.GET)
 	public List<Bill> findAllBills();
 	
 	@RequestMapping(value="/dao/delete-bill/{id}")

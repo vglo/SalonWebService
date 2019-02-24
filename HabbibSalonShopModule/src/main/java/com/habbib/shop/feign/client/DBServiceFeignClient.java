@@ -4,13 +4,14 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.habbib.shop.feign.client.fallback.DBServiceFallback;
-import com.habbib.shop.request.model.RequestShop;
+import com.habbib.shop.request.model.ShopinfoRequest;
 import com.habbib.shop.response.model.Shopinfo;
 
 
@@ -19,7 +20,7 @@ import com.habbib.shop.response.model.Shopinfo;
 public interface DBServiceFeignClient {
 	
 	@RequestMapping(path="/dao/save-shop-detail",method=RequestMethod.POST)
-	public Shopinfo saveShopDetails(@RequestBody RequestShop shopDetails);
+	public Shopinfo saveShopDetails(@RequestBody ShopinfoRequest shopDetails);
 	
 	@RequestMapping(path="/dao/delete-shop/{id}",method=RequestMethod.DELETE)
 	public void deleteShop(@PathVariable("id") int id);

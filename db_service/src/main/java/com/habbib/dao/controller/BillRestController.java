@@ -4,15 +4,22 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.habbib.dao.JPArepository.BillHasServiceRepository;
 import com.habbib.dao.JPArepository.BillRepository;
+import com.habbib.dao.JPArepository.SalonServiceRepository;
 import com.habbib.dao.entitiy.Bill;
+import com.habbib.dao.entitiy.Billhasservice;
 import com.habbib.dao.entitiy.Campaign;
+import com.habbib.dao.model.BillRequest;
+import com.habbib.dao.model.BillhasserviceRequest;
+import com.habbib.dao.service.DBService;
 
 @RestController
 @RequestMapping(value="/dao")
@@ -21,9 +28,27 @@ public class BillRestController {
 	@Autowired
 	private BillRepository billRepository;
 	
+	@Autowired
+	private BillHasServiceRepository billHasService;
+	
+	@Autowired
+	private DBService dbService;
+	
+	@Autowired
+	private SalonServiceRepository salonService;
+	
+	
 	@RequestMapping(value="/save-bill", method=RequestMethod.POST)
-	public Bill saveBill(@RequestBody Bill bill) {
+	public Bill saveBill(@RequestBody BillRequest billModel) {
+		Bill bill = dbService.convertModelToEntity(billModel);
 		Bill newbill = billRepository.save(bill);
+		for(BillhasserviceRequest billHasServiceRequest : billModel.getBillhasservices()) {
+			Billhasservice billServiceEntity = new Billhasservice();
+			billServiceEntity.setQuantity(billHasServiceRequest.getQuantity());
+			billServiceEntity.setBill(newbill);
+			billServiceEntity.setSalonservice(salonService.findById(billHasServiceRequest.getIdSalonService()).get());
+			billHasService.save(billServiceEntity);
+		}
 		return newbill;
 	}
 	

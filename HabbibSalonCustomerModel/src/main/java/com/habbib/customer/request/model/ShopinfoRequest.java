@@ -1,13 +1,13 @@
-/**
- * 
- */
-package com.habbib.shop.request.model;
+package com.habbib.customer.request.model;
+
+import java.util.List;
+
 
 /**
- * @author yash
- *
+ * The persistent class for the shopinfo database table.
+ * 
  */
-public class RequestShop {
+public class ShopinfoRequest {
 
 
 	private String address;
@@ -18,9 +18,12 @@ public class RequestShop {
 
 	private String phone2;
 
-	private int type;
+    private int idShopType;
+
+	public ShopinfoRequest() {
+	}
+
 	
-	private int parentShop;
 
 	/**
 	 * @return the address
@@ -79,33 +82,18 @@ public class RequestShop {
 	}
 
 	/**
-	 * @return the type
+	 * @return the idShopType
 	 */
-	public int getType() {
-		return type;
+	public int getIdShopType() {
+		return idShopType;
 	}
 
 	/**
-	 * @param type the type to set
+	 * @param idShopType the idShopType to set
 	 */
-	public void setType(int type) {
-		this.type = type;
+	public void setIdShopType(int idShopType) {
+		this.idShopType = idShopType;
 	}
-
-	/**
-	 * @return the parentShop
-	 */
-	public int getParentShop() {
-		return parentShop;
-	}
-
-	/**
-	 * @param parentShop the parentShop to set
-	 */
-	public void setParentShop(int parentShop) {
-		this.parentShop = parentShop;
-	}
-	
 	
 	
 }

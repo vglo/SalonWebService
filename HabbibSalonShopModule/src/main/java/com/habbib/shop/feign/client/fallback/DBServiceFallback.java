@@ -6,14 +6,14 @@ import java.util.Optional;
 import org.springframework.stereotype.Component;
 
 import com.habbib.shop.feign.client.DBServiceFeignClient;
-import com.habbib.shop.request.model.RequestShop;
+import com.habbib.shop.request.model.ShopinfoRequest;
 import com.habbib.shop.response.model.Shopinfo;
 
 @Component
 public class DBServiceFallback implements DBServiceFeignClient{
 
 	@Override
-	public Shopinfo saveShopDetails(RequestShop shopDetails) {
+	public Shopinfo saveShopDetails(ShopinfoRequest shopDetails) {
 		return null;
 		// TODO Auto-generated method stub
 		

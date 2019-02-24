@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.habbib.customer.feign.client.DBServiceFeignClient;
-import com.habbib.customer.request.model.RequestCustomer;
+import com.habbib.customer.request.model.CustomerRequest;
 import com.habbib.customer.response.model.Customerinfo;
 import com.habbib.customer.response.model.DefaultReponse;
 import com.habbib.customer.util.Utilities;
@@ -33,9 +33,9 @@ public class CustomerController {
 	private Utilities util;
 	
 	@RequestMapping(path="/save-customer", method=RequestMethod.POST)
-	public ResponseEntity<DefaultReponse<Customerinfo>> saveCustomer(@ModelAttribute RequestCustomer customer) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException{
+	public ResponseEntity<DefaultReponse<Customerinfo>> saveCustomer(@ModelAttribute CustomerRequest customer) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException{
 		DefaultReponse<Customerinfo> defualt = new DefaultReponse<Customerinfo>();
-		List<Customerinfo> existCust = dbFeignClient.findByCustomerMob(customer.getMobnumber());
+		List<Customerinfo> existCust = dbFeignClient.findByCustomerMob(customer.getMobile());
 		if( 0 != existCust.size() && null != existCust ) {
 			defualt.setResponseCode(201);
 			defualt.setResponseMsg("Customer not created");
@@ -101,4 +101,6 @@ public class CustomerController {
 		ResponseEntity<Customerinfo> responseEntity = ResponseEntity.ok(customerList.get());
 		return responseEntity;
 	}
+	
+	
 }

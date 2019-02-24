@@ -9,11 +9,12 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
+import com.habbib.billing.dbrequest.model.BillRequest;
+import com.habbib.billing.dbrequest.model.BillhasserviceRequest;
 import com.habbib.billing.feign.clients.DBServiceFeignClient;
 import com.habbib.billing.model.Bill;
 import com.habbib.billing.model.Customerinfo;
 import com.habbib.billing.model.Salonservice;
-import com.habbib.billing.response.model.BillResponse;
 
 /**
  * @author yash
@@ -22,13 +23,11 @@ import com.habbib.billing.response.model.BillResponse;
 @Component
 public class DBServiceFallback implements DBServiceFeignClient {
 
-	/* (non-Javadoc)
-	 * @see com.habbib.billing.feign.clients.DBServiceFeignClient#saveBill(com.habbib.billing.model.Bill)
-	 */
+	
 	@Override
-	public void saveBill(BillResponse bill) {
+	public Bill saveBill(BillRequest billModel) {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 	/* (non-Javadoc)

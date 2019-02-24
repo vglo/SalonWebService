@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.validation.Valid;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +23,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.habbib.billing.feign.clients.DBServiceFeignClient;
 import com.habbib.billing.feign.clients.SmsServiceFeignClient;
 import com.habbib.billing.model.Bill;
-import com.habbib.billing.model.Customerinfo;
 import com.habbib.billing.model.Salonservice;
 import com.habbib.billing.request.model.BillHasService;
 import com.habbib.billing.request.model.BillRequest;
 import com.habbib.billing.response.DefaultMessage;
-import com.habbib.billing.response.model.BillResponse;
 import com.habbib.billing.service.Billing;
 import com.habbib.billing.util.DateAndTimeUtil;
 
@@ -65,7 +61,7 @@ public class BillingController {
 	public ResponseEntity<DefaultMessage<Bill>> saveBill(@ModelAttribute BillRequest billRequest) {
 		DefaultMessage<Bill> dfault = new DefaultMessage<Bill>();
 		List<BillHasService> serviceList = new ArrayList<BillHasService>();
-		BillResponse billResponse = new BillResponse();
+		com.habbib.billing.dbrequest.model.BillRequest billResponse = new com.habbib.billing.dbrequest.model.BillRequest();
 		double totalBillAfterGST =0;
 		Map<Optional<Salonservice>, Integer> serviceQuantityMap = new HashMap<Optional<Salonservice>, Integer>();
 		try {
@@ -81,6 +77,7 @@ public class BillingController {
 		}
 		billResponse.setTotal(billing.calculateBill(serviceQuantityMap));
 		LOG.info("Total Service pay is"+billResponse.getTotal());
+		
 		
 		if(0 != billRequest.getCgstPer() && 0 != billRequest.getSgstPer())
 		{
@@ -99,20 +96,14 @@ public class BillingController {
 			billResponse.setDate(utilObj.formateDate());
 			billResponse.setTime(LocalTime.now().toString());
 			billResponse.setBillNo(utilObj.generateBillNumber());
-			dbserviceFeignClient.saveBill(billResponse);
+			
 		}
-		 Optional<Bill> checkNullBill =  
-	                 dbserviceFeignClient.findByBillNum(billResponse.getBillNo());   
-		 if(checkNullBill.isPresent()) {
+		Bill bill = dbserviceFeignClient.saveBill(billResponse);
+		 if(null != bill) {
 			 dfault.setResponseCode("200");
 			 dfault.setResponseMessage("The bill generated successfully");
-			 dfault.setResponse(checkNullBill.get());
+			 dfault.setResponse(bill);
 			 ResponseEntity<DefaultMessage<Bill>> responseEntity = ResponseEntity.ok(dfault);
-			 Optional<Customerinfo> custObj = dbserviceFeignClient.findByCustId(billRequest.getCustomerId());
-			 if(custObj.isPresent()) {
-				 String msg = "Thank You For Visiting our Salon"+custObj.get().getFirstName()+"\n We Hoped you like our service.\n Total: "+billResponse.getGrandTotal()+"\n Please Visit Again. Thanks";
-				// smsService.emailSenderWithoutAttch(custObj.get().getEmail(),msg , "Your Invoice of current purchase is");
-			 }
 			 return responseEntity;
 			 
 		 }else {
@@ -134,6 +125,12 @@ public class BillingController {
 		return responseEntity;
 	}
 	
+	@RequestMapping(path="/find-all/bills",method=RequestMethod.GET)
+	public List<Bill> fetchAllBills() {
+		List<Bill> bills = dbserviceFeignClient.findAllBills();
+		return bills;
+	}
+	
 	/*
 	 * 
 	 */
@@ -148,17 +145,14 @@ public class BillingController {
 	}
 	
 	
-	@RequestMapping(path="/fetch-customer-list", method=RequestMethod.GET)
-	public ResponseEntity<List<Customerinfo>> fetchAllCustomerByShopId(@RequestParam(value="shopId", required=true) int shopId){
-		List<Customerinfo> customerList = dbserviceFeignClient.findByShopId(shopId);
-		ResponseEntity<List<Customerinfo>> responseEntity = ResponseEntity.ok(customerList);
-		return responseEntity;
-	}
-	
-	
 	@RequestMapping(value="/edit-bill/{id}",method=RequestMethod.PUT)
 	@ResponseBody
 	public void editBill(@PathVariable("id") String id) {
+		
+	}
+	
+	@RequestMapping(path="/fetch-payment-type",method=RequestMethod.GET)
+	public void fetchPaymentTypes() {
 		
 	}
 	

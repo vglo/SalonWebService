@@ -4,13 +4,16 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.habbib.customer.feign.client.fallback.DBServiceFallback;
-import com.habbib.customer.request.model.RequestCustomer;
+import com.habbib.customer.request.model.CustomerRequest;
+import com.habbib.customer.response.model.Appointment;
 import com.habbib.customer.response.model.Customerinfo;
 
 
@@ -19,7 +22,7 @@ public interface DBServiceFeignClient {
 
 
 	@RequestMapping(path="/dao/save-customer",method=RequestMethod.POST)
-	public Customerinfo saveCustomer(@RequestBody RequestCustomer cust);
+	public Customerinfo saveCustomer(@RequestBody CustomerRequest cust);
 	
 	@RequestMapping(path="/dao/delete-customer/{id}", method=RequestMethod.DELETE)
 	public void deleteCustomer(@PathVariable("id") int id);
@@ -38,4 +41,16 @@ public interface DBServiceFeignClient {
 	
 	@RequestMapping(path="/dao/find-by-mobile/{mobileNum}",method=RequestMethod.GET)
 	public List<Customerinfo> findByCustomerMob(@PathVariable String mobileNum);
+	
+	@RequestMapping(path="/fetch-appoitment/shop-id",method=RequestMethod.GET)
+	public List<Appointment> fetchAppointmentByshopId(@RequestParam int shopId);
+	
+	@RequestMapping(path="/find-appointment/custmer-id",method=RequestMethod.GET)
+	public List<Appointment> fetchByCustomerId(@RequestParam int custid);
+	
+	@RequestMapping(path="/create-appointment",method=RequestMethod.POST)
+	public Appointment saveAppointment(@RequestBody Appointment appointment);
+	
+	@RequestMapping(path="/fetch-all",method=RequestMethod.GET)
+	public List<Appointment> fetchAllAppoitment();
 }

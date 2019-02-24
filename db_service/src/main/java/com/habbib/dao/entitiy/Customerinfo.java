@@ -2,6 +2,10 @@ package com.habbib.dao.entitiy;
 
 import java.io.Serializable;
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
