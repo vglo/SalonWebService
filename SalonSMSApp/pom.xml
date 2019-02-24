@@ -68,6 +68,11 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.habib</groupId>
+			<artifactId>utility</artifactId>
+			<version>0.1.0</version>
+		</dependency>
 	</dependencies>
 
 	<dependencyManagement>
