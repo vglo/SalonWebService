@@ -98,14 +98,27 @@ public class BillingController {
 		{
 			LOG.info("GST calculation");
 			billResponse.setSgstVal(billResponse.getTotal()*billRequest.getSgstPer()/100);
+			billResponse.setSgstPer(billRequest.getSgstPer());
+			
 			billResponse.setCsgtVal(billResponse.getTotal()*billRequest.getCgstPer()/100);
+			billResponse.setCgstPer(billRequest.getCgstPer());
+			
 			billResponse.setGrandTotal(billResponse.getTotal()+billResponse.getSgstVal() + billResponse.getCsgtVal()); 
 		}
 		if(0 != billRequest.getDescountPer()) {
 			LOG.info("DiscountCalculation "+totalBillAfterGST);
+			billResponse.setDiscountPer(billRequest.getDescountPer());
 			billResponse.setDiscountVal(billResponse.getTotal()*(billRequest.getDescountPer()/100));
 			billResponse.setGrandTotal(billResponse.getGrandTotal() - billResponse.getDiscountVal());
-		}	
+		}
+
+		
+		// Save discount value directly.
+		if(billRequest.getDiscountVal() != 0) {
+			LOG.info("Saving Discount Value");
+			billResponse.setDiscountVal(billRequest.getDiscountVal());
+			billResponse.setGrandTotal(billResponse.getGrandTotal() - billResponse.getDiscountVal());
+		}
 		
 		if(0 != billResponse.getGrandTotal()) {
 			billResponse.setDate(utilObj.formateDate());
@@ -149,10 +162,14 @@ public class BillingController {
 	 * 
 	 */
 	@RequestMapping(path="/fetch-salon-services", method=RequestMethod.GET)
-	public ResponseEntity<List<Salonservice>> fetchAllSalonService(@RequestParam(value="shopId", required=true) int shopId){
+	public ResponseEntity<DefaultMessage<List<Salonservice>>> fetchAllSalonService(@RequestParam(value="shopId", required=true) int shopId){
 		List<Salonservice> listOfServices = dbserviceFeignClient.getSalonServices(shopId);
+		DefaultMessage<List<Salonservice>> defaultResponse = new DefaultMessage<>();
+		defaultResponse.setResponseCode("200");
+		defaultResponse.setResponseMessage("List of salon services.");
+		defaultResponse.setResponse(listOfServices);
 		if (null != listOfServices && listOfServices.size()>0) {
-			ResponseEntity<List<Salonservice>> responseEntity = ResponseEntity.ok(listOfServices);
+			ResponseEntity<DefaultMessage<List<Salonservice>>> responseEntity = ResponseEntity.ok(defaultResponse);
 			return responseEntity;
 		}
 		return null;
