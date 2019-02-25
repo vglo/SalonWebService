@@ -28,31 +28,12 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 @EnableDiscoveryClient
 @EnableFeignClients
 @EnableCircuitBreaker
-@EnableSwagger2
 public class HabbibSalonBillingModuleApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(HabbibSalonBillingModuleApplication.class, args);
 	}
 	
-	 private ApiInfo apiEndPointsInfo() {
-	        return new ApiInfoBuilder().title("Spring Boot REST API")
-	            .description("salon Billing Module REST API")
-	            .contact(new Contact("Yash Agrawal", "www.vglosoftwares.com", "agrawaly52@gmail.com"))
-	            .version("1.0.0")
-	            .build();
-	    }
-	
-	@Bean
-	public Docket api() throws IOException, XmlPullParserException {
-        MavenXpp3Reader reader = new MavenXpp3Reader();
-        Model model = reader.read(new FileReader("pom.xml"));
-        return new Docket(DocumentationType.SWAGGER_2)  
-                .select() 
-                .apis(RequestHandlerSelectors.basePackage("com.habbib.billing"))
-                .paths(PathSelectors.any())                          
-                .build().apiInfo(apiEndPointsInfo());
-	}
 
 
 }
