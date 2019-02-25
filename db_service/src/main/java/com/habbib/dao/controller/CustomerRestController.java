@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.habbib.dao.JPArepository.CustomerInfoRepository;
@@ -15,6 +16,7 @@ import com.habbib.dao.JPArepository.ShopInfoRepository;
 import com.habbib.dao.entitiy.Customerinfo;
 import com.habbib.dao.entitiy.Shopinfo;
 import com.habbib.dao.model.CustomerRequest;
+import com.habbib.dao.model.ShopinfoRequest;
 import com.habbib.dao.service.DBService;
 
 @RestController
@@ -67,9 +69,16 @@ public class CustomerRestController {
 		return customerList;
 	}
 	
-	@RequestMapping(path="/find-by-mobile/{mobileNum}",method=RequestMethod.GET)
-	public List<Customerinfo> findByCustomerMob(@PathVariable String mobileNum){
-		List<Customerinfo> custList = customerInfo.findByMobile(mobileNum);
-		return custList;
+	@RequestMapping(path="/find-by-mobile",method=RequestMethod.GET)
+	public Optional<Customerinfo> validateCust(@RequestParam String mobileNum,@RequestParam int shopId){
+		if(shopId == 0 || mobileNum == null)
+			throw new NullPointerException();
+		Shopinfo shop = shopInfo.getOne(shopId);
+		if(shop != null) {
+			Optional<Customerinfo> custList = customerInfo.findByMobileAndShopinfo(mobileNum,shop);
+			return custList;
+		}
+		return null;
+		
 	}
 }

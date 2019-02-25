@@ -39,8 +39,8 @@ public interface DBServiceFeignClient {
 	@RequestMapping(path="/dao/find-by-shop-id/{shopId}", method=RequestMethod.GET)
 	public List<Customerinfo> findByShopId(@PathVariable int shopId);
 	
-	@RequestMapping(path="/dao/find-by-mobile/{mobileNum}",method=RequestMethod.GET)
-	public List<Customerinfo> findByCustomerMob(@PathVariable String mobileNum);
+	@RequestMapping(path="/dao/find-by-mobile",method=RequestMethod.GET)
+	public Optional<Customerinfo> validateCust(@RequestParam String mobileNum,@RequestParam int shopId);
 	
 	@RequestMapping(path="/dao/fetch-appoitment/shop-id",method=RequestMethod.GET)
 	public List<Appointment> fetchAppointmentByshopId(@RequestParam int shopId);

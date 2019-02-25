@@ -1,16 +1,15 @@
-package com.habbib.dao.model;
+package com.habbib.staff.response.model;
 
 import java.util.Date;
-import java.util.List;
-
-import org.springframework.format.annotation.DateTimeFormat;
 
 
 /**
  * The persistent class for the staffinfo database table.
  * 
  */
-public class StaffinfoRequest {
+public class Staffinfo{
+
+	private int idStaffInfo;
 
 	private Date dob;
 
@@ -22,14 +21,21 @@ public class StaffinfoRequest {
 
 	private String mobile;
 
-	private int roleId;
+	private Role roleBean;
 
-	private int shopId;
+	private Shopinfo shopinfo;
 
-	public StaffinfoRequest() {
+	public Staffinfo() {
 	}
 
-	
+	public int getIdStaffInfo() {
+		return this.idStaffInfo;
+	}
+
+	public void setIdStaffInfo(int idStaffInfo) {
+		this.idStaffInfo = idStaffInfo;
+	}
+
 	public Date getDob() {
 		return this.dob;
 	}
@@ -70,36 +76,22 @@ public class StaffinfoRequest {
 		this.mobile = mobile;
 	}
 
-	
 
-	/**
-	 * @return the roleId
-	 */
-	public int getRoleId() {
-		return roleId;
+
+	public Role getRoleBean() {
+		return this.roleBean;
 	}
 
-	/**
-	 * @param roleId the roleId to set
-	 */
-	public void setRoleId(int roleId) {
-		this.roleId = roleId;
+	public void setRoleBean(Role roleBean) {
+		this.roleBean = roleBean;
 	}
 
-	/**
-	 * @return the shopId
-	 */
-	public int getShopId() {
-		return shopId;
+	public Shopinfo getShopinfo() {
+		return this.shopinfo;
 	}
 
-	/**
-	 * @param shopId the shopId to set
-	 */
-	public void setShopId(int shopId) {
-		this.shopId = shopId;
+	public void setShopinfo(Shopinfo shopinfo) {
+		this.shopinfo = shopinfo;
 	}
-
-	
 
 }

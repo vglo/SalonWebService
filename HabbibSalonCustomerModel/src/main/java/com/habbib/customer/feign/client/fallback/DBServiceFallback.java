@@ -58,11 +58,6 @@ public class DBServiceFallback implements DBServiceFeignClient {
 		return null;
 	}
 
-	@Override
-	public List<Customerinfo> findByCustomerMob(String mobileNum) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public List<Appointment> fetchAppointmentByshopId(int shopId) {
@@ -85,6 +80,12 @@ public class DBServiceFallback implements DBServiceFeignClient {
 
 	@Override
 	public Appointment saveAppointment(AppointmentRequest appointment) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Optional<Customerinfo> validateCust(String mobileNum, int shopId) {
 		// TODO Auto-generated method stub
 		return null;
 	}

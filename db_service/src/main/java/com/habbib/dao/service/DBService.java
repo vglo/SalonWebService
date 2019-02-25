@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.habbib.dao.JPArepository.CustomerInfoRepository;
 import com.habbib.dao.JPArepository.PaymentTypeRepository;
+import com.habbib.dao.JPArepository.RoleRepository;
 import com.habbib.dao.JPArepository.ShopInfoRepository;
 import com.habbib.dao.JPArepository.ShopTypeRepository;
 import com.habbib.dao.JPArepository.StaffInfoRepository;
@@ -17,10 +18,12 @@ import com.habbib.dao.entitiy.Appointment;
 import com.habbib.dao.entitiy.Bill;
 import com.habbib.dao.entitiy.Customerinfo;
 import com.habbib.dao.entitiy.Shopinfo;
+import com.habbib.dao.entitiy.Staffinfo;
 import com.habbib.dao.model.AppointmentRequest;
 import com.habbib.dao.model.BillRequest;
 import com.habbib.dao.model.CustomerRequest;
 import com.habbib.dao.model.ShopinfoRequest;
+import com.habbib.dao.model.StaffinfoRequest;
 
 @Service
 public class DBService {
@@ -39,6 +42,9 @@ public class DBService {
 	
 	@Autowired
 	private ShopTypeRepository daoShopType;
+	
+	@Autowired
+	private RoleRepository daoRole;
 
 	public Bill convertModelToEntity(BillRequest billRequest) {
 		Bill bill = new Bill();
@@ -114,8 +120,20 @@ public class DBService {
 		Appointment appoitment = new Appointment();
 		appoitment.setDate(appointmentReq.getDate());
 		appoitment.setTime(appointmentReq.getTime());
-		appoitment.setShopinfo(daoShop.findById(appointmentReq.getIdShopInfo()).get());
+		appoitment.setShopinfo(daoShop.getOne(appointmentReq.getIdShopInfo()));
 		appoitment.setCustomerinfo(daoCustomer.findById(appointmentReq.getIdCustomerInfo()).get());
 		return null;
+	}
+
+	public Staffinfo convertstaffModelToEntity(StaffinfoRequest staffInfoReq) {
+		Staffinfo staffInfo = new Staffinfo();
+		staffInfo.setDob(staffInfoReq.getDob());
+		staffInfo.setEmail(staffInfoReq.getEmail());
+		staffInfo.setFirstName(staffInfoReq.getFirstName());
+		staffInfo.setLastName(staffInfoReq.getLastName());
+		staffInfo.setMobile(staffInfoReq.getMobile());
+		staffInfo.setShopinfo(daoShop.getOne(staffInfoReq.getShopId()));
+		staffInfo.setRoleBean(daoRole.getOne(staffInfoReq.getRoleId()));
+		return staffInfo;
 	}
 }

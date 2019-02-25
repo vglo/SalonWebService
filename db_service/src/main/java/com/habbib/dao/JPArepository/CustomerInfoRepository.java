@@ -15,5 +15,5 @@ public interface CustomerInfoRepository  extends JpaRepository<Customerinfo, Int
 	
 	public List<Customerinfo> findByShopinfo(Shopinfo shopInfo);
 	
-	public List<Customerinfo> findByMobile(String mobNumber);
+	public Optional<Customerinfo> findByMobileAndShopinfo(String mobNumber, Shopinfo shopInfo);
 }

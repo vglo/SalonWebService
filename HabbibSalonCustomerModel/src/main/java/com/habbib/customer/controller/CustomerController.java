@@ -19,8 +19,8 @@ import com.habbib.customer.request.model.AppointmentRequest;
 import com.habbib.customer.request.model.CustomerRequest;
 import com.habbib.customer.response.model.Appointment;
 import com.habbib.customer.response.model.Customerinfo;
-import com.habib.utility.DefaultMessage;
 import com.habbib.customer.util.Utilities;
+import com.habib.utility.DefaultMessage;
 
 @RestController
 @RequestMapping("/customer")
@@ -36,12 +36,18 @@ public class CustomerController {
 	
 	@RequestMapping(path="/save-customer", method=RequestMethod.POST)
 	public ResponseEntity<DefaultMessage<Customerinfo>> saveCustomer(@ModelAttribute CustomerRequest customer) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException{
+		
+		if(customer == null)
+			throw new NullPointerException();
+		
 		DefaultMessage<Customerinfo> defualt = new DefaultMessage<Customerinfo>();
-		List<Customerinfo> existCust = dbFeignClient.findByCustomerMob(customer.getMobile());
-		if( 0 != existCust.size() && null != existCust ) {
+		//check if customer already exists or not
+		Optional<Customerinfo> custExists = dbFeignClient.validateCust(customer.getMobile(),customer.getIdShopInfo());
+		
+		if(custExists.isPresent()) {
 			defualt.setResponseCode("201");
 			defualt.setResponseMessage("Customer not created");
-			defualt.setResponse(existCust.get(0));
+			defualt.setResponse(custExists.get());
 			ResponseEntity<DefaultMessage<Customerinfo>> response = ResponseEntity.ok(defualt);
 			return response;
 		}else {
