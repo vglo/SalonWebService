@@ -92,16 +92,21 @@ public class BillingController {
 		LOG.info("Total Service pay is"+billResponse.getTotal());
 		
 		
+		// For Calculations
+		double cgst=0, sgst=0, discount=0, grandTotal=0;
+		
 		if(0 != billRequest.getCgstPer() && 0 != billRequest.getSgstPer())
 		{
 			LOG.info("GST calculation");
-			billResponse.setSgstVal(billResponse.getTotal()*billRequest.getSgstPer()/100);
+			sgst = billResponse.getTotal()*billRequest.getSgstPer()/100;
+			billResponse.setSgstVal(sgst);
 			billResponse.setSgstPer(billRequest.getSgstPer());
 			
-			billResponse.setCsgtVal(billResponse.getTotal()*billRequest.getCgstPer()/100);
+			cgst = billResponse.getTotal()*billRequest.getCgstPer()/100;
+			billResponse.setCsgtVal(cgst);
 			billResponse.setCgstPer(billRequest.getCgstPer());
 			
-			billResponse.setGrandTotal(billResponse.getTotal()+billResponse.getSgstVal() + billResponse.getCsgtVal()); 
+			// billResponse.setGrandTotal(billResponse.getTotal()+billResponse.getSgstVal() + billResponse.getCsgtVal()); 
 		}
 		if(0 != billRequest.getDescountPer()) {
 			LOG.info("DiscountCalculation "+totalBillAfterGST);
@@ -114,9 +119,17 @@ public class BillingController {
 		// Save discount value directly.
 		if(billRequest.getDiscountVal() != 0) {
 			LOG.info("Saving Discount Value");
+			discount=billRequest.getDiscountVal();
 			billResponse.setDiscountVal(billRequest.getDiscountVal());
-			billResponse.setGrandTotal(billResponse.getGrandTotal() - billResponse.getDiscountVal());
+			
+			//billResponse.setGrandTotal(billResponse.getGrandTotal() - billResponse.getDiscountVal());
 		}
+		
+		// Calculate Grand Total
+		// grandTotal = total + cgst + sgst - discount
+		
+		grandTotal = billResponse.getTotal() + cgst + sgst - discount;
+		billResponse.setGrandTotal(grandTotal); // Set Grand Total.	
 		
 		if(0 != billResponse.getGrandTotal()) {
 			billResponse.setDate(utilObj.formateDate());
