@@ -32,7 +32,7 @@ public class EurekaServerApplication {
 	    config.addAllowedMethod("POST");
 	    config.addAllowedMethod("DELETE");
 	    if(config.getAllowedOrigins() != null)
-	    source.registerCorsConfiguration("**", config);
+	    source.registerCorsConfiguration("/**", config);
 	    return new CorsFilter(source);
 	}
 
