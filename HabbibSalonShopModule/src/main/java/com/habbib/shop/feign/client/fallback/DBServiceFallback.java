@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import com.habbib.shop.feign.client.DBServiceFeignClient;
 import com.habbib.shop.request.model.ShopinfoRequest;
 import com.habbib.shop.response.model.Shopinfo;
+import com.habbib.shop.response.model.Shoptype;
 
 @Component
 public class DBServiceFallback implements DBServiceFeignClient{
@@ -41,6 +42,18 @@ public class DBServiceFallback implements DBServiceFeignClient{
 	public void uddateShop(Shopinfo shop) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public List<Shopinfo> fetchShopByParentId(int parentId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Shoptype> findAllShopType() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	

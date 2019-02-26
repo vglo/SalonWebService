@@ -74,8 +74,7 @@ public class Shopinfo implements Serializable {
 	private List<Shopinfo> shopinfos;
 
 	//bi-directional many-to-one association to Shoptype
-	@JsonIgnore
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="type")
 	private Shoptype shoptype;
 

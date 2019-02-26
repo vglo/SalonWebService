@@ -5,6 +5,8 @@ package com.habbib.billing.request.model;
 
 import java.util.List;
 
+import com.habbib.billing.dbrequest.model.BillhasserviceRequest;
+
 /**
  * @author yash
  *
@@ -47,6 +49,9 @@ public class BillRequest {
 	public void setType(int type) {
 		this.type = type;
 	}
+
+	
+
 
 	/**
 	 * @return the billHasService

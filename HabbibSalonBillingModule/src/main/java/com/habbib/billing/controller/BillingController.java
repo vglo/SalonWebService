@@ -80,11 +80,9 @@ public class BillingController {
 		
 		//Map for storing key as serviceInfo and Value as quantity
 			if(null != serviceInfoList) {
-				for(BillhasserviceRequest addObject : billHasServiceList) {
-					addObject.setIdSalonService(serviceInfoList.get().getIdSalonService());
-					addObject.setQuantity(billHasService.getQuant());
-					billHasServiceList.add(addObject);
-				}
+				BillhasserviceRequest dbBillHasServiceRequest = new BillhasserviceRequest();
+				dbBillHasServiceRequest.setIdSalonService(billHasService.getServiceId());
+				billHasServiceList.add(dbBillHasServiceRequest);
 				serviceQuantityMap.put(serviceInfoList, billHasService.getQuant());
 			}
 			
@@ -177,7 +175,7 @@ public class BillingController {
 	
 	
 	@RequestMapping(path="/fetch-bill/date-range",method=RequestMethod.GET)
-	public DefaultMessage<List<Bill>> filterByDateRange(@RequestParam String startDate,@RequestParam String endDate,@RequestParam int shopId){
+	public ResponseEntity<DefaultMessage<List<Bill>>> filterByDateRange(@RequestParam String startDate,@RequestParam String endDate,@RequestParam int shopId){
 		if(startDate == null || endDate == null)
 			throw new NullPointerException();
 		DefaultMessage<List<Bill>> defaultResponse = new DefaultMessage<List<Bill>>();
@@ -186,33 +184,39 @@ public class BillingController {
 			defaultResponse.setResponse(listofBills);
 	 		defaultResponse.setResponseCode("200");
 	 		defaultResponse.setResponseMessage("PLease find the list of bills from given date range");
+	 		ResponseEntity<DefaultMessage<List<Bill>>> response = ResponseEntity.ok(defaultResponse);
+	 		return response;
 	 		
 		}else {
 			defaultResponse.setResponse(listofBills);
 	 		defaultResponse.setResponseCode("200");
 	 		defaultResponse.setResponseMessage("No bills are avilable for given date range");
+	 		ResponseEntity<DefaultMessage<List<Bill>>> response = ResponseEntity.ok(defaultResponse);
+			return response;
 		}
  		
-		return defaultResponse;
+
 	}
 	
 	
 	@RequestMapping(path="/fetch-bill/today",method=RequestMethod.GET)
-	public DefaultMessage<List<Bill>> getBillsofToday(@RequestParam int shopId){
+	public ResponseEntity<DefaultMessage<List<Bill>>> getBillsofToday(@RequestParam int shopId){
 		DefaultMessage<List<Bill>> defaultResponse = new DefaultMessage<List<Bill>>();
 		List<Bill> listofBills = dbserviceFeignClient.filterByDate(shopId);
 		if(listofBills.size()>=0 && listofBills != null) {
 			defaultResponse.setResponse(listofBills);
 	 		defaultResponse.setResponseCode("200");
 	 		defaultResponse.setResponseMessage("PLease find the list of bills from given date range");
-	 		
+	 		ResponseEntity<DefaultMessage<List<Bill>>> response = ResponseEntity.ok(defaultResponse);
+	 		return response;
 		}else {
 			defaultResponse.setResponse(listofBills);
 	 		defaultResponse.setResponseCode("200");
 	 		defaultResponse.setResponseMessage("No bills are avilable. Bill list is empty");
+	 		ResponseEntity<DefaultMessage<List<Bill>>> response = ResponseEntity.ok(defaultResponse);
+	 		return response;
 		}
  		
-		return defaultResponse;
 
 	}
 	
@@ -224,40 +228,44 @@ public class BillingController {
 	}
 	
 	@RequestMapping(path="/fetch-payment-type",method=RequestMethod.GET)
-	public DefaultMessage<List<Paymenttype>> fetchPaymentTypes() {
+	public ResponseEntity<DefaultMessage<List<Paymenttype>>> fetchPaymentTypes() {
 		DefaultMessage<List<Paymenttype>> defaultResponse = new DefaultMessage<List<Paymenttype>>();
 		List<Paymenttype> paymentTypeList = dbserviceFeignClient.fetchAllPaymentType();
 		if(paymentTypeList.size()>=0 && paymentTypeList != null) {
 			defaultResponse.setResponse(paymentTypeList);
 	 		defaultResponse.setResponseCode("200");
 	 		defaultResponse.setResponseMessage("PLease find the list of all payment types");
-	 		
+	 		ResponseEntity<DefaultMessage<List<Paymenttype>>> response = ResponseEntity.ok(defaultResponse);
+	 		return response;
 		}else {
 			defaultResponse.setResponse(paymentTypeList);
 	 		defaultResponse.setResponseCode("200");
 	 		defaultResponse.setResponseMessage("payment type list is empty");
+	 		ResponseEntity<DefaultMessage<List<Paymenttype>>> response = ResponseEntity.ok(defaultResponse);
+	 		return response;
 		}
  		
-		return defaultResponse;
 
 	}
 	
 	@RequestMapping(path="/fetch-bill/shop-id",method=RequestMethod.GET)
-	public DefaultMessage<List<Bill>> fetchBillByShopId(@RequestParam int shopId){
+	public ResponseEntity<DefaultMessage<List<Bill>>> fetchBillByShopId(@RequestParam int shopId){
 		DefaultMessage<List<Bill>> defaultResponse = new DefaultMessage<List<Bill>>();
 		List<Bill> listofBills = dbserviceFeignClient.findBillByShopId(shopId);
 		if(listofBills.size()>=0 && listofBills != null) {
 			defaultResponse.setResponse(listofBills);
 	 		defaultResponse.setResponseCode("200");
 	 		defaultResponse.setResponseMessage("PLease find the list of bills from given date range");
-	 		
+	 		ResponseEntity<DefaultMessage<List<Bill>>> response = ResponseEntity.ok(defaultResponse);
+	 		return response;
 		}else {
 			defaultResponse.setResponse(listofBills);
 	 		defaultResponse.setResponseCode("200");
 	 		defaultResponse.setResponseMessage("No bills are avilable. Bill list is empty");
+	 		ResponseEntity<DefaultMessage<List<Bill>>> response = ResponseEntity.ok(defaultResponse);
+	 		return response;
 		}
  		
-		return defaultResponse;
 	}
 	
 }

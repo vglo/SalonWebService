@@ -9,9 +9,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.habbib.dao.JPArepository.ShopInfoRepository;
+import com.habbib.dao.JPArepository.ShopTypeRepository;
 import com.habbib.dao.entitiy.Shopinfo;
+import com.habbib.dao.entitiy.Shoptype;
 import com.habbib.dao.model.ShopinfoRequest;
 import com.habbib.dao.service.DBService;
 
@@ -23,6 +26,9 @@ public class ShopRestController {
 	private ShopInfoRepository shopInfo;
 	
 	@Autowired
+	private ShopTypeRepository shopTypeRepo;
+	
+	@Autowired
 	private DBService dbService;
 	@RequestMapping(path="/save-shop-detail",method=RequestMethod.POST)
 	public Shopinfo saveShopDetails(@RequestBody ShopinfoRequest shop) {
@@ -30,6 +36,16 @@ public class ShopRestController {
 		Shopinfo shopDetails = dbService.convertModelToEntityShop(shop);
 		Shopinfo shopInfo1 = shopInfo.save(shopDetails);
 		return shopInfo1;
+	}
+	
+	@RequestMapping(path="/fetch-shop/parent-id",method=RequestMethod.GET)
+	public List<Shopinfo> fetchShopByParentId(@RequestParam int parentId){
+		
+		Shopinfo parentShop = shopInfo.getOne(parentId);
+		List<Shopinfo> shopsList = shopInfo.findByShopinfo(parentShop);
+		if(shopsList == null)
+			throw new NullPointerException();
+		return shopsList;
 	}
 	
 	@RequestMapping(path="/delete-shop/{id}",method=RequestMethod.DELETE)
@@ -54,4 +70,12 @@ public class ShopRestController {
 		shopInfo.saveAndFlush(shop);
 	}
 	
+	
+	@RequestMapping(path="/find-shop-type",method=RequestMethod.GET)
+	public List<Shoptype> findAllShopType(){
+		List<Shoptype> shopTypes = shopTypeRepo.findAll();
+		if(shopTypes == null)
+			throw new NullPointerException();
+		return shopTypes;
+	}
 }

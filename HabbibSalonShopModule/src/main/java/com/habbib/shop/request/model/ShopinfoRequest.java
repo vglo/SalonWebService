@@ -19,11 +19,31 @@ public class ShopinfoRequest {
 	private String phone2;
 
     private int idShopType;
+    
+    private int parentShopId;
 
 	public ShopinfoRequest() {
 	}
 
 	
+
+	/**
+	 * @return the parentShopId
+	 */
+	public int getParentShopId() {
+		return parentShopId;
+	}
+
+
+
+	/**
+	 * @param parentShopId the parentShopId to set
+	 */
+	public void setParentShopId(int parentShopId) {
+		this.parentShopId = parentShopId;
+	}
+
+
 
 	/**
 	 * @return the address

@@ -38,8 +38,7 @@ public class Staffinfo implements Serializable {
 	private List<Bill> bills;
 
 	//bi-directional many-to-one association to Role
-	@JsonIgnore
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="role")
 	private Role roleBean;
 

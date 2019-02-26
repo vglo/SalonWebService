@@ -17,6 +17,7 @@ import com.habbib.shop.feign.client.DBServiceFeignClient;
 import com.habbib.shop.request.model.ShopinfoRequest;
 import com.habib.utility.DefaultMessage;
 import com.habbib.shop.response.model.Shopinfo;
+import com.habbib.shop.response.model.Shoptype;
 
 import feign.RetryableException;
 
@@ -28,15 +29,28 @@ public class ShopController {
 	private DBServiceFeignClient dbService;
 	
 	@RequestMapping(path="/save-shop-details",method=RequestMethod.POST)
-	public ResponseEntity<DefaultMessage<Shopinfo>> saveShopDetail(@ModelAttribute ShopinfoRequest shopInfo){
+	public ResponseEntity<DefaultMessage<Shopinfo>> saveFranchiesDetails(@ModelAttribute ShopinfoRequest shopInfo){
 		DefaultMessage<Shopinfo> defaultResponse = new DefaultMessage<Shopinfo>();
+		
+		if(shopInfo == null)
+			throw new NullPointerException();
+		
 		try {
 		
 		Shopinfo shop = dbService.saveShopDetails(shopInfo);
-		defaultResponse.setResponse(shop);
-		defaultResponse.setResponseCode("200");
-		ResponseEntity<DefaultMessage<Shopinfo>> response = ResponseEntity.ok(defaultResponse);
-		return response;
+		if(shop != null) {
+			defaultResponse.setResponse(shop);
+			defaultResponse.setResponseCode("200");
+			defaultResponse.setResponseMessage("Shop details saved successfully");
+			ResponseEntity<DefaultMessage<Shopinfo>> response = ResponseEntity.ok(defaultResponse);
+			return response;
+		}else {
+			defaultResponse.setResponse(shop);
+			defaultResponse.setResponseCode("200");
+			defaultResponse.setResponseMessage("Shop details not saved");
+			ResponseEntity<DefaultMessage<Shopinfo>> response = ResponseEntity.ok(defaultResponse);
+			return response;
+		}
 		}catch(RetryableException exception) {
 			exception.getCause();
 			exception.getLocalizedMessage();
@@ -45,16 +59,30 @@ public class ShopController {
 		return null;
 	}
 	
-	@RequestMapping(path="/find-all", method=RequestMethod.GET)
-	public List<Shopinfo> findAllShopDetails() {
-		List<Shopinfo> shopList = dbService.findAllShops();
-		return shopList;
-	}
-
+	/*
+	 * @RequestMapping(path="/find-all", method=RequestMethod.GET) public
+	 * List<Shopinfo> findAllShopDetails() { List<Shopinfo> shopList =
+	 * dbService.findAllShops(); return shopList; }
+	 */
+	
+	
 	@RequestMapping(path="/find-by-id/{shopId}",method=RequestMethod.GET)
-	public Shopinfo findByShopId(@PathVariable int shopId){
+	public ResponseEntity<DefaultMessage<Shopinfo>> findByShopId(@PathVariable int shopId){
+		DefaultMessage<Shopinfo> defaultResponse = new DefaultMessage<Shopinfo>();
 		Optional<Shopinfo> shop = dbService.findByShopId(shopId);
-		return shop.get();
+		if(shop.isPresent()) {
+			defaultResponse.setResponse(shop.get());
+			defaultResponse.setResponseCode("200");
+			defaultResponse.setResponseMessage("Shop details saved successfully");
+			ResponseEntity<DefaultMessage<Shopinfo>> response = ResponseEntity.ok(defaultResponse);
+			return response;
+		}else {
+			defaultResponse.setResponse(null);
+			defaultResponse.setResponseCode("200");
+			defaultResponse.setResponseMessage("Shop details not saved");
+			ResponseEntity<DefaultMessage<Shopinfo>> response = ResponseEntity.ok(defaultResponse);
+			return response;
+		}
 	}
 	
 	@RequestMapping(path="/delete-shop",method=RequestMethod.DELETE)
@@ -63,6 +91,44 @@ public class ShopController {
 			ResponseEntity.badRequest();
 		dbService.deleteShop(shopId);
 		return ResponseEntity.ok();
+	}
+	
+	@RequestMapping(path="/find-shop-type",method=RequestMethod.GET)
+	public ResponseEntity<DefaultMessage<List<Shoptype>>> fetchAllShopType(){
+		DefaultMessage<List<Shoptype>> defaultResponse = new DefaultMessage<List<Shoptype>>();
+		List<Shoptype> shopTypes = dbService.findAllShopType();
+		if(shopTypes.size() != 0 && shopTypes != null) {
+			defaultResponse.setResponse(shopTypes);
+			defaultResponse.setResponseCode("200");
+			defaultResponse.setResponseMessage("Shop details saved successfully");
+			ResponseEntity<DefaultMessage<List<Shoptype>>> response = ResponseEntity.ok(defaultResponse);
+			return response;
+		}else {
+			defaultResponse.setResponse(null);
+			defaultResponse.setResponseCode("200");
+			defaultResponse.setResponseMessage("Shop details not saved");
+			ResponseEntity<DefaultMessage<List<Shoptype>>> response = ResponseEntity.ok(defaultResponse);
+			return response;
+		}
+	}
+	
+	@RequestMapping(path="/find-shop/parent-shop",method=RequestMethod.GET)
+	public ResponseEntity<DefaultMessage<List<Shopinfo>>> findShopByParentShop(@RequestParam int parentShopId){
+		DefaultMessage<List<Shopinfo>> defaultResponse = new DefaultMessage<List<Shopinfo>>();
+		List<Shopinfo> shopList = dbService.fetchShopByParentId(parentShopId);
+		if(shopList.size() != 0 && shopList != null) {
+			defaultResponse.setResponse(shopList);
+			defaultResponse.setResponseCode("200");
+			defaultResponse.setResponseMessage("Shop details saved successfully");
+			ResponseEntity<DefaultMessage<List<Shopinfo>>> response = ResponseEntity.ok(defaultResponse);
+			return response;
+		}else {
+			defaultResponse.setResponse(null);
+			defaultResponse.setResponseCode("200");
+			defaultResponse.setResponseMessage("Shop details not saved");
+			ResponseEntity<DefaultMessage<List<Shopinfo>>> response = ResponseEntity.ok(defaultResponse);
+			return response;
+		}
 	}
 	
 	

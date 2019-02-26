@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -86,6 +87,11 @@ public class DBService {
 		shopDetails.setPhone1(shop.getPhone1());
 		shopDetails.setPhone2(shop.getPhone2());
 		shopDetails.setShoptype(daoShopType.findById(shop.getIdShopType()).get());
+		if(shop.getParentShopId() !=0 ) {
+			Shopinfo parentShop = daoShop.getOne(shop.getParentShopId());
+			shopDetails.setShopinfo(parentShop);
+		}
+			
 		return shopDetails;
 	}
 	
