@@ -260,12 +260,32 @@ public class BillingController {
 	 		return response;
 		}else {
 			defaultResponse.setResponse(listofBills);
-	 		defaultResponse.setResponseCode("200");
+	 		defaultResponse.setResponseCode("201");
 	 		defaultResponse.setResponseMessage("No bills are avilable. Bill list is empty");
 	 		ResponseEntity<DefaultMessage<List<Bill>>> response = ResponseEntity.ok(defaultResponse);
 	 		return response;
 		}
  		
+	}
+	
+	
+	@RequestMapping(path="/find-bill/bill-number",method=RequestMethod.GET)
+	public ResponseEntity<DefaultMessage<Bill>> fetchBillByBillNum(@RequestParam String billNum){
+		DefaultMessage<Bill> defaultResponse = new DefaultMessage<Bill>();
+		Optional<Bill> listofBill = dbserviceFeignClient.findByBillNum(billNum);
+		if(listofBill.isPresent()) {
+			defaultResponse.setResponse(listofBill.get());
+	 		defaultResponse.setResponseCode("200");
+	 		defaultResponse.setResponseMessage("Bill is present with given bill Number:"+billNum);
+	 		ResponseEntity<DefaultMessage<Bill>> response = ResponseEntity.ok(defaultResponse);
+	 		return response;
+		}else {
+			defaultResponse.setResponse(listofBill.get());
+	 		defaultResponse.setResponseCode("200");
+	 		defaultResponse.setResponseMessage("No bill is avilable. Bill list is empty");
+	 		ResponseEntity<DefaultMessage<Bill>> response = ResponseEntity.ok(defaultResponse);
+	 		return response;
+		}
 	}
 	
 }
