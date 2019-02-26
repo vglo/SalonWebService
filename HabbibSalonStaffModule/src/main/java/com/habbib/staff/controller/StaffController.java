@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -63,20 +64,44 @@ public class StaffController {
 	
 		DefaultMessage<List<Staffinfo>> defaultResponse = new DefaultMessage<List<Staffinfo>>();
 		
-		List<Staffinfo> customerList = dbFeignClient.findStaffByShopId(shopId);
+		List<Staffinfo> staffList = dbFeignClient.findStaffByShopId(shopId);
 		
-		if(customerList.size() > 0 && customerList != null) {
-			defaultResponse.setResponse(customerList);
+		if(staffList.size() > 0 && staffList != null) {
+			defaultResponse.setResponse(staffList);
 			defaultResponse.setResponseCode("200");
-			defaultResponse.setResponseMessage("Please find the customer list with given shop id");
+			defaultResponse.setResponseMessage("Please find the staff list with given shop id");
 			 ResponseEntity<DefaultMessage<List<Staffinfo>>> responseEntity = ResponseEntity.ok(defaultResponse);
 			 return responseEntity;
 		}else {
-			defaultResponse.setResponse(customerList);
+			defaultResponse.setResponse(staffList);
 			defaultResponse.setResponseCode("200");
-			defaultResponse.setResponseMessage("customer list with given id not found");
+			defaultResponse.setResponseMessage("staff list with given id not found");
 			 ResponseEntity<DefaultMessage<List<Staffinfo>>> responseEntity = ResponseEntity.ok(defaultResponse);
 			 return responseEntity;
 		}
+	}
+	
+	
+	@RequestMapping(path="/find-staff/staff-id/{staffId}",method=RequestMethod.GET)
+	public ResponseEntity<DefaultMessage<Staffinfo>> fetchStaffByStaffId(@PathVariable int staffId){
+		
+	DefaultMessage<Staffinfo> defaultResponse = new DefaultMessage<Staffinfo>();
+		
+		Staffinfo staff = dbFeignClient.findStaffByid(staffId);
+		
+		if(staff != null) {
+			defaultResponse.setResponse(staff);
+			defaultResponse.setResponseCode("200");
+			defaultResponse.setResponseMessage("Please find the staff list with given shop id");
+			 ResponseEntity<DefaultMessage<Staffinfo>> responseEntity = ResponseEntity.ok(defaultResponse);
+			 return responseEntity;
+		}else {
+			defaultResponse.setResponse(staff);
+			defaultResponse.setResponseCode("200");
+			defaultResponse.setResponseMessage("staff list with given id not found");
+			 ResponseEntity<DefaultMessage<Staffinfo>> responseEntity = ResponseEntity.ok(defaultResponse);
+			 return responseEntity;
+		}
+		
 	}
 }

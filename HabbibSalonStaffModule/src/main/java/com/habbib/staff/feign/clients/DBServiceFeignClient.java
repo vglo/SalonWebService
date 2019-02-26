@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,6 +26,9 @@ public interface DBServiceFeignClient {
 	
 	@RequestMapping(path="/dao/find-staff/shop-id",method=RequestMethod.GET)
 	public List<Staffinfo> findStaffByShopId(@RequestParam int shopId);
+	
+	@RequestMapping(path="/dao/find-staff/{staffId}", method=RequestMethod.GET)
+	public Staffinfo findStaffByid(@PathVariable int staffId);
 }
 
 

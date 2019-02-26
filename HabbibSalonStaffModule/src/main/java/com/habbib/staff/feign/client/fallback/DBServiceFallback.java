@@ -39,4 +39,10 @@ public class DBServiceFallback implements DBServiceFeignClient {
 		return null;
 	}
 
+	@Override
+	public Staffinfo findStaffByid(int staffId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

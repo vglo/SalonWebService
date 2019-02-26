@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -70,5 +71,13 @@ public class StaffDBController {
 			return staffList;
 		}
 		return null;
+	}
+	
+	@RequestMapping(path="/find-staff/{staffId}", method=RequestMethod.GET)
+	public Staffinfo findStaffByid(@PathVariable int staffId){
+		Optional<Staffinfo> staffinfo = staffInfo.findById(staffId);
+		if(staffinfo == null)
+			throw new NullPointerException();
+		return staffinfo.get();
 	}
 }
