@@ -66,6 +66,16 @@ public class BillRestController {
 		
 	}
 	
+	@RequestMapping(path="/find-billhasservice/bill-id",method=RequestMethod.GET)
+	public List<Billhasservice> fetchBillhasServiceByBillId(@RequestParam int billId){
+		Bill bill = billRepository.getOne(billId);
+		if(bill == null) 
+			throw new NullPointerException();
+		
+		List<Billhasservice> billsHasService = billHasService.findByBill(bill);
+		return billsHasService;
+	}
+	
 	@RequestMapping(path="/filter-date-range",method=RequestMethod.GET)
 	public List<Bill> filterByDateRange(@RequestParam String startDate,@RequestParam String endDate,@RequestParam int shopId){
 		if(startDate == null || endDate == null )

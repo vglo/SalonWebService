@@ -27,8 +27,7 @@ public class Billhasservice implements Serializable {
 	private Bill bill;
 
 	//bi-directional many-to-one association to Salonservice
-	@JsonIgnore
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="idSalonService")
 	private Salonservice salonservice;
 

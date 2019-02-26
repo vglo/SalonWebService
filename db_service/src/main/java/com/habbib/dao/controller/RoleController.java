@@ -14,6 +14,7 @@ import com.habbib.dao.JPArepository.ModuleInfoRepository;
 import com.habbib.dao.JPArepository.RoleRepository;
 import com.habbib.dao.entitiy.Moduleinfo;
 import com.habbib.dao.entitiy.Role;
+import com.habbib.dao.model.RoleRequest;
 
 @RestController
 @RequestMapping("/dao")
@@ -24,7 +25,7 @@ public class RoleController {
 	
 	
 	@RequestMapping(path="/delete-role/{id}", method=RequestMethod.DELETE)
-	public void deleteModule(@PathVariable("id") int id) {
+	public void deleteRole(@PathVariable("id") int id) {
 		role.deleteById(id);
 	}
 	
@@ -33,6 +34,8 @@ public class RoleController {
 		List<Role> roleList = role.findAll();
 		return roleList;
 	}
+	
+
 	
 	
 	
