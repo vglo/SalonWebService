@@ -4,6 +4,8 @@ import java.io.Serializable;
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.util.Date;
 import java.util.List;
@@ -45,8 +47,7 @@ public class Bill implements Serializable {
 
 	private double total;
 
-	//bi-directional many-to-one association to Customerinfo
-	@JsonIgnore
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@ManyToOne
 	@JoinColumn(name="custId")
 	private Customerinfo customerinfo;
@@ -58,18 +59,18 @@ public class Bill implements Serializable {
 	private Shopinfo shopinfo;
 
 	//bi-directional many-to-one association to Staffinfo
-	@JsonIgnore
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@ManyToOne
 	@JoinColumn(name="servingStaff")
 	private Staffinfo staffinfo;
 
 	//bi-directional many-to-one association to Billhasservice
-	@JsonIgnore
-	@OneToMany(mappedBy="bill")
+	@JsonManagedReference
+	@OneToMany(mappedBy="bill",cascade=CascadeType.ALL)
 	private List<Billhasservice> billhasservices;
 
 	//bi-directional many-to-one association to Paymenttype
-	@JsonIgnore
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@ManyToOne
 	@JoinColumn(name="paymentType")
 	private Paymenttype paymenttype;

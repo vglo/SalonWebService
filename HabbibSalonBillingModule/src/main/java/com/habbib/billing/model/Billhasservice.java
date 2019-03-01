@@ -8,7 +8,7 @@ public class Billhasservice {
 
 	private Bill bill;
 
-	private int serviceId;
+	private Salonservice salonservice;
 
 	public Billhasservice() {
 	}
@@ -38,18 +38,20 @@ public class Billhasservice {
 	}
 
 	/**
-	 * @return the serviceId
+	 * @return the salonservice
 	 */
-	public int getServiceId() {
-		return serviceId;
+	public Salonservice getSalonservice() {
+		return salonservice;
 	}
 
 	/**
-	 * @param serviceId the serviceId to set
+	 * @param salonservice the salonservice to set
 	 */
-	public void setServiceId(int serviceId) {
-		this.serviceId = serviceId;
+	public void setSalonservice(Salonservice salonservice) {
+		this.salonservice = salonservice;
 	}
+
+	
 
 	
 }

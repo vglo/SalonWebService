@@ -35,6 +35,16 @@ public class RoleController {
 		return roleList;
 	}
 	
+	@RequestMapping(path="/find-role/{id}",method=RequestMethod.GET)
+	public Role findRoleByid(@PathVariable int id){
+		Optional<Role> roleObj = role.findById(id);
+		if(roleObj.isPresent())
+			return roleObj.get();
+		return null;
+	}
+	
+	
+	
 
 	
 	

@@ -5,13 +5,14 @@ package com.habbib.billing.request.model;
 
 import java.util.List;
 
-import com.habbib.billing.dbrequest.model.BillhasserviceRequest;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author yash
  *
  */
-public class BillRequest {
+public class BillClientRequest {
 
 	
 	private double cgstPer;
@@ -22,14 +23,19 @@ public class BillRequest {
 	
 	private double discountVal;
 
+	@NotEmpty
 	private List<BillHasService> billHasService;
 	
+	@NotNull
 	private int customerId;
 	
+	@NotNull
 	private int serviceStaffId;
 	
+	@NotNull
 	private int shopId;
 	
+	@NotNull
 	private int type;
 	
 	

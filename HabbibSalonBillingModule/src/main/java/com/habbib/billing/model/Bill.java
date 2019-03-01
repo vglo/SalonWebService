@@ -3,8 +3,6 @@ package com.habbib.billing.model;
 import java.util.Date;
 import java.util.List;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
 
@@ -16,7 +14,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Bill {
 
-	
 	private int idBill;
 
 	private String billNo;
@@ -41,8 +38,17 @@ public class Bill {
 
 	private double total;
 	
-	private List<Billhasservice> billHasService;
-	
+	private Customerinfo customerinfo;
+
+	private Shopinfo shopinfo;
+
+	private Staffinfo staffinfo;
+
+	private List<Billhasservice> billhasservices;
+
+	private Paymenttype paymenttype;
+
+
 
 	public Bill() {
 	}
@@ -143,20 +149,78 @@ public class Bill {
 		this.total = total;
 	}
 
+	/**
+	 * @return the customerinfo
+	 */
+	public Customerinfo getCustomerinfo() {
+		return customerinfo;
+	}
+
+	/**
+	 * @param customerinfo the customerinfo to set
+	 */
+	public void setCustomerinfo(Customerinfo customerinfo) {
+		this.customerinfo = customerinfo;
+	}
+
+
+	/**
+	 * @return the staffinfo
+	 */
+	public Staffinfo getStaffinfo() {
+		return staffinfo;
+	}
+
+	/**
+	 * @param staffinfo the staffinfo to set
+	 */
+	public void setStaffinfo(Staffinfo staffinfo) {
+		this.staffinfo = staffinfo;
+	}
+
+	/**
+	 * @return the billhasservices
+	 */
+	public List<Billhasservice> getBillhasservices() {
+		return billhasservices;
+	}
+
+	/**
+	 * @param billhasservices the billhasservices to set
+	 */
+	public void setBillhasservices(List<Billhasservice> billhasservices) {
+		this.billhasservices = billhasservices;
+	}
+
+	/**
+	 * @return the paymenttype
+	 */
+	public Paymenttype getPaymenttype() {
+		return paymenttype;
+	}
+
+	/**
+	 * @param paymenttype the paymenttype to set
+	 */
+	public void setPaymenttype(Paymenttype paymenttype) {
+		this.paymenttype = paymenttype;
+	}
+
+	/**
+	 * @return the shopinfo
+	 */
+	public Shopinfo getShopinfo() {
+		return shopinfo;
+	}
+
+	/**
+	 * @param shopinfo the shopinfo to set
+	 */
+	public void setShopinfo(Shopinfo shopinfo) {
+		this.shopinfo = shopinfo;
+	}
+
 	
-	/**
-	 * @return the billHasService
-	 */
-	public List<Billhasservice> getBillHasService() {
-		return billHasService;
-	}
-
-	/**
-	 * @param billHasService the billHasService to set
-	 */
-	public void setBillHasService(List<Billhasservice> billHasService) {
-		this.billHasService = billHasService;
-	}
-
+		
 		
 }

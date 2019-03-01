@@ -1,10 +1,13 @@
 package com.habbib.billing.model;
 
-import java.io.Serializable;
 import java.util.List;
 
-public class Shoptype implements Serializable {
-	private static final long serialVersionUID = 1L;
+
+/**
+ * The persistent class for the shoptype database table.
+ * 
+ */
+public class Shoptype {
 
 	private int idShopType;
 

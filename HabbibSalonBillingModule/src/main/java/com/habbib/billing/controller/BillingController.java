@@ -1,15 +1,15 @@
 package com.habbib.billing.controller;
 
-import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
+
+import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -20,17 +20,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.habbib.billing.dbrequest.model.BillRequest;
 import com.habbib.billing.dbrequest.model.BillhasserviceRequest;
 import com.habbib.billing.feign.clients.DBServiceFeignClient;
-import com.habbib.billing.feign.clients.SmsServiceFeignClient;
 import com.habbib.billing.model.Bill;
+import com.habbib.billing.model.Customerinfo;
 import com.habbib.billing.model.Paymenttype;
 import com.habbib.billing.model.Salonservice;
+import com.habbib.billing.model.Shopinfo;
+import com.habbib.billing.model.Staffinfo;
+import com.habbib.billing.request.model.BillClientRequest;
 import com.habbib.billing.request.model.BillHasService;
-import com.habbib.billing.request.model.BillRequest;
-
-import com.habbib.billing.service.Billing;
-import com.habbib.billing.util.DateAndTimeUtil;
+import com.habbib.billing.service.BillingService;
 import com.habib.utility.DefaultMessage;
 
 
@@ -50,127 +51,97 @@ public class BillingController {
 	private DBServiceFeignClient dbserviceFeignClient;
 	
 	@Autowired
-	private Billing billing;
+	private BillingService billService;
 	
-	@Autowired
-	private SmsServiceFeignClient smsService;
 	
-	@Autowired
-	private DateAndTimeUtil utilObj;
-	
-	//private BillingValidation billValidate;
-	
+
 	@RequestMapping(value="/save-bill",method=RequestMethod.POST)
 	@ExceptionHandler
-	public ResponseEntity<DefaultMessage<Bill>> saveBill(@ModelAttribute BillRequest billRequest) {
+	public ResponseEntity<DefaultMessage<Bill>> saveBill(@Valid @ModelAttribute BillClientRequest billRequest) {
 		DefaultMessage<Bill> dfault = new DefaultMessage<Bill>();
-		List<BillHasService> serviceList = new ArrayList<BillHasService>();
-		com.habbib.billing.dbrequest.model.BillRequest billResponse = new com.habbib.billing.dbrequest.model.BillRequest();
-		List<BillhasserviceRequest> billHasServiceList = new ArrayList<BillhasserviceRequest>();
-		
-		double totalBillAfterGST =0;
-		Map<Optional<Salonservice>, Integer> serviceQuantityMap = new HashMap<Optional<Salonservice>, Integer>();
-		try {
+		List<BillHasService> billHasServiceList = new ArrayList<BillHasService>();
+		List<BillhasserviceRequest> dbBillHasServiceList = new ArrayList<BillhasserviceRequest>();
+		double totalServicePay = 0;
+		BillRequest dbBillRequest = new BillRequest();
 		LOG.info("Inside save bill method #BillingController");
 		LOG.info("start Billing #BillingController");
 		
-		serviceList = billRequest.getBillHasService();
-		for(BillHasService billHasService: serviceList ) {
-		Optional<Salonservice> serviceInfoList = dbserviceFeignClient.getServiceInfo(billHasService.getServiceId());
-		
-		//Map for storing key as serviceInfo and Value as quantity
-			if(null != serviceInfoList) {
-				BillhasserviceRequest dbBillHasServiceRequest = new BillhasserviceRequest();
-				dbBillHasServiceRequest.setIdSalonService(billHasService.getServiceId());
-				billHasServiceList.add(dbBillHasServiceRequest);
-				serviceQuantityMap.put(serviceInfoList, billHasService.getQuant());
+		try {
+			Optional<Customerinfo> customerInfo = dbserviceFeignClient.findByCustId(billRequest.getCustomerId());
+			if(!customerInfo.isPresent()) {
+				dfault.setResponseCode("400");
+				dfault.setResponseMessage("Customer with given id is not registered, please register the customer");
+				return new ResponseEntity<DefaultMessage<Bill>>(dfault,HttpStatus.BAD_REQUEST);
 			}
+			dbBillRequest.setCustId(billRequest.getCustomerId());
+			Optional<Shopinfo> shopInfo = dbserviceFeignClient.findByShopId(billRequest.getShopId());
+			if(!shopInfo.isPresent()) {
+				dfault.setResponseCode("400");
+				dfault.setResponseMessage("Shop with given id is not present/registered, please enter valid shop id");
+				return new ResponseEntity<DefaultMessage<Bill>>(dfault,HttpStatus.BAD_REQUEST);
+			}
+			dbBillRequest.setShopId(billRequest.getShopId());
+			Staffinfo staff = dbserviceFeignClient.findStaffByid(billRequest.getServiceStaffId());
+			if(staff == null) {
+				dfault.setResponseCode("400");
+				dfault.setResponseMessage("Staff with given id is not present/registered, please enter valid staff id");
+				return new ResponseEntity<DefaultMessage<Bill>>(dfault,HttpStatus.BAD_REQUEST);
+			}
+			dbBillRequest.setServingStaff(billRequest.getServiceStaffId());
+			Paymenttype paymentType = dbserviceFeignClient.fetchByPaymentTypeID(billRequest.getType());
+			if(paymentType ==null) {
+				dfault.setResponseCode("400");
+				dfault.setResponseMessage("Payment method with given id is not avialable, please choose valid payment type");
+				return new ResponseEntity<DefaultMessage<Bill>>(dfault,HttpStatus.BAD_REQUEST);
+			}
+			dbBillRequest.setPaymentType(billRequest.getType());
+			billHasServiceList = billRequest.getBillHasService();
+			for(BillHasService billHasService: billHasServiceList ) {
+			Optional<Salonservice> salonService = dbserviceFeignClient.getServiceInfo(billHasService.getServiceId());
 			
-		}
-		billResponse.setTotal(billing.calculateBill(serviceQuantityMap));
-		billResponse.setBillhasservices(billHasServiceList);
-		LOG.info("Total Service pay is"+billResponse.getTotal());
-		
-		
-		if(0 != billRequest.getCgstPer() && 0 != billRequest.getSgstPer())
-		{
-			LOG.info("GST calculation");
-			billResponse.setSgstVal(billResponse.getTotal()*billRequest.getSgstPer()/100);
-			billResponse.setSgstPer(billRequest.getSgstPer());
+				if(salonService.isPresent()) {
+					totalServicePay += salonService.get().getPrice()*billHasService.getQuant();
+					BillhasserviceRequest dbBillHasServiceRequest = new BillhasserviceRequest();
+					dbBillHasServiceRequest.setIdSalonService(billHasService.getServiceId());
+					dbBillHasServiceRequest.setQuantity(billHasService.getQuant());
+					dbBillHasServiceList.add(dbBillHasServiceRequest);
+				}else {
+					dfault.setResponseCode("404");
+					dfault.setResponseMessage("Salon service with given id is not avialable, please choose active service");
+					return new ResponseEntity<DefaultMessage<Bill>>(dfault,HttpStatus.NOT_FOUND);
+				}
+				
+			}
+			dbBillRequest.setTotal(totalServicePay);
+			dbBillRequest.setBillhasservices(dbBillHasServiceList);
 			
-			billResponse.setCsgtVal(billResponse.getTotal()*billRequest.getCgstPer()/100);
-			billResponse.setCgstPer(billRequest.getCgstPer());
-			
-			billResponse.setGrandTotal(billResponse.getTotal()+billResponse.getSgstVal() + billResponse.getCsgtVal()); 
-		}
-		if(0 != billRequest.getDescountPer()) {
-			LOG.info("DiscountCalculation "+totalBillAfterGST);
-			billResponse.setDiscountPer(billRequest.getDescountPer());
-			billResponse.setDiscountVal(billResponse.getTotal()*(billRequest.getDescountPer()/100));
-			billResponse.setGrandTotal(billResponse.getGrandTotal() - billResponse.getDiscountVal());
-		}
-
-		
-		// Save discount value directly.
-		if(billRequest.getDiscountVal() != 0) {
-			LOG.info("Saving Discount Value");
-			billResponse.setDiscountVal(billRequest.getDiscountVal());
-			billResponse.setGrandTotal(billResponse.getGrandTotal() - billResponse.getDiscountVal());
-		}
-		
-		if(0 != billResponse.getGrandTotal()) {
-			billResponse.setDate(utilObj.formateDate());
-			billResponse.setTime(LocalTime.now().toString());
-			billResponse.setBillNo(utilObj.generateBillNumber());
-			billResponse.setIdCustomerInfo(billRequest.getCustomerId());
-			billResponse.setIdPaymentType(billRequest.getType());
-			billResponse.setIdShopInfo(billRequest.getShopId());
-			billResponse.setIdStaffInfo(billRequest.getServiceStaffId());
-			
-		}
-		Bill bill = dbserviceFeignClient.saveBill(billResponse);
-		 if(null != bill) {
-			 dfault.setResponseCode("200");
-			 dfault.setResponseMessage("The bill generated successfully");
-			 dfault.setResponse(bill);
-			 ResponseEntity<DefaultMessage<Bill>> responseEntity = ResponseEntity.ok(dfault);
-			 return responseEntity;
+			LOG.info("Total Service pay is"+dbBillRequest.getTotal());
+			  
+			dbBillRequest = billService.setRequestToResponse(dbBillRequest, billRequest);
+			  
+			Bill bill = dbserviceFeignClient.saveBill(dbBillRequest);
 			 
-		 }else {
-			 dfault.setResponseCode("400");
-			 dfault.setResponseMessage("The bill not generated");
-			 dfault.setResponse(null);
-			 ResponseEntity<DefaultMessage<Bill>> responseEntity = ResponseEntity.ok(dfault);
-			 return responseEntity;	
-		 }
-		  
+			if(null != bill) {
+				 //BillHasService save
+				
+				 dfault.setResponseMessage("The bill saved successfully");
+				 dfault.setResponseCode("201");
+				 dfault.setResponse(bill);
+				 return new  ResponseEntity<DefaultMessage<Bill>>(dfault,HttpStatus.CREATED);
+				 
+			}else {
+				 dfault.setResponseMessage("The bill not saved");
+				 dfault.setResponseCode("400");
+				 dfault.setResponse(null);
+				 return new  ResponseEntity<DefaultMessage<Bill>>(HttpStatus.BAD_REQUEST);
+			}
 				  
 		}catch(Exception exception) {
-			dfault.setResponseCode("201");
 			dfault.setResponseMessage(exception.getLocalizedMessage());
-			
-			//return ResponseEntity.badRequest();
+			dfault.setResponseCode("403");
+			return new ResponseEntity<DefaultMessage<Bill>>(HttpStatus.FORBIDDEN);
 		}
-		ResponseEntity<DefaultMessage<Bill>> responseEntity = ResponseEntity.ok(dfault);
-		return responseEntity;
-	}
-	
-	
-	/*
-	 * 
-	 */
-	@RequestMapping(path="/fetch-salon-services", method=RequestMethod.GET)
-	public ResponseEntity<DefaultMessage<List<Salonservice>>> fetchAllSalonService(@RequestParam(value="shopId", required=true) int shopId){
-		List<Salonservice> listOfServices = dbserviceFeignClient.getSalonServices(shopId);
-		DefaultMessage<List<Salonservice>> defaultResponse = new DefaultMessage<>();
-		defaultResponse.setResponseCode("200");
-		defaultResponse.setResponseMessage("List of salon services.");
-		defaultResponse.setResponse(listOfServices);
-		if (null != listOfServices && listOfServices.size()>0) {
-			ResponseEntity<DefaultMessage<List<Salonservice>>> responseEntity = ResponseEntity.ok(defaultResponse);
-			return responseEntity;
-		}
-		return null;
+		
 	}
 	
 	
@@ -182,44 +153,38 @@ public class BillingController {
 		List<Bill> listofBills = dbserviceFeignClient.filterByDateRange(startDate, endDate,shopId);
 		if(listofBills.size()>=0 && listofBills != null) {
 			defaultResponse.setResponse(listofBills);
-	 		defaultResponse.setResponseCode("200");
+	 		defaultResponse.setResponseCode("302");
 	 		defaultResponse.setResponseMessage("PLease find the list of bills from given date range");
-	 		ResponseEntity<DefaultMessage<List<Bill>>> response = ResponseEntity.ok(defaultResponse);
-	 		return response;
+	 		return new ResponseEntity<DefaultMessage<List<Bill>>>(defaultResponse,HttpStatus.FOUND);
 	 		
 		}else {
 			defaultResponse.setResponse(listofBills);
-	 		defaultResponse.setResponseCode("200");
+	 		defaultResponse.setResponseCode("404");
 	 		defaultResponse.setResponseMessage("No bills are avilable for given date range");
-	 		ResponseEntity<DefaultMessage<List<Bill>>> response = ResponseEntity.ok(defaultResponse);
-			return response;
+	 		return new ResponseEntity<DefaultMessage<List<Bill>>>(defaultResponse,HttpStatus.NOT_FOUND);
 		}
  		
 
 	}
 	
-	
 	@RequestMapping(path="/fetch-bill/today",method=RequestMethod.GET)
-	public ResponseEntity<DefaultMessage<List<Bill>>> getBillsofToday(@RequestParam int shopId){
+	public ResponseEntity<DefaultMessage<List<Bill>>> getBillsOfCurrentDate(@RequestParam int shopId){
 		DefaultMessage<List<Bill>> defaultResponse = new DefaultMessage<List<Bill>>();
 		List<Bill> listofBills = dbserviceFeignClient.filterByDate(shopId);
 		if(listofBills.size()>=0 && listofBills != null) {
 			defaultResponse.setResponse(listofBills);
-	 		defaultResponse.setResponseCode("200");
+	 		defaultResponse.setResponseCode("302");
 	 		defaultResponse.setResponseMessage("PLease find the list of bills from given date range");
-	 		ResponseEntity<DefaultMessage<List<Bill>>> response = ResponseEntity.ok(defaultResponse);
-	 		return response;
+	 		return new ResponseEntity<DefaultMessage<List<Bill>>>(defaultResponse,HttpStatus.FOUND);
 		}else {
 			defaultResponse.setResponse(listofBills);
-	 		defaultResponse.setResponseCode("200");
+	 		defaultResponse.setResponseCode("204");
 	 		defaultResponse.setResponseMessage("No bills are avilable. Bill list is empty");
-	 		ResponseEntity<DefaultMessage<List<Bill>>> response = ResponseEntity.ok(defaultResponse);
-	 		return response;
+	 		return new ResponseEntity<DefaultMessage<List<Bill>>>(defaultResponse,HttpStatus.NO_CONTENT);
 		}
  		
 
 	}
-	
 	
 	@RequestMapping(value="/edit-bill/{id}",method=RequestMethod.PUT)
 	@ResponseBody
@@ -227,47 +192,31 @@ public class BillingController {
 		
 	}
 	
-	@RequestMapping(path="/fetch-payment-type",method=RequestMethod.GET)
-	public ResponseEntity<DefaultMessage<List<Paymenttype>>> fetchPaymentTypes() {
-		DefaultMessage<List<Paymenttype>> defaultResponse = new DefaultMessage<List<Paymenttype>>();
-		List<Paymenttype> paymentTypeList = dbserviceFeignClient.fetchAllPaymentType();
-		if(paymentTypeList.size()>=0 && paymentTypeList != null) {
-			defaultResponse.setResponse(paymentTypeList);
-	 		defaultResponse.setResponseCode("200");
-	 		defaultResponse.setResponseMessage("PLease find the list of all payment types");
-	 		ResponseEntity<DefaultMessage<List<Paymenttype>>> response = ResponseEntity.ok(defaultResponse);
-	 		return response;
-		}else {
-			defaultResponse.setResponse(paymentTypeList);
-	 		defaultResponse.setResponseCode("200");
-	 		defaultResponse.setResponseMessage("payment type list is empty");
-	 		ResponseEntity<DefaultMessage<List<Paymenttype>>> response = ResponseEntity.ok(defaultResponse);
-	 		return response;
-		}
- 		
 
-	}
 	
 	@RequestMapping(path="/fetch-bill/shop-id",method=RequestMethod.GET)
 	public ResponseEntity<DefaultMessage<List<Bill>>> fetchBillByShopId(@RequestParam int shopId){
 		DefaultMessage<List<Bill>> defaultResponse = new DefaultMessage<List<Bill>>();
+		Optional<Shopinfo> shopInfo = dbserviceFeignClient.findByShopId(shopId);
+		if(!shopInfo.isPresent()) {
+			defaultResponse.setResponseCode("404");
+			defaultResponse.setResponseMessage("Shop with given id is not present/registered, please enter valid shop id");
+			return new ResponseEntity<DefaultMessage<List<Bill>>>(defaultResponse,HttpStatus.BAD_REQUEST);
+		}
 		List<Bill> listofBills = dbserviceFeignClient.findBillByShopId(shopId);
 		if(listofBills.size()>=0 && listofBills != null) {
 			defaultResponse.setResponse(listofBills);
-	 		defaultResponse.setResponseCode("200");
-	 		defaultResponse.setResponseMessage("PLease find the list of bills from given date range");
-	 		ResponseEntity<DefaultMessage<List<Bill>>> response = ResponseEntity.ok(defaultResponse);
-	 		return response;
+	 		defaultResponse.setResponseCode("302");
+	 		defaultResponse.setResponseMessage("PLease find the list of bills from given date range with count"+listofBills.size());
+	 		return new ResponseEntity<DefaultMessage<List<Bill>>>(defaultResponse,HttpStatus.FOUND);
 		}else {
 			defaultResponse.setResponse(listofBills);
-	 		defaultResponse.setResponseCode("201");
+	 		defaultResponse.setResponseCode("204");
 	 		defaultResponse.setResponseMessage("No bills are avilable. Bill list is empty");
-	 		ResponseEntity<DefaultMessage<List<Bill>>> response = ResponseEntity.ok(defaultResponse);
-	 		return response;
+	 		return new ResponseEntity<DefaultMessage<List<Bill>>>(defaultResponse,HttpStatus.NOT_FOUND);
 		}
  		
 	}
-	
 	
 	@RequestMapping(path="/find-bill/bill-number",method=RequestMethod.GET)
 	public ResponseEntity<DefaultMessage<Bill>> fetchBillByBillNum(@RequestParam String billNum){
@@ -275,16 +224,55 @@ public class BillingController {
 		Optional<Bill> listofBill = dbserviceFeignClient.findByBillNum(billNum);
 		if(listofBill.isPresent()) {
 			defaultResponse.setResponse(listofBill.get());
-	 		defaultResponse.setResponseCode("200");
+	 		defaultResponse.setResponseCode("302");
 	 		defaultResponse.setResponseMessage("Bill is present with given bill Number:"+billNum);
-	 		ResponseEntity<DefaultMessage<Bill>> response = ResponseEntity.ok(defaultResponse);
-	 		return response;
+	 		return new ResponseEntity<DefaultMessage<Bill>>(defaultResponse,HttpStatus.FOUND);
 		}else {
 			defaultResponse.setResponse(listofBill.get());
-	 		defaultResponse.setResponseCode("200");
+	 		defaultResponse.setResponseCode("204");
 	 		defaultResponse.setResponseMessage("No bill is avilable. Bill list is empty");
-	 		ResponseEntity<DefaultMessage<Bill>> response = ResponseEntity.ok(defaultResponse);
-	 		return response;
+	 		return new ResponseEntity<DefaultMessage<Bill>>(defaultResponse,HttpStatus.NO_CONTENT);
+		}
+	}
+	
+	@RequestMapping(path="/find-bill/cust-id",method=RequestMethod.GET)
+	public ResponseEntity<DefaultMessage<List<Bill>>> fetchBillByCustId(@RequestParam int custId){
+		DefaultMessage<List<Bill>> defaultResponse = new DefaultMessage<List<Bill>>();
+		Optional<Customerinfo> customerInfo = dbserviceFeignClient.findByCustId(custId);
+		if(!customerInfo.isPresent()) {
+			defaultResponse.setResponseCode("404");
+			defaultResponse.setResponseMessage("Customer with given id is not registered, please register the customer");
+			return new ResponseEntity<DefaultMessage<List<Bill>>>(defaultResponse,HttpStatus.BAD_REQUEST);
+		}
+		List<Bill> listofBills = dbserviceFeignClient.fetchBillByCustId(custId);
+		if(listofBills.size()>=0 && listofBills != null) {
+			defaultResponse.setResponse(listofBills);
+	 		defaultResponse.setResponseCode("302");
+	 		defaultResponse.setResponseMessage("PLease find the list of bills with given customer id, count:" + listofBills.size());
+	 		return new ResponseEntity<DefaultMessage<List<Bill>>>(defaultResponse,HttpStatus.FOUND);
+		}else {
+			defaultResponse.setResponse(listofBills);
+	 		defaultResponse.setResponseCode("204");
+	 		defaultResponse.setResponseMessage("No bills are avilable. Bill list is empty");
+	 		return new ResponseEntity<DefaultMessage<List<Bill>>>(defaultResponse,HttpStatus.NOT_FOUND);
+		}
+ 		
+	}
+	
+	@RequestMapping(path="/find-bill/bill-id",method=RequestMethod.GET)
+	public ResponseEntity<DefaultMessage<Bill>> fetchBillById(@RequestParam int billId){
+		DefaultMessage<Bill> defaultResponse = new DefaultMessage<Bill>();
+		Optional<Bill> listofBill = dbserviceFeignClient.findByBillId(billId);
+		if(listofBill.isPresent()) {
+			defaultResponse.setResponse(listofBill.get());
+	 		defaultResponse.setResponseCode("302");
+	 		defaultResponse.setResponseMessage("Bill is present with given bill Number:"+billId);
+	 		return new ResponseEntity<DefaultMessage<Bill>>(defaultResponse,HttpStatus.FOUND);
+		}else {
+			defaultResponse.setResponse(listofBill.get());
+	 		defaultResponse.setResponseCode("204");
+	 		defaultResponse.setResponseMessage("No bill is avilable. Bill list is empty");
+	 		return new ResponseEntity<DefaultMessage<Bill>>(defaultResponse,HttpStatus.NO_CONTENT);
 		}
 	}
 	

@@ -21,12 +21,10 @@ import com.habbib.billing.feign.clients.DBServiceFeignClient;
  *
  */
 @Component
-public class DateAndTimeUtil {
+public class Utility {
 
-	@Autowired
-	private DBServiceFeignClient dbClient;
 	
-	public Date formateDate() {
+	public static Date formateDate() {
 		try {
 		Date date = new Date();
 		DateFormat df = new SimpleDateFormat("yyyy-dd-MM");
@@ -40,13 +38,5 @@ public class DateAndTimeUtil {
 		
 	}
 	
-	public void formateTime() {
-		
-	}
 	
-	public String generateBillNumber() {
-		int count = dbClient.findAllBills().size();
-		Date date = new Date();
-		return count+"_"+new SimpleDateFormat("yyddMM").format(date);
-	}
 }

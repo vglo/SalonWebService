@@ -23,7 +23,6 @@ public class Staffinfo  {
 
 	private Role roleBean;
 
-	private Shopinfo shopinfo;
 
 	public Staffinfo() {
 	}
@@ -94,12 +93,6 @@ public class Staffinfo  {
 		this.roleBean = roleBean;
 	}
 
-	public Shopinfo getShopinfo() {
-		return this.shopinfo;
-	}
-
-	public void setShopinfo(Shopinfo shopinfo) {
-		this.shopinfo = shopinfo;
-	}
+	
 
 }

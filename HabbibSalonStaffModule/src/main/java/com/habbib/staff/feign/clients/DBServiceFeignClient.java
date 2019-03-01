@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.habbib.staff.feign.client.fallback.DBServiceFallback;
 import com.habbib.staff.request.model.StaffinfoRequest;
+import com.habbib.staff.response.model.Role;
+import com.habbib.staff.response.model.Shopinfo;
 import com.habbib.staff.response.model.Staffinfo;
 
 
@@ -29,6 +31,18 @@ public interface DBServiceFeignClient {
 	
 	@RequestMapping(path="/dao/find-staff/{staffId}", method=RequestMethod.GET)
 	public Staffinfo findStaffByid(@PathVariable int staffId);
+	
+	@RequestMapping(path="/dao/find-staff/email",method=RequestMethod.GET)
+	public Staffinfo findStaffByEmail(@RequestParam String email,@RequestParam int shopId);
+	
+	@RequestMapping(path="/dao/find-staff/roles",method=RequestMethod.GET)
+	public List<Staffinfo> findStaffByRole(@RequestParam int roleId,@RequestParam int shopid);
+	
+	@RequestMapping(path="/dao/fetch/shopById/{shopId}",method=RequestMethod.GET)
+	public Optional<Shopinfo> findByShopId(@PathVariable() int shopId);
+	
+	@RequestMapping(path="/dao/find-role/{id}",method=RequestMethod.GET)
+	public Role findRoleByid(@PathVariable int id);
 }
 
 

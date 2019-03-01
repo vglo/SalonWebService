@@ -13,6 +13,7 @@ import com.habbib.customer.request.model.AppointmentRequest;
 import com.habbib.customer.request.model.CustomerRequest;
 import com.habbib.customer.response.model.Appointment;
 import com.habbib.customer.response.model.Customerinfo;
+import com.habbib.customer.response.model.Shopinfo;
 
 /**
  * @author yash
@@ -53,7 +54,7 @@ public class DBServiceFallback implements DBServiceFeignClient {
 	}
 
 	@Override
-	public List<Customerinfo> findByShopId(int shopId) {
+	public List<Customerinfo> findCustByShopId(int shopId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -86,6 +87,18 @@ public class DBServiceFallback implements DBServiceFeignClient {
 
 	@Override
 	public Optional<Customerinfo> validateCust(String mobileNum, int shopId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Optional<Customerinfo> findCustbyEmail(String email, int shopId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Optional<Shopinfo> findByShopId(int shopId) {
 		// TODO Auto-generated method stub
 		return null;
 	}

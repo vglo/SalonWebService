@@ -1,11 +1,9 @@
 package com.habbib.billing.model;
 
-import java.io.Serializable;
 import java.util.List;
 
 
-public class Role implements Serializable {
-	private static final long serialVersionUID = 1L;
+public class Role{
 
 	private int idRole;
 

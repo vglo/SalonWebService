@@ -18,11 +18,13 @@ import com.habbib.dao.JPArepository.StaffInfoRepository;
 import com.habbib.dao.entitiy.Appointment;
 import com.habbib.dao.entitiy.Bill;
 import com.habbib.dao.entitiy.Customerinfo;
+import com.habbib.dao.entitiy.Salonservice;
 import com.habbib.dao.entitiy.Shopinfo;
 import com.habbib.dao.entitiy.Staffinfo;
 import com.habbib.dao.model.AppointmentRequest;
 import com.habbib.dao.model.BillRequest;
 import com.habbib.dao.model.CustomerRequest;
+import com.habbib.dao.model.SalonserviceRequest;
 import com.habbib.dao.model.ShopinfoRequest;
 import com.habbib.dao.model.StaffinfoRequest;
 
@@ -58,10 +60,10 @@ public class DBService {
 		bill.setTotal(billRequest.getTotal());
 		bill.setDate(billRequest.getDate());
 		bill.setGrandTotal(billRequest.getGrandTotal());
-		bill.setShopinfo(daoShop.findById(billRequest.getIdShopInfo()).get());
-		bill.setCustomerinfo(daoCustomer.findById(billRequest.getIdCustomerInfo()).get());
-		bill.setStaffinfo(daoStaff.findById(billRequest.getIdStaffInfo()).get());
-		bill.setPaymenttype(daoPayment.findById(billRequest.getIdPaymentType()).get());
+		bill.setShopinfo(daoShop.getOne(billRequest.getShopId()));
+		bill.setCustomerinfo(daoCustomer.getOne(billRequest.getCustId()));
+		bill.setStaffinfo(daoStaff.getOne(billRequest.getServingStaff()));
+		bill.setPaymenttype(daoPayment.getOne(billRequest.getPaymentType()));
 		return bill;
 		
 	}
@@ -141,5 +143,13 @@ public class DBService {
 		staffInfo.setShopinfo(daoShop.getOne(staffInfoReq.getShopId()));
 		staffInfo.setRoleBean(daoRole.getOne(staffInfoReq.getRoleId()));
 		return staffInfo;
+	}
+
+	public Salonservice convertServiceModelToEntity(SalonserviceRequest salonServiceReq) {
+		Salonservice service = new Salonservice();
+		service.setName(salonServiceReq.getName());
+		service.setPrice(salonServiceReq.getPrice());
+		service.setShopinfo(daoShop.getOne(salonServiceReq.getShopId()));
+		return service;
 	}
 }

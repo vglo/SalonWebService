@@ -4,6 +4,7 @@ import java.io.Serializable;
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.Date;
 import java.util.List;
@@ -38,12 +39,13 @@ public class Staffinfo implements Serializable {
 	private List<Bill> bills;
 
 	//bi-directional many-to-one association to Role
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="role")
 	private Role roleBean;
 
 	//bi-directional many-to-one association to Shopinfo
-	@JsonIgnore
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@ManyToOne
 	@JoinColumn(name="shopId")
 	private Shopinfo shopinfo;

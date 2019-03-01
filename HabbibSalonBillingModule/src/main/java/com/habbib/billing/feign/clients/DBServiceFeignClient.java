@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +16,8 @@ import com.habbib.billing.model.Bill;
 import com.habbib.billing.model.Customerinfo;
 import com.habbib.billing.model.Paymenttype;
 import com.habbib.billing.model.Salonservice;
+import com.habbib.billing.model.Shopinfo;
+import com.habbib.billing.model.Staffinfo;
 
 
 @FeignClient(name="db-service", fallback = DBServiceFallback.class)
@@ -41,14 +42,8 @@ public interface DBServiceFeignClient {
 	@RequestMapping(path="/dao/fetch/billByBillNum/{bill-number}",method=RequestMethod.GET)
 	public Optional<Bill> findByBillNum(@PathVariable("bill-number") String billNumber);
 	
-	@RequestMapping(path="/dao/salon-service/{shopId}",method=RequestMethod.GET)
-	public List<Salonservice> getSalonServices(@PathVariable int shopId);
-	
 	@RequestMapping(path="/dao/get-service-info/{serviceId}",method=RequestMethod.GET)
 	public Optional<Salonservice> getServiceInfo(@PathVariable int serviceId);
-
-	@RequestMapping(path="/dao/find-by-shop-id/{shopId}", method=RequestMethod.GET)
-	public List<Customerinfo> findByShopId(@PathVariable int shopId);
 	
 	@RequestMapping(path="/dao/fetch/customerById/{id}",method=RequestMethod.GET)
 	public Optional<Customerinfo> findByCustId(@PathVariable("id") int customerId);
@@ -59,10 +54,20 @@ public interface DBServiceFeignClient {
 	@RequestMapping(path="/dao/filter-date",method=RequestMethod.GET)
 	public List<Bill> filterByDate(@RequestParam int shopId);
 	
-	@RequestMapping(path="/dao/fetch-payment-types",method=RequestMethod.GET)
-	public List<Paymenttype> fetchAllPaymentType();
 	
 	@RequestMapping(path="/dao/find-bill/shop-id")
 	public List<Bill> findBillByShopId(@RequestParam int shopId);
+	
+	@RequestMapping(path="/dao/fetch/shopById/{shopId}",method=RequestMethod.GET)
+	public Optional<Shopinfo> findByShopId(@PathVariable() int shopId);
+	
+	@RequestMapping(path="/dao/find-staff/{staffId}", method=RequestMethod.GET)
+	public Staffinfo findStaffByid(@PathVariable int staffId);
+	
+	@RequestMapping(path="/dao/fetch/payment-type/{id}",method=RequestMethod.GET)
+	public Paymenttype fetchByPaymentTypeID(@PathVariable int id);
+	
+	@RequestMapping(path="/dao/find-bill/cust-id",method=RequestMethod.GET)
+	public List<Bill> fetchBillByCustId(@RequestParam int custId);
 	
 }

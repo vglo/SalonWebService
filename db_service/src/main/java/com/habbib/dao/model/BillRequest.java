@@ -34,16 +34,15 @@ public class BillRequest  {
 
 	private double total;
 
-	private int idCustomerInfo;
+	private int custId;
 	
-	private int idShopInfo;
+	private int shopId;
 	
-	private int idStaffInfo;
+	private int servingStaff;
 
 	private List<BillhasserviceRequest> billhasservices;
 
-
-	private int idPaymentType;
+	private int paymentType;
 
 	public BillRequest() {
 	}
@@ -148,64 +147,79 @@ public class BillRequest  {
 		this.billhasservices = billhasservices;
 	}
 
-	/**
-	 * @return the idCustomerInfo
-	 */
-	public int getIdCustomerInfo() {
-		return idCustomerInfo;
-	}
+
 
 	/**
-	 * @param idCustomerInfo the idCustomerInfo to set
+	 * @return the custId
 	 */
-	public void setIdCustomerInfo(int idCustomerInfo) {
-		this.idCustomerInfo = idCustomerInfo;
+	public int getCustId() {
+		return custId;
 	}
 
-	/**
-	 * @return the idShopInfo
-	 */
-	public int getIdShopInfo() {
-		return idShopInfo;
-	}
+
 
 	/**
-	 * @param idShopInfo the idShopInfo to set
+	 * @param custId the custId to set
 	 */
-	public void setIdShopInfo(int idShopInfo) {
-		this.idShopInfo = idShopInfo;
+	public void setCustId(int custId) {
+		this.custId = custId;
 	}
 
-	/**
-	 * @return the idStaffInfo
-	 */
-	public int getIdStaffInfo() {
-		return idStaffInfo;
-	}
+
 
 	/**
-	 * @param idStaffInfo the idStaffInfo to set
+	 * @return the shopId
 	 */
-	public void setIdStaffInfo(int idStaffInfo) {
-		this.idStaffInfo = idStaffInfo;
+	public int getShopId() {
+		return shopId;
 	}
 
-	/**
-	 * @return the idPaymentType
-	 */
-	public int getIdPaymentType() {
-		return idPaymentType;
-	}
+
 
 	/**
-	 * @param idPaymentType the idPaymentType to set
+	 * @param shopId the shopId to set
 	 */
-	public void setIdPaymentType(int idPaymentType) {
-		this.idPaymentType = idPaymentType;
+	public void setShopId(int shopId) {
+		this.shopId = shopId;
 	}
+
+
+
+	/**
+	 * @return the servingStaff
+	 */
+	public int getServingStaff() {
+		return servingStaff;
+	}
+
+
+
+	/**
+	 * @param servingStaff the servingStaff to set
+	 */
+	public void setServingStaff(int servingStaff) {
+		this.servingStaff = servingStaff;
+	}
+
+
+
+	/**
+	 * @return the paymentType
+	 */
+	public int getPaymentType() {
+		return paymentType;
+	}
+
+
+
+	/**
+	 * @param paymentType the paymentType to set
+	 */
+	public void setPaymentType(int paymentType) {
+		this.paymentType = paymentType;
+	}
+
 
 	
-
-
-
+	
 }

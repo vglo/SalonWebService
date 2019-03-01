@@ -1,16 +1,21 @@
 package com.habbib.dao.entitiy;
 
 import java.io.Serializable;
-import javax.persistence.*;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import org.springframework.web.bind.annotation.ModelAttribute;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.util.Date;
 import java.util.List;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 
 /**
@@ -44,7 +49,7 @@ public class Customerinfo implements Serializable {
 	private List<Bill> bills;
 
 	//bi-directional many-to-one association to Shopinfo
-	@JsonIgnore
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@ManyToOne
 	@JoinColumn(name="shopId")
 	private Shopinfo shopinfo;

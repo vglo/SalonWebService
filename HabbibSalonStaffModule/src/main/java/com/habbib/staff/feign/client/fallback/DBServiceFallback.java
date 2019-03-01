@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 
 import com.habbib.staff.feign.clients.DBServiceFeignClient;
 import com.habbib.staff.request.model.StaffinfoRequest;
+import com.habbib.staff.response.model.Role;
+import com.habbib.staff.response.model.Shopinfo;
 import com.habbib.staff.response.model.Staffinfo;
 
 /**
@@ -41,6 +43,30 @@ public class DBServiceFallback implements DBServiceFeignClient {
 
 	@Override
 	public Staffinfo findStaffByid(int staffId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Staffinfo findStaffByEmail(String email, int shopId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Staffinfo> findStaffByRole(int roleId, int shopid) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Optional<Shopinfo> findByShopId(int shopId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Role findRoleByid(int id) {
 		// TODO Auto-generated method stub
 		return null;
 	}

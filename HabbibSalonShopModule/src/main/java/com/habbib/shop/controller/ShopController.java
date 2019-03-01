@@ -3,7 +3,10 @@ package com.habbib.shop.controller;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.ResponseEntity.BodyBuilder;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -15,9 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.habbib.shop.feign.client.DBServiceFeignClient;
 import com.habbib.shop.request.model.ShopinfoRequest;
-import com.habib.utility.DefaultMessage;
 import com.habbib.shop.response.model.Shopinfo;
 import com.habbib.shop.response.model.Shoptype;
+import com.habib.utility.DefaultMessage;
 
 import feign.RetryableException;
 
@@ -29,7 +32,7 @@ public class ShopController {
 	private DBServiceFeignClient dbService;
 	
 	@RequestMapping(path="/save-shop-details",method=RequestMethod.POST)
-	public ResponseEntity<DefaultMessage<Shopinfo>> saveFranchiesDetails(@ModelAttribute ShopinfoRequest shopInfo){
+	public ResponseEntity<DefaultMessage<Shopinfo>> saveFranchiesDetails(@Valid @ModelAttribute ShopinfoRequest shopInfo){
 		DefaultMessage<Shopinfo> defaultResponse = new DefaultMessage<Shopinfo>();
 		
 		if(shopInfo == null)
@@ -40,16 +43,14 @@ public class ShopController {
 		Shopinfo shop = dbService.saveShopDetails(shopInfo);
 		if(shop != null) {
 			defaultResponse.setResponse(shop);
-			defaultResponse.setResponseCode("200");
+			defaultResponse.setResponseCode("201");
 			defaultResponse.setResponseMessage("Shop details saved successfully");
-			ResponseEntity<DefaultMessage<Shopinfo>> response = ResponseEntity.ok(defaultResponse);
-			return response;
+			return new ResponseEntity<DefaultMessage<Shopinfo>>(defaultResponse,HttpStatus.CREATED);
 		}else {
 			defaultResponse.setResponse(shop);
-			defaultResponse.setResponseCode("200");
+			defaultResponse.setResponseCode("400");
 			defaultResponse.setResponseMessage("Shop details not saved");
-			ResponseEntity<DefaultMessage<Shopinfo>> response = ResponseEntity.ok(defaultResponse);
-			return response;
+			return new ResponseEntity<DefaultMessage<Shopinfo>>(defaultResponse,HttpStatus.BAD_REQUEST);
 		}
 		}catch(RetryableException exception) {
 			exception.getCause();
@@ -72,16 +73,14 @@ public class ShopController {
 		Optional<Shopinfo> shop = dbService.findByShopId(shopId);
 		if(shop.isPresent()) {
 			defaultResponse.setResponse(shop.get());
-			defaultResponse.setResponseCode("200");
-			defaultResponse.setResponseMessage("Shop details saved successfully");
-			ResponseEntity<DefaultMessage<Shopinfo>> response = ResponseEntity.ok(defaultResponse);
-			return response;
+			defaultResponse.setResponseCode("302");
+			defaultResponse.setResponseMessage("Shop details find");
+			return new ResponseEntity<DefaultMessage<Shopinfo>>(defaultResponse,HttpStatus.FOUND);
 		}else {
 			defaultResponse.setResponse(null);
 			defaultResponse.setResponseCode("200");
 			defaultResponse.setResponseMessage("Shop details not saved");
-			ResponseEntity<DefaultMessage<Shopinfo>> response = ResponseEntity.ok(defaultResponse);
-			return response;
+			return new ResponseEntity<DefaultMessage<Shopinfo>>(defaultResponse,HttpStatus.NOT_FOUND);
 		}
 	}
 	
@@ -99,16 +98,14 @@ public class ShopController {
 		List<Shoptype> shopTypes = dbService.findAllShopType();
 		if(shopTypes.size() != 0 && shopTypes != null) {
 			defaultResponse.setResponse(shopTypes);
-			defaultResponse.setResponseCode("200");
-			defaultResponse.setResponseMessage("Shop details saved successfully");
-			ResponseEntity<DefaultMessage<List<Shoptype>>> response = ResponseEntity.ok(defaultResponse);
-			return response;
+			defaultResponse.setResponseCode("302");
+			defaultResponse.setResponseMessage("Please find the list of all shop types");
+			return new ResponseEntity<DefaultMessage<List<Shoptype>>>(defaultResponse,HttpStatus.FOUND);
 		}else {
 			defaultResponse.setResponse(null);
-			defaultResponse.setResponseCode("200");
-			defaultResponse.setResponseMessage("Shop details not saved");
-			ResponseEntity<DefaultMessage<List<Shoptype>>> response = ResponseEntity.ok(defaultResponse);
-			return response;
+			defaultResponse.setResponseCode("404");
+			defaultResponse.setResponseMessage("Currently there are no shop types present, list is empty");
+			return new ResponseEntity<DefaultMessage<List<Shoptype>>>(defaultResponse,HttpStatus.NOT_FOUND);
 		}
 	}
 	
@@ -118,16 +115,14 @@ public class ShopController {
 		List<Shopinfo> shopList = dbService.fetchShopByParentId(parentShopId);
 		if(shopList.size() != 0 && shopList != null) {
 			defaultResponse.setResponse(shopList);
-			defaultResponse.setResponseCode("200");
-			defaultResponse.setResponseMessage("Shop details saved successfully");
-			ResponseEntity<DefaultMessage<List<Shopinfo>>> response = ResponseEntity.ok(defaultResponse);
-			return response;
+			defaultResponse.setResponseCode("302");
+			defaultResponse.setResponseMessage("Shop details ");
+			return new ResponseEntity<DefaultMessage<List<Shopinfo>>>(defaultResponse,HttpStatus.FOUND);
 		}else {
 			defaultResponse.setResponse(null);
-			defaultResponse.setResponseCode("200");
-			defaultResponse.setResponseMessage("Shop details not saved");
-			ResponseEntity<DefaultMessage<List<Shopinfo>>> response = ResponseEntity.ok(defaultResponse);
-			return response;
+			defaultResponse.setResponseCode("404");
+			defaultResponse.setResponseMessage("Shop details not found");
+			return new ResponseEntity<DefaultMessage<List<Shopinfo>>>(defaultResponse,HttpStatus.NOT_FOUND);
 		}
 	}
 	

@@ -2,6 +2,9 @@ package com.habbib.dao.entitiy;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.List;
 
 
@@ -24,6 +27,7 @@ public class Paymenttype implements Serializable {
 	private String type;
 
 	//bi-directional many-to-one association to Bill
+	@JsonIgnore
 	@OneToMany(mappedBy="paymenttype")
 	private List<Bill> bills;
 

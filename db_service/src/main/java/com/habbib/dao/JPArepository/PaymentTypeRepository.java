@@ -1,6 +1,7 @@
 package com.habbib.dao.JPArepository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -12,6 +13,6 @@ public interface PaymentTypeRepository extends JpaRepository<Paymenttype, Intege
 
 	public List<Paymenttype> findByshopId(int shopId);
 	
-	public List<Paymenttype> findByType(String type);
+	public Optional<Paymenttype> findByType(String type);
 
 }

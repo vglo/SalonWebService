@@ -4,6 +4,7 @@ import java.io.Serializable;
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 
 /**
@@ -27,7 +28,8 @@ public class Billhasservice implements Serializable {
 	private Bill bill;
 
 	//bi-directional many-to-one association to Salonservice
-	@ManyToOne(fetch=FetchType.EAGER)
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+	@ManyToOne()
 	@JoinColumn(name="idSalonService")
 	private Salonservice salonservice;
 

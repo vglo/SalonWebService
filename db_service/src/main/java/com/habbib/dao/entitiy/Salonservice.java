@@ -4,6 +4,7 @@ import java.io.Serializable;
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class Salonservice implements Serializable {
 	private List<Billhasservice> billhasservices;
 
 	//bi-directional many-to-one association to Shopinfo
-	@JsonIgnore
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@ManyToOne
 	@JoinColumn(name="shopId")
 	private Shopinfo shopinfo;

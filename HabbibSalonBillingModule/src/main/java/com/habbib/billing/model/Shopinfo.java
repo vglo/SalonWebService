@@ -1,9 +1,12 @@
 package com.habbib.billing.model;
 
-import java.io.Serializable;
 import java.util.List;
 
 
+/**
+ * The persistent class for the shopinfo database table.
+ * 
+ */
 public class Shopinfo  {
 
 	private int idShopInfo;
@@ -18,19 +21,7 @@ public class Shopinfo  {
 
 	private List<Bill> bills;
 
-	private List<Salonservice> salonservices;
-
-	private List<Moduleinfo> moduleinfos;
-
-	private Shopinfo shopinfo;
-
-	private List<Shopinfo> shopinfos;
-
 	private Shoptype shoptype;
-
-	private List<Campaign> campaigns;
-
-	private List<Staffinfo> staffinfos;
 
 	public Shopinfo() {
 	}
@@ -84,67 +75,7 @@ public class Shopinfo  {
 	}
 
 	
-
-	public List<Salonservice> getSalonservices() {
-		return this.salonservices;
-	}
-
-	public void setSalonservices(List<Salonservice> salonservices) {
-		this.salonservices = salonservices;
-	}
-
-	public Salonservice addSalonservice(Salonservice salonservice) {
-		getSalonservices().add(salonservice);
-		salonservice.setShopinfo(this);
-
-		return salonservice;
-	}
-
-	public Salonservice removeSalonservice(Salonservice salonservice) {
-		getSalonservices().remove(salonservice);
-		salonservice.setShopinfo(null);
-
-		return salonservice;
-	}
-
-	public List<Moduleinfo> getModuleinfos() {
-		return this.moduleinfos;
-	}
-
-	public void setModuleinfos(List<Moduleinfo> moduleinfos) {
-		this.moduleinfos = moduleinfos;
-	}
-
-	public Shopinfo getShopinfo() {
-		return this.shopinfo;
-	}
-
-	public void setShopinfo(Shopinfo shopinfo) {
-		this.shopinfo = shopinfo;
-	}
-
-	public List<Shopinfo> getShopinfos() {
-		return this.shopinfos;
-	}
-
-	public void setShopinfos(List<Shopinfo> shopinfos) {
-		this.shopinfos = shopinfos;
-	}
-
-	public Shopinfo addShopinfo(Shopinfo shopinfo) {
-		getShopinfos().add(shopinfo);
-		shopinfo.setShopinfo(this);
-
-		return shopinfo;
-	}
-
-	public Shopinfo removeShopinfo(Shopinfo shopinfo) {
-		getShopinfos().remove(shopinfo);
-		shopinfo.setShopinfo(null);
-
-		return shopinfo;
-	}
-
+	
 	public Shoptype getShoptype() {
 		return this.shoptype;
 	}
@@ -153,48 +84,5 @@ public class Shopinfo  {
 		this.shoptype = shoptype;
 	}
 
-	public List<Campaign> getCampaigns() {
-		return this.campaigns;
-	}
-
-	public void setCampaigns(List<Campaign> campaigns) {
-		this.campaigns = campaigns;
-	}
-
-	public Campaign addCampaign(Campaign campaign) {
-		getCampaigns().add(campaign);
-		campaign.setShopinfo(this);
-
-		return campaign;
-	}
-
-	public Campaign removeCampaign(Campaign campaign) {
-		getCampaigns().remove(campaign);
-		campaign.setShopinfo(null);
-
-		return campaign;
-	}
-
-	public List<Staffinfo> getStaffinfos() {
-		return this.staffinfos;
-	}
-
-	public void setStaffinfos(List<Staffinfo> staffinfos) {
-		this.staffinfos = staffinfos;
-	}
-
-	public Staffinfo addStaffinfo(Staffinfo staffinfo) {
-		getStaffinfos().add(staffinfo);
-		staffinfo.setShopinfo(this);
-
-		return staffinfo;
-	}
-
-	public Staffinfo removeStaffinfo(Staffinfo staffinfo) {
-		getStaffinfos().remove(staffinfo);
-		staffinfo.setShopinfo(null);
-
-		return staffinfo;
-	}
-
+	
 }

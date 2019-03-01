@@ -9,9 +9,12 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
 @SpringBootApplication
 @EnableEurekaServer
 @EnableZuulProxy
+@EnableSwagger2
 public class EurekaServerApplication {
 
 	public static void main(String[] args) {
@@ -32,7 +35,7 @@ public class EurekaServerApplication {
 	    config.addAllowedMethod("POST");
 	    config.addAllowedMethod("DELETE");
 	    if(config.getAllowedOrigins() != null)
-	    source.registerCorsConfiguration("/**", config);
+	    source.registerCorsConfiguration("**", config);
 	    return new CorsFilter(source);
 	}
 

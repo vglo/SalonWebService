@@ -1,20 +1,12 @@
 package com.habbib.billing.model;
 
-import java.io.Serializable;
-import java.util.List;
-
-public class Salonservice implements Serializable {
-	private static final long serialVersionUID = 1L;
+public class Salonservice{
 
 	private int idSalonService;
 
 	private String name;
 
 	private double price;
-
-	private List<Billhasservice> billhasservices;
-
-	private Shopinfo shopinfo;
 
 	public Salonservice() {
 	}
@@ -43,21 +35,6 @@ public class Salonservice implements Serializable {
 		this.price = price;
 	}
 
-	public List<Billhasservice> getBillhasservices() {
-		return this.billhasservices;
-	}
-
-	public void setBillhasservices(List<Billhasservice> billhasservices) {
-		this.billhasservices = billhasservices;
-	}
-
 	
-	public Shopinfo getShopinfo() {
-		return this.shopinfo;
-	}
-
-	public void setShopinfo(Shopinfo shopinfo) {
-		this.shopinfo = shopinfo;
-	}
 
 }

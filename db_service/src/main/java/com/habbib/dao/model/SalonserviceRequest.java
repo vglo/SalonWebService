@@ -6,25 +6,16 @@ package com.habbib.dao.model;
  */
 public class SalonserviceRequest {
 
-	private int idSalonService;
 
 	private String name;
 
 	private double price;
-
 
 	private int shopId;
 
 	public SalonserviceRequest() {
 	}
 
-	public int getIdSalonService() {
-		return this.idSalonService;
-	}
-
-	public void setIdSalonService(int idSalonService) {
-		this.idSalonService = idSalonService;
-	}
 
 	public String getName() {
 		return this.name;

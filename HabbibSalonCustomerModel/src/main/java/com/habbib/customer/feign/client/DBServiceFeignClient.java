@@ -15,6 +15,7 @@ import com.habbib.customer.request.model.AppointmentRequest;
 import com.habbib.customer.request.model.CustomerRequest;
 import com.habbib.customer.response.model.Appointment;
 import com.habbib.customer.response.model.Customerinfo;
+import com.habbib.customer.response.model.Shopinfo;
 
 
 @FeignClient(name="db-service", fallback = DBServiceFallback.class)
@@ -37,7 +38,7 @@ public interface DBServiceFeignClient {
 	public Customerinfo uddateCustomer(@RequestBody Customerinfo customer);
 	
 	@RequestMapping(path="/dao/find-by-shop-id/{shopId}", method=RequestMethod.GET)
-	public List<Customerinfo> findByShopId(@PathVariable int shopId);
+	public List<Customerinfo> findCustByShopId(@PathVariable int shopId);
 	
 	@RequestMapping(path="/dao/find-by-mobile",method=RequestMethod.GET)
 	public Optional<Customerinfo> validateCust(@RequestParam String mobileNum,@RequestParam int shopId);
@@ -53,6 +54,12 @@ public interface DBServiceFeignClient {
 	
 	@RequestMapping(path="/dao/fetch-all",method=RequestMethod.GET)
 	public List<Appointment> fetchAllAppoitment();
+	
+	@RequestMapping(path="/dao/find-cust/email",method=RequestMethod.GET)
+	public Optional<Customerinfo> findCustbyEmail(@RequestParam String email,@RequestParam int shopId);
+	
+	@RequestMapping(path="/dao/fetch/shopById/{shopId}",method=RequestMethod.GET)
+	public Optional<Shopinfo> findByShopId(@PathVariable() int shopId);
 	
 	
 }

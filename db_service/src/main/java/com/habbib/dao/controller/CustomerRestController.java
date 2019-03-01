@@ -69,6 +69,8 @@ public class CustomerRestController {
 		return customerList;
 	}
 	
+	
+	
 	@RequestMapping(path="/find-by-mobile",method=RequestMethod.GET)
 	public Optional<Customerinfo> validateCust(@RequestParam String mobileNum,@RequestParam int shopId){
 		if(shopId == 0 || mobileNum == null)
@@ -76,6 +78,18 @@ public class CustomerRestController {
 		Shopinfo shop = shopInfo.getOne(shopId);
 		if(shop != null) {
 			Optional<Customerinfo> custList = customerInfo.findByMobileAndShopinfo(mobileNum,shop);
+			return custList;
+		}
+		return null;
+		
+	}
+	
+
+	@RequestMapping(path="/find-cust/email",method=RequestMethod.GET)
+	public Optional<Customerinfo> findCustbyEmail(@RequestParam String email,@RequestParam int shopId){
+		Shopinfo shop = shopInfo.getOne(shopId);
+		if(shop != null) {
+			Optional<Customerinfo> custList = customerInfo.findByEmailAndShopinfo(email, shop);
 			return custList;
 		}
 		return null;

@@ -15,6 +15,8 @@ import com.habbib.billing.model.Bill;
 import com.habbib.billing.model.Customerinfo;
 import com.habbib.billing.model.Paymenttype;
 import com.habbib.billing.model.Salonservice;
+import com.habbib.billing.model.Shopinfo;
+import com.habbib.billing.model.Staffinfo;
 
 /**
  * @author yash
@@ -73,14 +75,7 @@ public class DBServiceFallback implements DBServiceFeignClient {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.habbib.billing.feign.clients.DBServiceFeignClient#getSalonServices(int)
-	 */
-	@Override
-	public List<Salonservice> getSalonServices(int shopId) {
-		List<Salonservice> salon = new ArrayList<Salonservice>();
-		return salon;
-	}
+	
 
 	/* (non-Javadoc)
 	 * @see com.habbib.billing.feign.clients.DBServiceFeignClient#getServiceInfo(int)
@@ -90,15 +85,7 @@ public class DBServiceFallback implements DBServiceFeignClient {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.habbib.billing.feign.clients.DBServiceFeignClient#findByShopId(int)
-	 */
-	@Override
-	public List<Customerinfo> findByShopId(int shopId) {
-		List<Customerinfo> customerList = new ArrayList<Customerinfo>();
-		// TODO Auto-generated method stub
-		return customerList;
-	}
+
 
 	/* (non-Javadoc)
 	 * @see com.habbib.billing.feign.clients.DBServiceFeignClient#findByCustId(int)
@@ -110,15 +97,6 @@ public class DBServiceFallback implements DBServiceFeignClient {
 	}
 
 
-
-	/* (non-Javadoc)
-	 * @see com.habbib.billing.feign.clients.DBServiceFeignClient#fetchAllPaymentType()
-	 */
-	@Override
-	public List<Paymenttype> fetchAllPaymentType() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	/* (non-Javadoc)
 	 * @see com.habbib.billing.feign.clients.DBServiceFeignClient#findBillByShopId(int)
@@ -143,6 +121,42 @@ public class DBServiceFallback implements DBServiceFeignClient {
 	 */
 	@Override
 	public List<Bill> filterByDate(int shopId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.habbib.billing.feign.clients.DBServiceFeignClient#findByShopId(int)
+	 */
+	@Override
+	public Optional<Shopinfo> findByShopId(int shopId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.habbib.billing.feign.clients.DBServiceFeignClient#findStaffByid(int)
+	 */
+	@Override
+	public Staffinfo findStaffByid(int staffId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.habbib.billing.feign.clients.DBServiceFeignClient#fetchByPaymentTypeID(int)
+	 */
+	@Override
+	public Paymenttype fetchByPaymentTypeID(int id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.habbib.billing.feign.clients.DBServiceFeignClient#fetchBillByCustId(int)
+	 */
+	@Override
+	public List<Bill> fetchBillByCustId(int custId) {
 		// TODO Auto-generated method stub
 		return null;
 	}

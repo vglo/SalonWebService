@@ -1,10 +1,5 @@
 package com.habbib.billing.model;
 
-import java.io.Serializable;
-import javax.persistence.*;
-import java.util.List;
-
-
 /**
  * The persistent class for the paymenttype database table.
  * 
@@ -19,7 +14,6 @@ public class Paymenttype{
 
 	private String type;
 
-	private List<Bill> bills;
 
 	public Paymenttype() {
 	}
@@ -56,13 +50,7 @@ public class Paymenttype{
 		this.type = type;
 	}
 
-	public List<Bill> getBills() {
-		return this.bills;
-	}
-
-	public void setBills(List<Bill> bills) {
-		this.bills = bills;
-	}
+	
 
 	
 }

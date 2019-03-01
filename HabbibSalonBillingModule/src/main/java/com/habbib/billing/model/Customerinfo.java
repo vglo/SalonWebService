@@ -1,11 +1,9 @@
 package com.habbib.billing.model;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class Customerinfo implements Serializable {
-	private static final long serialVersionUID = 1L;
+public class Customerinfo {
 
 	private int idCustomerInfo;
 

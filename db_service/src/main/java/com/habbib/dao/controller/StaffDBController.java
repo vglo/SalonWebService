@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.habbib.dao.JPArepository.RoleRepository;
 import com.habbib.dao.JPArepository.ShopInfoRepository;
 import com.habbib.dao.JPArepository.StaffInfoRepository;
+import com.habbib.dao.entitiy.Role;
 import com.habbib.dao.entitiy.Shopinfo;
 import com.habbib.dao.entitiy.Staffinfo;
 import com.habbib.dao.model.StaffinfoRequest;
@@ -34,6 +36,9 @@ public class StaffDBController {
 	
 	@Autowired
 	private StaffInfoRepository staffInfo;
+	
+	@Autowired
+	private RoleRepository roleInfo;
 	
 	@Autowired
 	private DBService dbService;
@@ -76,8 +81,28 @@ public class StaffDBController {
 	@RequestMapping(path="/find-staff/{staffId}", method=RequestMethod.GET)
 	public Staffinfo findStaffByid(@PathVariable int staffId){
 		Optional<Staffinfo> staffinfo = staffInfo.findById(staffId);
-		if(staffinfo == null)
-			throw new NullPointerException();
-		return staffinfo.get();
+		if(staffinfo.isPresent())
+			return staffinfo.get();
+		return null;
+	}
+	
+	@RequestMapping(path="/find-staff/email",method=RequestMethod.GET)
+	public Staffinfo findStaffByEmail(@RequestParam String email,@RequestParam int shopId) {
+		Shopinfo shop = shopInfo.getOne(shopId);
+		Optional<Staffinfo> staffinfo = staffInfo.findByEmailAndShopinfo(email, shop);
+		if(staffinfo.isPresent())
+			return staffinfo.get();
+		return null;
+	}
+	
+	@RequestMapping(path="/find-staff/roles",method=RequestMethod.GET)
+	public List<Staffinfo> findStaffByRole(@RequestParam int roleId,@RequestParam int shopid){
+		Shopinfo shop = shopInfo.getOne(shopid);
+		Role role = roleInfo.getOne(roleId);
+		List<Staffinfo> staffList = staffInfo.findByRoleBeanAndShopinfo(role, shop);
+		if(staffList != null)
+			return staffList;
+		return null;
+		
 	}
 }

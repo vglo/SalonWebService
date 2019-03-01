@@ -7,8 +7,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,10 +19,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.habbib.dao.JPArepository.BillHasServiceRepository;
 import com.habbib.dao.JPArepository.BillRepository;
+import com.habbib.dao.JPArepository.CustomerInfoRepository;
 import com.habbib.dao.JPArepository.SalonServiceRepository;
 import com.habbib.dao.JPArepository.ShopInfoRepository;
 import com.habbib.dao.entitiy.Bill;
 import com.habbib.dao.entitiy.Billhasservice;
+import com.habbib.dao.entitiy.Customerinfo;
 import com.habbib.dao.entitiy.Shopinfo;
 import com.habbib.dao.model.BillRequest;
 import com.habbib.dao.model.BillhasserviceRequest;
@@ -47,17 +50,25 @@ public class BillRestController {
 	private ShopInfoRepository shopinfoRepo;
 	
 	
+	@Autowired
+	private CustomerInfoRepository custRepo;
+	
+	@Transactional
 	@RequestMapping(value="/save-bill", method=RequestMethod.POST)
 	public Bill saveBill(@RequestBody BillRequest billModel) {
 		Bill bill = dbService.convertModelToEntity(billModel);
-		Bill newbill = billRepository.save(bill);
-		for(BillhasserviceRequest billHasServiceRequest : billModel.getBillhasservices()) {
-			Billhasservice billServiceEntity = new Billhasservice();
-			billServiceEntity.setQuantity(billHasServiceRequest.getQuantity());
-			billServiceEntity.setBill(newbill);
-			billServiceEntity.setSalonservice(salonService.findById(billHasServiceRequest.getIdSalonService()).get());
-			billHasService.save(billServiceEntity);
+		List<Billhasservice> billHasServiceList = new ArrayList<Billhasservice>();
+	
+		for(BillhasserviceRequest billHasRequst : billModel.getBillhasservices()) {
+			Billhasservice billHasService = new Billhasservice();
+			billHasService.setBill(bill);
+			billHasService.setQuantity(billHasRequst.getQuantity());
+			billHasService.setSalonservice(salonService.getOne(billHasRequst.getIdSalonService()));
+			billHasServiceList.add(billHasService);
 		}
+		bill.setBillhasservices(billHasServiceList);
+		Bill newbill = billRepository.save(bill);
+		
 		return newbill;
 	}
 	
@@ -131,10 +142,17 @@ public class BillRestController {
 		return bill;
 	}
 	
-	@RequestMapping(path="find-bill/shop-id",method=RequestMethod.GET)
+	@RequestMapping(path="/find-bill/shop-id",method=RequestMethod.GET)
 	public List<Bill> findBillByShopId(@RequestParam int shopId){
 		Shopinfo shop = shopinfoRepo.getOne(shopId);
 		List<Bill> billList = billRepository.findByShopinfo(shop);
+		return billList;
+	}
+	
+	@RequestMapping(path="/find-bill/cust-id",method=RequestMethod.GET)
+	public List<Bill> fetchBillByCustId(@RequestParam int custId){
+		Customerinfo custinfo = custRepo.getOne(custId);
+		List<Bill> billList = billRepository.findByCustomerinfo(custinfo);
 		return billList;
 	}
 }
