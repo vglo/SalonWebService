@@ -153,9 +153,9 @@ public class BillingController {
 		List<Bill> listofBills = dbserviceFeignClient.filterByDateRange(startDate, endDate,shopId);
 		if(listofBills.size()>=0 && listofBills != null) {
 			defaultResponse.setResponse(listofBills);
-	 		defaultResponse.setResponseCode("302");
+	 		defaultResponse.setResponseCode("200");
 	 		defaultResponse.setResponseMessage("PLease find the list of bills from given date range");
-	 		return new ResponseEntity<DefaultMessage<List<Bill>>>(defaultResponse,HttpStatus.FOUND);
+	 		return new ResponseEntity<DefaultMessage<List<Bill>>>(defaultResponse,HttpStatus.OK);
 	 		
 		}else {
 			defaultResponse.setResponse(listofBills);
