@@ -65,10 +65,10 @@ public class CustomerController {
 			customer.setDob(util.convertDateFormate(customer.getDob()));
 			//saving customer
 			Customerinfo newCust = dbFeignClient.saveCustomer(customer);
-			defualt.setResponseCode("201");
+			defualt.setResponseCode("200");
 			defualt.setResponseMessage("Customer registered successfuly");
 			defualt.setResponse(newCust);
-			return new ResponseEntity<DefaultMessage<Customerinfo>>(defualt,HttpStatus.CREATED);
+			return new ResponseEntity<DefaultMessage<Customerinfo>>(defualt,HttpStatus.OK);
 		}
 	}
 
@@ -129,9 +129,9 @@ public class CustomerController {
 		Optional<Customerinfo> customerList = dbFeignClient.findByCustId(custId);
 		if(customerList.isPresent()) {
 			defaultResponse.setResponse(customerList.get());
-			defaultResponse.setResponseCode("302");
+			defaultResponse.setResponseCode("200");
 			defaultResponse.setResponseMessage("Please find the customer");
-			return new ResponseEntity<DefaultMessage<Customerinfo>>(defaultResponse,HttpStatus.FOUND);
+			return new ResponseEntity<DefaultMessage<Customerinfo>>(defaultResponse,HttpStatus.OK);
 		}else {
 			defaultResponse.setResponse(customerList.get());
 			defaultResponse.setResponseCode("204");
@@ -147,9 +147,9 @@ public class CustomerController {
 		Appointment appoitment = dbFeignClient.saveAppointment(appoitmentRequest);
 		if(null != appoitment) {
 			defaultResponse.setResponse(appoitment);
-			defaultResponse.setResponseCode("201");
+			defaultResponse.setResponseCode("200");
 			defaultResponse.setResponseMessage("Appoitment saved successfully");
-			return new ResponseEntity<DefaultMessage<Appointment>>(defaultResponse,HttpStatus.CREATED);
+			return new ResponseEntity<DefaultMessage<Appointment>>(defaultResponse,HttpStatus.OK);
 		}else {
 			defaultResponse.setResponse(appoitment);
 			defaultResponse.setResponseCode("400");
@@ -166,9 +166,9 @@ public class CustomerController {
 		Optional<Customerinfo> customerList = dbFeignClient.validateCust(mobileNum, shopId);
 		if(customerList.isPresent()) {
 			defaultResponse.setResponse(customerList.get());
-			defaultResponse.setResponseCode("302");
+			defaultResponse.setResponseCode("200");
 			defaultResponse.setResponseMessage("Please find the customer");
-			return new ResponseEntity<DefaultMessage<Customerinfo>>(defaultResponse,HttpStatus.FOUND);
+			return new ResponseEntity<DefaultMessage<Customerinfo>>(defaultResponse,HttpStatus.OK);
 		}else {
 			defaultResponse.setResponse(null);
 			defaultResponse.setResponseCode("204");
@@ -186,9 +186,9 @@ public class CustomerController {
 		Optional<Customerinfo> customerList = dbFeignClient.findCustbyEmail(emailId, shopId);
 		if(customerList.isPresent()) {
 			defaultResponse.setResponse(customerList.get());
-			defaultResponse.setResponseCode("302");
+			defaultResponse.setResponseCode("200");
 			defaultResponse.setResponseMessage("Please find the customer");
-			return new ResponseEntity<DefaultMessage<Customerinfo>>(defaultResponse,HttpStatus.FOUND);
+			return new ResponseEntity<DefaultMessage<Customerinfo>>(defaultResponse,HttpStatus.OK);
 		}else {
 			defaultResponse.setResponse(null);
 			defaultResponse.setResponseCode("404");

@@ -40,7 +40,7 @@ public class PaymentController {
 			defaultResponse.setResponse(paymentTypeList);
 	 		defaultResponse.setResponseCode("302");
 	 		defaultResponse.setResponseMessage("PLease find the list of all payment types");
-	 		return new ResponseEntity<DefaultMessage<List<Paymenttype>>>(defaultResponse,HttpStatus.FOUND);
+	 		return new ResponseEntity<DefaultMessage<List<Paymenttype>>>(defaultResponse,HttpStatus.OK);
 		}else {
 			defaultResponse.setResponse(paymentTypeList);
 	 		defaultResponse.setResponseCode("204");
@@ -89,7 +89,7 @@ public class PaymentController {
 			defaultResponse.setResponse(newpaymentType);
 	 		defaultResponse.setResponseCode("302");
 	 		defaultResponse.setResponseMessage("PLease find the list of  payment type");
-	 		return new ResponseEntity<DefaultMessage<Paymenttype>>(defaultResponse,HttpStatus.FOUND);
+	 		return new ResponseEntity<DefaultMessage<Paymenttype>>(defaultResponse,HttpStatus.OK);
 		}else {
 			defaultResponse.setResponse(newpaymentType);
 	 		defaultResponse.setResponseCode("404");
@@ -106,7 +106,7 @@ public class PaymentController {
 			defaultResponse.setResponse(paymentTypeList);
 	 		defaultResponse.setResponseCode("302");
 	 		defaultResponse.setResponseMessage("PLease find the list of all payment types");
-	 		return new ResponseEntity<DefaultMessage<List<Paymenttype>>>(defaultResponse,HttpStatus.FOUND);
+	 		return new ResponseEntity<DefaultMessage<List<Paymenttype>>>(defaultResponse,HttpStatus.OK);
 		}else {
 			defaultResponse.setResponse(paymentTypeList);
 	 		defaultResponse.setResponseCode("404");

@@ -61,7 +61,7 @@ public class StaffController {
 			defualt.setResponseCode("302");
 			defualt.setResponseMessage("staff already present with id:"+staffCheck.get().getIdStaffInfo());
 			defualt.setResponse(null);
-			return new ResponseEntity<DefaultMessage<Staffinfo>>(defualt,HttpStatus.FOUND);
+			return new ResponseEntity<DefaultMessage<Staffinfo>>(defualt,HttpStatus.OK);
 		}else {
 			//to convert date into specific date formate 
 			staffInfoReq.setDob(util.convertDateFormate(staffInfoReq.getDob()));
@@ -87,7 +87,7 @@ public class StaffController {
 			defaultResponse.setResponse(staffList);
 			defaultResponse.setResponseCode("302");
 			defaultResponse.setResponseMessage("Please find the staff list with given shop id");
-			return new ResponseEntity<DefaultMessage<List<Staffinfo>>>(defaultResponse,HttpStatus.FOUND);
+			return new ResponseEntity<DefaultMessage<List<Staffinfo>>>(defaultResponse,HttpStatus.OK);
 		}else {
 			defaultResponse.setResponse(staffList);
 			defaultResponse.setResponseCode("404");
@@ -107,7 +107,7 @@ public class StaffController {
 			defaultResponse.setResponse(staff);
 			defaultResponse.setResponseCode("302");
 			defaultResponse.setResponseMessage("Please find the staff list with given shop id");
-			return new ResponseEntity<DefaultMessage<Staffinfo>>(defaultResponse,HttpStatus.FOUND);
+			return new ResponseEntity<DefaultMessage<Staffinfo>>(defaultResponse,HttpStatus.OK);
 		}else {
 			defaultResponse.setResponse(staff);
 			defaultResponse.setResponseCode("404");
@@ -127,7 +127,7 @@ public class StaffController {
 			defaultResponse.setResponse(staffList);
 			defaultResponse.setResponseCode("302");
 			defaultResponse.setResponseMessage("Please find the staff list with given shop id");
-			return new ResponseEntity<DefaultMessage<List<Staffinfo>>>(defaultResponse,HttpStatus.FOUND);
+			return new ResponseEntity<DefaultMessage<List<Staffinfo>>>(defaultResponse,HttpStatus.OK);
 		}else {
 			defaultResponse.setResponse(staffList);
 			defaultResponse.setResponseCode("404");
@@ -146,7 +146,7 @@ public class StaffController {
 			defaultResponse.setResponse(staff.get());
 			defaultResponse.setResponseCode("302");
 			defaultResponse.setResponseMessage("Please find the staff list with given shop id");
-			return new ResponseEntity<DefaultMessage<Staffinfo>>(defaultResponse,HttpStatus.FOUND);
+			return new ResponseEntity<DefaultMessage<Staffinfo>>(defaultResponse,HttpStatus.OK);
 		}else {
 			defaultResponse.setResponse(staff.get());
 			defaultResponse.setResponseCode("404");
@@ -164,7 +164,7 @@ public class StaffController {
 			defaultResponse.setResponse(staff);
 			defaultResponse.setResponseCode("302");
 			defaultResponse.setResponseMessage("Please find the staff list with given shop id");
-			return new ResponseEntity<DefaultMessage<Staffinfo>>(defaultResponse,HttpStatus.FOUND);
+			return new ResponseEntity<DefaultMessage<Staffinfo>>(defaultResponse,HttpStatus.OK);
 		}else {
 			defaultResponse.setResponse(staff);
 			defaultResponse.setResponseCode("404");

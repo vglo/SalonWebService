@@ -45,7 +45,7 @@ public class SalonServiceController {
 		}
 		
 		
-		//check if customer already exists or not
+		//check if service already exists or not
 		Salonservice servicePresent = dbClient.validateService(salonService.getName(), salonService.getPrice(),salonService.getShopId());
 		
 		if(null != servicePresent) {
@@ -56,10 +56,10 @@ public class SalonServiceController {
 		}else {
 			//saving salon service
 			Salonservice service = dbClient.saveService(salonService);
-			defualt.setResponseCode("201");
+			defualt.setResponseCode("200");
 			defualt.setResponseMessage("Customer registered successfuly");
 			defualt.setResponse(service);
-			return new ResponseEntity<DefaultMessage<Salonservice>>(defualt,HttpStatus.CREATED);
+			return new ResponseEntity<DefaultMessage<Salonservice>>(defualt,HttpStatus.OK);
 		}
 	}
 	
@@ -72,7 +72,7 @@ public class SalonServiceController {
 			defualt.setResponseCode("302");
 			defualt.setResponseMessage("Salon service list is found");
 			defualt.setResponse(salonServiceList);
-			return new ResponseEntity<DefaultMessage<List<Salonservice>>>(defualt,HttpStatus.FOUND);
+			return new ResponseEntity<DefaultMessage<List<Salonservice>>>(defualt,HttpStatus.OK);
 		}else {
 			//saving salon service
 			defualt.setResponseCode("404");
@@ -90,7 +90,7 @@ public class SalonServiceController {
 			defualt.setResponseCode("302");
 			defualt.setResponseMessage("Salon service list is found");
 			defualt.setResponse(salonServiceList.get());
-			return new ResponseEntity<DefaultMessage<Salonservice>>(defualt,HttpStatus.FOUND);
+			return new ResponseEntity<DefaultMessage<Salonservice>>(defualt,HttpStatus.OK);
 		}else {
 			//saving salon service
 			defualt.setResponseCode("404");

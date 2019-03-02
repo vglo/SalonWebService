@@ -173,9 +173,9 @@ public class BillingController {
 		List<Bill> listofBills = dbserviceFeignClient.filterByDate(shopId);
 		if(listofBills.size()>=0 && listofBills != null) {
 			defaultResponse.setResponse(listofBills);
-	 		defaultResponse.setResponseCode("302");
+	 		defaultResponse.setResponseCode("200");
 	 		defaultResponse.setResponseMessage("PLease find the list of bills from given date range");
-	 		return new ResponseEntity<DefaultMessage<List<Bill>>>(defaultResponse,HttpStatus.FOUND);
+	 		return new ResponseEntity<DefaultMessage<List<Bill>>>(defaultResponse,HttpStatus.OK);
 		}else {
 			defaultResponse.setResponse(listofBills);
 	 		defaultResponse.setResponseCode("204");
@@ -206,9 +206,9 @@ public class BillingController {
 		List<Bill> listofBills = dbserviceFeignClient.findBillByShopId(shopId);
 		if(listofBills.size()>=0 && listofBills != null) {
 			defaultResponse.setResponse(listofBills);
-	 		defaultResponse.setResponseCode("302");
+	 		defaultResponse.setResponseCode("200");
 	 		defaultResponse.setResponseMessage("PLease find the list of bills from given date range with count"+listofBills.size());
-	 		return new ResponseEntity<DefaultMessage<List<Bill>>>(defaultResponse,HttpStatus.FOUND);
+	 		return new ResponseEntity<DefaultMessage<List<Bill>>>(defaultResponse,HttpStatus.OK);
 		}else {
 			defaultResponse.setResponse(listofBills);
 	 		defaultResponse.setResponseCode("204");
@@ -224,9 +224,9 @@ public class BillingController {
 		Optional<Bill> listofBill = dbserviceFeignClient.findByBillNum(billNum);
 		if(listofBill.isPresent()) {
 			defaultResponse.setResponse(listofBill.get());
-	 		defaultResponse.setResponseCode("302");
+	 		defaultResponse.setResponseCode("200");
 	 		defaultResponse.setResponseMessage("Bill is present with given bill Number:"+billNum);
-	 		return new ResponseEntity<DefaultMessage<Bill>>(defaultResponse,HttpStatus.FOUND);
+	 		return new ResponseEntity<DefaultMessage<Bill>>(defaultResponse,HttpStatus.OK);
 		}else {
 			defaultResponse.setResponse(listofBill.get());
 	 		defaultResponse.setResponseCode("204");
@@ -247,9 +247,9 @@ public class BillingController {
 		List<Bill> listofBills = dbserviceFeignClient.fetchBillByCustId(custId);
 		if(listofBills.size()>=0 && listofBills != null) {
 			defaultResponse.setResponse(listofBills);
-	 		defaultResponse.setResponseCode("302");
+	 		defaultResponse.setResponseCode("200");
 	 		defaultResponse.setResponseMessage("PLease find the list of bills with given customer id, count:" + listofBills.size());
-	 		return new ResponseEntity<DefaultMessage<List<Bill>>>(defaultResponse,HttpStatus.FOUND);
+	 		return new ResponseEntity<DefaultMessage<List<Bill>>>(defaultResponse,HttpStatus.OK);
 		}else {
 			defaultResponse.setResponse(listofBills);
 	 		defaultResponse.setResponseCode("204");
@@ -265,9 +265,9 @@ public class BillingController {
 		Optional<Bill> listofBill = dbserviceFeignClient.findByBillId(billId);
 		if(listofBill.isPresent()) {
 			defaultResponse.setResponse(listofBill.get());
-	 		defaultResponse.setResponseCode("302");
+	 		defaultResponse.setResponseCode("200");
 	 		defaultResponse.setResponseMessage("Bill is present with given bill Number:"+billId);
-	 		return new ResponseEntity<DefaultMessage<Bill>>(defaultResponse,HttpStatus.FOUND);
+	 		return new ResponseEntity<DefaultMessage<Bill>>(defaultResponse,HttpStatus.OK);
 		}else {
 			defaultResponse.setResponse(listofBill.get());
 	 		defaultResponse.setResponseCode("204");

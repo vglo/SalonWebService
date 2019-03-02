@@ -73,9 +73,9 @@ public class ShopController {
 		Optional<Shopinfo> shop = dbService.findByShopId(shopId);
 		if(shop.isPresent()) {
 			defaultResponse.setResponse(shop.get());
-			defaultResponse.setResponseCode("302");
+			defaultResponse.setResponseCode("200");
 			defaultResponse.setResponseMessage("Shop details find");
-			return new ResponseEntity<DefaultMessage<Shopinfo>>(defaultResponse,HttpStatus.FOUND);
+			return new ResponseEntity<DefaultMessage<Shopinfo>>(defaultResponse,HttpStatus.OK);
 		}else {
 			defaultResponse.setResponse(null);
 			defaultResponse.setResponseCode("200");
@@ -98,9 +98,9 @@ public class ShopController {
 		List<Shoptype> shopTypes = dbService.findAllShopType();
 		if(shopTypes.size() != 0 && shopTypes != null) {
 			defaultResponse.setResponse(shopTypes);
-			defaultResponse.setResponseCode("302");
+			defaultResponse.setResponseCode("200");
 			defaultResponse.setResponseMessage("Please find the list of all shop types");
-			return new ResponseEntity<DefaultMessage<List<Shoptype>>>(defaultResponse,HttpStatus.FOUND);
+			return new ResponseEntity<DefaultMessage<List<Shoptype>>>(defaultResponse,HttpStatus.OK);
 		}else {
 			defaultResponse.setResponse(null);
 			defaultResponse.setResponseCode("404");
@@ -115,9 +115,9 @@ public class ShopController {
 		List<Shopinfo> shopList = dbService.fetchShopByParentId(parentShopId);
 		if(shopList.size() != 0 && shopList != null) {
 			defaultResponse.setResponse(shopList);
-			defaultResponse.setResponseCode("302");
+			defaultResponse.setResponseCode("200");
 			defaultResponse.setResponseMessage("Shop details ");
-			return new ResponseEntity<DefaultMessage<List<Shopinfo>>>(defaultResponse,HttpStatus.FOUND);
+			return new ResponseEntity<DefaultMessage<List<Shopinfo>>>(defaultResponse,HttpStatus.OK);
 		}else {
 			defaultResponse.setResponse(null);
 			defaultResponse.setResponseCode("404");
