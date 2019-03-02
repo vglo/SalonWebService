@@ -125,9 +125,9 @@ public class BillingController {
 				 //BillHasService save
 				
 				 dfault.setResponseMessage("The bill saved successfully");
-				 dfault.setResponseCode("201");
+				 dfault.setResponseCode("200");
 				 dfault.setResponse(bill);
-				 return new  ResponseEntity<DefaultMessage<Bill>>(dfault,HttpStatus.CREATED);
+				 return new  ResponseEntity<DefaultMessage<Bill>>(dfault,HttpStatus.OK);
 				 
 			}else {
 				 dfault.setResponseMessage("The bill not saved");
