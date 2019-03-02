@@ -64,6 +64,8 @@ public class DBService {
 		bill.setCustomerinfo(daoCustomer.getOne(billRequest.getCustId()));
 		bill.setStaffinfo(daoStaff.getOne(billRequest.getServingStaff()));
 		bill.setPaymenttype(daoPayment.getOne(billRequest.getPaymentType()));
+		bill.setDiscountPer(billRequest.getDiscountPer());
+		bill.setDiscountVal(billRequest.getDiscountVal());
 		return bill;
 		
 	}
