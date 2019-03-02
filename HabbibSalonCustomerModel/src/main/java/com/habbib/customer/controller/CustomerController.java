@@ -110,12 +110,12 @@ public class CustomerController {
 		
 		if(customerList.size() > 0 && customerList != null) {
 			defaultResponse.setResponse(customerList);
-			defaultResponse.setResponseCode("302");
+			defaultResponse.setResponseCode("200");
 			defaultResponse.setResponseMessage("Please find the customer list with given shop id");
-			return new ResponseEntity<DefaultMessage<List<Customerinfo>>>(defaultResponse,HttpStatus.FOUND);
+			return new ResponseEntity<DefaultMessage<List<Customerinfo>>>(defaultResponse,HttpStatus.OK);
 		}else {
 			defaultResponse.setResponse(customerList);
-			defaultResponse.setResponseCode("200");
+			defaultResponse.setResponseCode("302");
 			defaultResponse.setResponseMessage("customer list with given id not found");
 			return new  ResponseEntity<DefaultMessage<List<Customerinfo>>>(defaultResponse,HttpStatus.NO_CONTENT);
 		}
