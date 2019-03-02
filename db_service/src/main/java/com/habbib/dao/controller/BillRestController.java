@@ -2,6 +2,7 @@ package com.habbib.dao.controller;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -95,8 +96,9 @@ public class BillRestController {
 		List<Bill> billsList = new ArrayList<Bill>();
 		Optional<Shopinfo> shopinfo = shopinfoRepo.findById(shopId);
 		if(shopinfo.isPresent()) {
-		 Date NewStartDate = Date.from(LocalDate.parse(startDate).atStartOfDay(ZoneId.systemDefault()).toInstant());
-		 Date NewEndDate = Date.from(LocalDate.parse(endDate).atStartOfDay(ZoneId.systemDefault()).toInstant());
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		 Date NewStartDate = Date.from(LocalDate.parse(startDate,formatter).atStartOfDay(ZoneId.systemDefault()).toInstant());
+		 Date NewEndDate = Date.from(LocalDate.parse(endDate,formatter).atStartOfDay(ZoneId.systemDefault()).toInstant());
 		 billsList= billRepository.findByDateBetweenAndShopinfo(NewStartDate,NewEndDate,shopinfo.get());
 		}
 		return billsList;
