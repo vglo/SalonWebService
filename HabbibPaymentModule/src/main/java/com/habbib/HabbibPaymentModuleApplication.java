@@ -30,7 +30,7 @@ public class HabbibPaymentModuleApplication {
 	}
 	
 	private ApiInfo apiEndPointsInfo() {
-		return new ApiInfoBuilder().title("Spring Boot REST API").description("salon Billing Module REST API")
+		return new ApiInfoBuilder().title("Spring Boot REST API").description("salon Payment Module REST API")
 				.contact(new Contact("Yash Agrawal", "www.vglosoftwares.com", "agrawaly52@gmail.com")).version("1.0.0")
 				.build();
 	}
