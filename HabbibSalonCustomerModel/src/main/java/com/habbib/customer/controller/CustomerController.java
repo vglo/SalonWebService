@@ -44,6 +44,7 @@ public class CustomerController {
 		DefaultMessage<Customerinfo> defualt = new DefaultMessage<Customerinfo>();
 		if(customer == null)
 			throw new NullPointerException();
+		try {
 		Optional<Shopinfo> shopInfo = dbFeignClient.findByShopId(customer.getIdShopInfo());
 		if(!shopInfo.isPresent()) {
 			defualt.setResponseCode("404");
@@ -56,49 +57,87 @@ public class CustomerController {
 		Optional<Customerinfo> custExists = dbFeignClient.validateCust(customer.getMobile(),customer.getIdShopInfo());
 		
 		if(custExists.isPresent()) {
-			defualt.setResponseCode("302");
+			defualt.setResponseCode("200");
 			defualt.setResponseMessage("Customer already registered");
 			defualt.setResponse(custExists.get());
-			return new ResponseEntity<DefaultMessage<Customerinfo>>(defualt,HttpStatus.FOUND);
+			return new ResponseEntity<DefaultMessage<Customerinfo>>(defualt,HttpStatus.OK);
 		}else {
 			//to convert date into specific date formate 
 			customer.setDob(util.convertDateFormate(customer.getDob()));
 			//saving customer
 			Customerinfo newCust = dbFeignClient.saveCustomer(customer);
-			defualt.setResponseCode("200");
+			defualt.setResponseCode("201");
 			defualt.setResponseMessage("Customer registered successfuly");
 			defualt.setResponse(newCust);
-			return new ResponseEntity<DefaultMessage<Customerinfo>>(defualt,HttpStatus.OK);
+			return new ResponseEntity<DefaultMessage<Customerinfo>>(defualt,HttpStatus.CREATED);
+		}
+		}catch (Exception e) {
+			defualt.setResponse(null);
+			defualt.setResponseCode("500");
+			defualt.setResponseMessage("error occured "+e.getLocalizedMessage());
+			return new ResponseEntity<DefaultMessage<Customerinfo>>(defualt,HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
 	
 	@RequestMapping(path="/update-customer", method=RequestMethod.PUT)
-	public ResponseEntity<DefaultMessage<Customerinfo>> updateCustomer(@ModelAttribute Customerinfo customer) {
+	public ResponseEntity<DefaultMessage<Customerinfo>> updateCustomer(@ModelAttribute CustomerRequest customer,@RequestParam(required=true) int custId) {
 		DefaultMessage<Customerinfo> defualt = new DefaultMessage<Customerinfo>();
-		if(null != customer)
-		 return ResponseEntity.ok(defualt);
-		Customerinfo newCust = dbFeignClient.uddateCustomer(customer);
-		defualt.setResponseCode("200");
-		defualt.setResponseMessage("Customer updated successfuly");
-		defualt.setResponse(newCust);
-		ResponseEntity<DefaultMessage<Customerinfo>> response = ResponseEntity.ok(defualt);
-		return response;
-	
+		if(null == customer)
+		  return new ResponseEntity<DefaultMessage<Customerinfo>>(defualt,HttpStatus.BAD_REQUEST);
+		try {	
+			Optional<Customerinfo> custExists = dbFeignClient.findByCustId(custId, customer.getIdShopInfo());
+			
+			if(custExists.isPresent()) {
+				Customerinfo cust = dbFeignClient.updateCustomer(customer,custId);
+				defualt.setResponseCode("200");
+				defualt.setResponseMessage("Customer updated");
+				defualt.setResponse(cust);
+				return new ResponseEntity<DefaultMessage<Customerinfo>>(defualt,HttpStatus.OK);
+			}else {
+				defualt.setResponseCode("200");
+				defualt.setResponseMessage("Customer not updated");
+				defualt.setResponse(custExists.get());
+				return new ResponseEntity<DefaultMessage<Customerinfo>>(defualt,HttpStatus.OK);
+			}
+		}catch (Exception e) {
+			defualt.setResponse(null);
+			defualt.setResponseCode("500");
+			defualt.setResponseMessage("error occured"+e.getLocalizedMessage());
+			return new ResponseEntity<DefaultMessage<Customerinfo>>(defualt,HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
 	}
 	
-	@RequestMapping(path="/delete-customer/{customerId}", method=RequestMethod.DELETE)
-	public ResponseEntity<String> deleteCustomer(@PathVariable int customerId) {
-		if(0 != customerId)
-		 return ResponseEntity.ok("CustomerId is null");
-		dbFeignClient.deleteCustomer(customerId);
-		return ResponseEntity.ok("Customer deleted successfully");
+	@RequestMapping(path="/delete-customer", method=RequestMethod.DELETE)
+	public ResponseEntity<DefaultMessage<Boolean>> deleteCustomer(@RequestParam(required=true) int customerId) {
+		DefaultMessage<Boolean> defaultMsg = new DefaultMessage<Boolean>();
+		if(0 == customerId) {
+			defaultMsg.setResponse(false);
+			defaultMsg.setResponseCode("400");
+			defaultMsg.setResponseMessage("Customer ID is null");
+			return new ResponseEntity<DefaultMessage<Boolean>>(HttpStatus.BAD_REQUEST);
+		}
+		try {
+			
+			dbFeignClient.deleteCustomer(customerId);
+		}catch (Exception e) {
+			defaultMsg.setResponse(false);
+			defaultMsg.setResponseCode("500");
+			defaultMsg.setResponseMessage("error occured in delete the staff"+e.getLocalizedMessage());
+			return new ResponseEntity<DefaultMessage<Boolean>>(defaultMsg,HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		defaultMsg.setResponse(true);
+		defaultMsg.setResponseCode("200");
+		defaultMsg.setResponseMessage("staff deleted with given id");
+		return new ResponseEntity<DefaultMessage<Boolean>>(defaultMsg,HttpStatus.OK);
 	}
+	
 	
 	@RequestMapping(path="/fetch-customer/shop-id", method=RequestMethod.GET)
 	public ResponseEntity<DefaultMessage<List<Customerinfo>>> fetchAllCustomerByShopId(@RequestParam(value="shopId", required=true) int shopId){
 		DefaultMessage<List<Customerinfo>> defaultResponse = new DefaultMessage<List<Customerinfo>>();
-		
+		try {
 		Optional<Shopinfo> shopInfo = dbFeignClient.findByShopId(shopId);
 		if(!shopInfo.isPresent()) {
 			defaultResponse.setResponseCode("404");
@@ -119,21 +158,27 @@ public class CustomerController {
 			defaultResponse.setResponseMessage("customer list with given id not found");
 			return new  ResponseEntity<DefaultMessage<List<Customerinfo>>>(defaultResponse,HttpStatus.NO_CONTENT);
 		}
+		}catch (Exception e) {
+			defaultResponse.setResponse(null);
+			defaultResponse.setResponseCode("500");
+			defaultResponse.setResponseMessage("error occured"+e.getLocalizedMessage());
+			return new ResponseEntity<DefaultMessage<List<Customerinfo>>>(defaultResponse,HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 	
 	
 	@RequestMapping(path="/fetch-customer/{custId}", method=RequestMethod.GET)
-	public ResponseEntity<DefaultMessage<Customerinfo>> fetchCustomerById(@PathVariable int custId){
+	public ResponseEntity<DefaultMessage<Customerinfo>> fetchCustomerById(@PathVariable int custId,@RequestParam(required=true) int shopId){
 		DefaultMessage<Customerinfo> defaultResponse = new DefaultMessage<Customerinfo>();
 		
-		Optional<Customerinfo> customerList = dbFeignClient.findByCustId(custId);
+		Optional<Customerinfo> customerList = dbFeignClient.findByCustId(custId, shopId);
 		if(customerList.isPresent()) {
 			defaultResponse.setResponse(customerList.get());
 			defaultResponse.setResponseCode("200");
 			defaultResponse.setResponseMessage("Please find the customer");
 			return new ResponseEntity<DefaultMessage<Customerinfo>>(defaultResponse,HttpStatus.OK);
 		}else {
-			defaultResponse.setResponse(customerList.get());
+			defaultResponse.setResponse(null);
 			defaultResponse.setResponseCode("204");
 			defaultResponse.setResponseMessage("customer with given id not found");
 			return new ResponseEntity<DefaultMessage<Customerinfo>>(defaultResponse,HttpStatus.NO_CONTENT);
@@ -162,7 +207,7 @@ public class CustomerController {
 	public ResponseEntity<DefaultMessage<Customerinfo>> findCustByShopAndMob(@RequestParam(required=true) int shopId,@RequestParam(required=true) String mobileNum){
 
 		DefaultMessage<Customerinfo> defaultResponse = new DefaultMessage<Customerinfo>();
-		
+	try {	
 		Optional<Customerinfo> customerList = dbFeignClient.validateCust(mobileNum, shopId);
 		if(customerList.isPresent()) {
 			defaultResponse.setResponse(customerList.get());
@@ -175,6 +220,13 @@ public class CustomerController {
 			defaultResponse.setResponseMessage("customer with given mobile number not found");
 			return new ResponseEntity<DefaultMessage<Customerinfo>>(defaultResponse,HttpStatus.NOT_FOUND);
 		}
+	}catch (Exception e) {
+		defaultResponse.setResponse(null);
+		defaultResponse.setResponseCode("500");
+		defaultResponse.setResponseMessage("error occured"+e.getLocalizedMessage());
+		return new ResponseEntity<DefaultMessage<Customerinfo>>(defaultResponse,HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
 		
 	}
 	
@@ -182,7 +234,7 @@ public class CustomerController {
 	public ResponseEntity<DefaultMessage<Customerinfo>> findCustByEmail(@RequestParam(required=true) int shopId,@Email @RequestParam(required=true) String emailId){
 		
 		DefaultMessage<Customerinfo> defaultResponse = new DefaultMessage<Customerinfo>();
-		
+	try {	
 		Optional<Customerinfo> customerList = dbFeignClient.findCustbyEmail(emailId, shopId);
 		if(customerList.isPresent()) {
 			defaultResponse.setResponse(customerList.get());
@@ -195,6 +247,12 @@ public class CustomerController {
 			defaultResponse.setResponseMessage("customer with given email id not found");
 			return new ResponseEntity<DefaultMessage<Customerinfo>>(defaultResponse,HttpStatus.NOT_FOUND);
 		}
+	}catch (Exception e) {
+		defaultResponse.setResponse(null);
+		defaultResponse.setResponseCode("500");
+		defaultResponse.setResponseMessage("error occured"+e.getLocalizedMessage());
+		return new ResponseEntity<DefaultMessage<Customerinfo>>(defaultResponse,HttpStatus.INTERNAL_SERVER_ERROR);
+	}
 		
 	}
 	

@@ -26,8 +26,8 @@ public interface DBServiceFeignClient {
 	@RequestMapping(path="/dao/fetch-payment-types",method=RequestMethod.GET)
 	public List<Paymenttype> fetchAllPaymentType();
 	
-	@RequestMapping(path="/dao/fetch/payment-type/{id}",method=RequestMethod.GET)
-	public Paymenttype fetchByPaymentTypeID(@PathVariable int id);
+	@RequestMapping(path="/fetch/payment-type/{id}",method=RequestMethod.GET)
+	public Paymenttype fetchByPaymentTypeID(@PathVariable int id,@RequestParam int shopId);
 	
 	@RequestMapping(path="/dao/fetch-all/type",method=RequestMethod.GET)
 	public Paymenttype fetchByType(@RequestParam String type );
@@ -37,5 +37,11 @@ public interface DBServiceFeignClient {
 	
 	@RequestMapping(path="/dao/fetch-by-shop-id",method=RequestMethod.GET)
 	public List<Paymenttype> fetchPaymentTypeByShopId(@RequestParam  int shopId);
+	
+	@RequestMapping(path="/dao/update-payment",method=RequestMethod.PUT)
+	public Paymenttype updatePayment(@RequestBody PaymentTypeRequest paymentReq,@RequestParam int paymentId);
+	
+	@RequestMapping(path="/dao/delete-payment",method=RequestMethod.DELETE)
+	public void deletePayment(@RequestParam int paymentId,@RequestParam int shopId);
 
 }

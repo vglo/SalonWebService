@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.habbib.dao.JPArepository.PaymentTypeRepository;
 import com.habbib.dao.entitiy.Paymenttype;
+import com.habbib.dao.model.PaymenttypeRequest;
+import com.habbib.dao.service.DBService;
 
 /**
  * @author yash
@@ -27,6 +29,9 @@ public class PaymentTypeController {
 
 	@Autowired
 	private PaymentTypeRepository paymentRepo;
+	
+	@Autowired
+	private DBService dbService;
 	
 	@RequestMapping(path="/fetch-payment-types",method=RequestMethod.GET)
 	public List<Paymenttype> fetchAllPaymentType() {
@@ -50,17 +55,32 @@ public class PaymentTypeController {
 	
 	
 	@RequestMapping(path="/fetch/payment-type/{id}",method=RequestMethod.GET)
-	public Paymenttype fetchByPaymentTypeID(@PathVariable int id) {
-		Optional<Paymenttype> paymentType = paymentRepo.findById(id);
+	public Paymenttype fetchByPaymentTypeID(@PathVariable int id,@RequestParam int shopId) {
+		Optional<Paymenttype> paymentType = paymentRepo.findByIdPaymentTypeAndShopId(id, shopId);
 		if(paymentType.isPresent())
 			return paymentType.get();
 		return null;
 	}
 	
 	@RequestMapping(path="/save-payment" ,method=RequestMethod.POST)
-	public Paymenttype savePaymentType(@RequestBody Paymenttype paymentType) {
+	public Paymenttype savePaymentType(@RequestBody PaymenttypeRequest paymentReq) {
+		Paymenttype paymentType = dbService.convertPaymentModelToEntity(paymentReq);
 		Paymenttype payments = paymentRepo.save(paymentType);
 		return payments;
 	}
 	
+	@RequestMapping(path="/update-payment",method=RequestMethod.PUT)
+	public Paymenttype updatePayment(@RequestBody PaymenttypeRequest paymentReq,@RequestParam int paymentId) {
+		Paymenttype paymentType = dbService.convertPaymentModelToEntity(paymentReq);
+		paymentType.setIdPaymentType(paymentId);
+		Paymenttype payments = paymentRepo.save(paymentType);
+		return payments;
+	}
+	
+	@RequestMapping(path="/delete-payment",method=RequestMethod.DELETE)
+	public void deletePayment(@RequestParam int paymentId,@RequestParam int shopId) {
+		Optional<Paymenttype> paymentType = paymentRepo.findByIdPaymentTypeAndShopId(paymentId, shopId);
+		if(paymentType.isPresent())
+			paymentRepo.delete(paymentType.get());
+	}
 }

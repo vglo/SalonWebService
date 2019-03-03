@@ -133,14 +133,16 @@ public class BillRestController {
 	
 	
 	@RequestMapping(path="/fetch/billById/{id}", method=RequestMethod.GET)
-	public Optional<Bill> findByBillId(@PathVariable("id") int billId) {
-		Optional<Bill> bill =  billRepository.findById(billId);
+	public Optional<Bill> findByBillId(@PathVariable("id") int billId,@RequestParam int shopId) {
+		Shopinfo shop = shopinfoRepo.getOne(shopId);
+		Optional<Bill> bill =  billRepository.findByIdBillAndShopinfo(billId, shop);
 		return bill;
 	}
 	
 	@RequestMapping(path="/fetch/billByBillNum/{bill-number}", method=RequestMethod.GET)
-	public Optional<Bill> findByBillNum(@PathVariable("bill-number") String billNumber) {
-		Optional<Bill> bill =  billRepository.findByBillNo(billNumber);
+	public Optional<Bill> findByBillNum(@PathVariable("bill-number") String billNumber,@RequestParam int shopId) {
+		Shopinfo shop = shopinfoRepo.getOne(shopId);
+		Optional<Bill> bill =  billRepository.findByBillNoAndShopinfo(billNumber,shop);
 		return bill;
 	}
 	

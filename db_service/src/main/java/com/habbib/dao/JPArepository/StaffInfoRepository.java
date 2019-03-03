@@ -20,5 +20,7 @@ public interface StaffInfoRepository extends JpaRepository<Staffinfo, Integer> {
 	public Optional<Staffinfo> findByEmailAndShopinfo(String email,Shopinfo shopinfo);
 	
 	public List<Staffinfo> findByRoleBeanAndShopinfo(Role role,Shopinfo shop);
-
+	
+	public Optional<Staffinfo> findByIdStaffInfoAndShopinfo(int staffId,Shopinfo shop);
+	
 }

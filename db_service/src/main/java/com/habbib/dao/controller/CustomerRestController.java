@@ -39,6 +39,15 @@ public class CustomerRestController {
 		return cust1;
 	}
 	
+	@RequestMapping(path="/update-customer",method=RequestMethod.PUT)
+	public Customerinfo updateCustomer(@RequestBody CustomerRequest cust,@RequestParam int custId) {
+		Customerinfo custInfo = dbService.convertModelToEntityCustomer(cust);
+		if(custId != 0)
+			custInfo.setIdCustomerInfo(custId);
+		Customerinfo cust1 = customerInfo.save(custInfo);
+		return cust1;
+	}
+	
 	@RequestMapping(path="/delete-customer/{id}", method=RequestMethod.DELETE)
 	public void deleteCustomer(@PathVariable("id") int id) {
 		customerInfo.deleteById(id);
@@ -51,16 +60,12 @@ public class CustomerRestController {
 	}
 	
 	@RequestMapping(path="/fetch/customerById/{id}", method=RequestMethod.GET)
-	public Optional<Customerinfo> findByCustId(@PathVariable("id") int customerId) {
-		Optional<Customerinfo> customer =  customerInfo.findById(customerId);
+	public Optional<Customerinfo> findByCustId(@PathVariable("id") int customerId,@RequestParam int shopId) {
+		Shopinfo shop =shopInfo.getOne(shopId);
+		Optional<Customerinfo> customer =  customerInfo.findByIdCustomerInfoAndShopinfo(customerId, shop);
 		return customer;
 	}
 	
-	@RequestMapping(path="/update-customer",method=RequestMethod.PUT)
-	public Customerinfo uddateCustomer(@RequestBody Customerinfo customer) {
-		Customerinfo updatedCustomer = customerInfo.save(customer);
-		return updatedCustomer;
-	}
 	
 	@RequestMapping(path="/find-by-shop-id/{shopId}", method=RequestMethod.GET)
 	public List<Customerinfo> findCustByShopId(@PathVariable int shopId) {

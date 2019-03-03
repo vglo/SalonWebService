@@ -39,8 +39,9 @@ public class SalonServiceController {
 	}
 	
 	@RequestMapping(path="/get-service-info/{serviceId}",method=RequestMethod.GET)
-	public Optional<Salonservice> getServiceInfo(@PathVariable int serviceId){
-		Optional<Salonservice> serviceInfo = salonService.findById(serviceId);
+	public Optional<Salonservice> getServiceInfo(@PathVariable int serviceId,@RequestParam int shopId){
+		Shopinfo shop = shopInfo.getOne(shopId);
+		Optional<Salonservice> serviceInfo = salonService.findByIdSalonServiceAndShopinfo(serviceId, shop);
 		return serviceInfo;
 	}
 	
@@ -59,6 +60,23 @@ public class SalonServiceController {
 		if(service.isPresent())
 			return service.get();
 		return null;
+	}
+	
+	@RequestMapping(path="/update-service",method=RequestMethod.PUT)
+	public Salonservice updateService(@RequestBody SalonserviceRequest salonServiceReq,@RequestParam int serviceId) {
+		Salonservice serviceEntity = dbService.convertServiceModelToEntity(salonServiceReq);
+		serviceEntity.setIdSalonService(serviceId);
+		Salonservice service = salonService.save(serviceEntity);
+		return service;
+	}
+	
+	@RequestMapping(path="/delete-service",method=RequestMethod.DELETE)
+	public void deleteService(@RequestParam int serviceId,@RequestParam int shopId) {
+		Shopinfo shop = shopInfo.getOne(shopId);
+		Optional<Salonservice> serviceInfo = salonService.findByIdSalonServiceAndShopinfo(serviceId, shop);
+		
+		if(serviceInfo.isPresent())
+				salonService.delete(serviceInfo.get());
 	}
 	
 }

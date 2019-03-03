@@ -18,4 +18,6 @@ public interface SalonServiceRepository extends JpaRepository<Salonservice, Inte
 	public Salonservice findByBillhasservices(List billHasService);
 	
 	public Optional<Salonservice> findByNameAndPriceAndShopinfo(String name,double price,Shopinfo shop);
+	
+	public Optional<Salonservice> findByIdSalonServiceAndShopinfo(int staffId,Shopinfo shop);
 }

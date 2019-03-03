@@ -79,11 +79,36 @@ public class StaffDBController {
 	}
 	
 	@RequestMapping(path="/find-staff/{staffId}", method=RequestMethod.GET)
-	public Staffinfo findStaffByid(@PathVariable int staffId){
-		Optional<Staffinfo> staffinfo = staffInfo.findById(staffId);
+	public Staffinfo findStaffByid(@PathVariable int staffId,@RequestParam int shopId){
+		Shopinfo shop = shopInfo.getOne(shopId);
+		Optional<Staffinfo> staffinfo = staffInfo.findByIdStaffInfoAndShopinfo(staffId, shop);
 		if(staffinfo.isPresent())
 			return staffinfo.get();
 		return null;
+	}
+	
+	@RequestMapping(path="/update-staff",method=RequestMethod.PUT)
+	public Staffinfo updateStaff(@RequestBody StaffinfoRequest staffInfoReq,@RequestParam int staffId) {
+		if(staffInfoReq == null)
+			throw new NullPointerException();
+		
+		Staffinfo staffDetails = dbService.convertstaffModelToEntity(staffInfoReq);
+		staffDetails.setIdStaffInfo(staffId);
+		Staffinfo staff = staffInfo.save(staffDetails);
+		return staff;
+	}
+	
+	@RequestMapping(path="/delete-staff",method=RequestMethod.DELETE)
+	public void deleteStaff(@RequestParam int staffId,@RequestParam int shopId) {
+		try {
+		Shopinfo shop = shopInfo.getOne(shopId);
+		Optional<Staffinfo> staffinfo = staffInfo.findByIdStaffInfoAndShopinfo(staffId, shop);
+		if(staffinfo.isPresent())
+			staffInfo.delete(staffinfo.get());
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 	}
 	
 	@RequestMapping(path="/find-staff/email",method=RequestMethod.GET)

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.habbib.customer.feign.client.DBServiceFeignClient;
 import com.habbib.customer.request.model.AppointmentRequest;
@@ -42,16 +43,12 @@ public class DBServiceFallback implements DBServiceFeignClient {
 	}
 
 	@Override
-	public Optional<Customerinfo> findByCustId(int customerId) {
+	public Optional<Customerinfo> findByCustId(int customerId, int shopId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
-	public Customerinfo uddateCustomer(Customerinfo customer) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 
 	@Override
 	public List<Customerinfo> findCustByShopId(int shopId) {
@@ -99,6 +96,12 @@ public class DBServiceFallback implements DBServiceFeignClient {
 
 	@Override
 	public Optional<Shopinfo> findByShopId(int shopId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Customerinfo updateCustomer(CustomerRequest cust, int custId) {
 		// TODO Auto-generated method stub
 		return null;
 	}

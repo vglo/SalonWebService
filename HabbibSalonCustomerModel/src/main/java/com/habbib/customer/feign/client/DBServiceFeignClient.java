@@ -25,6 +25,9 @@ public interface DBServiceFeignClient {
 	@RequestMapping(path="/dao/save-customer",method=RequestMethod.POST)
 	public Customerinfo saveCustomer(@RequestBody CustomerRequest cust);
 	
+	@RequestMapping(path="/dao/update-customer",method=RequestMethod.PUT)
+	public Customerinfo updateCustomer(@RequestBody CustomerRequest cust,@RequestParam int custId);
+	
 	@RequestMapping(path="/dao/delete-customer/{id}", method=RequestMethod.DELETE)
 	public void deleteCustomer(@PathVariable("id") int id);
 	
@@ -32,10 +35,9 @@ public interface DBServiceFeignClient {
 	public List<Customerinfo> findAllCustomer();
 	
 	@RequestMapping(path="/dao/fetch/customerById/{id}", method=RequestMethod.GET)
-	public Optional<Customerinfo> findByCustId(@PathVariable("id") int customerId);
+	public Optional<Customerinfo> findByCustId(@PathVariable("id") int customerId,@RequestParam int shopId);
 	
-	@RequestMapping(path="/dao/update-customer",method=RequestMethod.PUT)
-	public Customerinfo uddateCustomer(@RequestBody Customerinfo customer);
+	
 	
 	@RequestMapping(path="/dao/find-by-shop-id/{shopId}", method=RequestMethod.GET)
 	public List<Customerinfo> findCustByShopId(@PathVariable int shopId);

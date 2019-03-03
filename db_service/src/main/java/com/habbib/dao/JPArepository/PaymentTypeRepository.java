@@ -14,5 +14,7 @@ public interface PaymentTypeRepository extends JpaRepository<Paymenttype, Intege
 	public List<Paymenttype> findByshopId(int shopId);
 	
 	public Optional<Paymenttype> findByType(String type);
+	
+	public Optional<Paymenttype> findByIdPaymentTypeAndShopId(int paymentId,int ShopId);
 
 }

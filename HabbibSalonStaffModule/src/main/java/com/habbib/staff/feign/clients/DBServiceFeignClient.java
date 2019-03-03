@@ -30,7 +30,13 @@ public interface DBServiceFeignClient {
 	public List<Staffinfo> findStaffByShopId(@RequestParam int shopId);
 	
 	@RequestMapping(path="/dao/find-staff/{staffId}", method=RequestMethod.GET)
-	public Staffinfo findStaffByid(@PathVariable int staffId);
+	public Staffinfo findStaffByid(@PathVariable int staffId,@RequestParam int shopId);
+	
+	@RequestMapping(path="/dao/update-staff",method=RequestMethod.PUT)
+	public Staffinfo updateStaff(@RequestBody StaffinfoRequest staffInfoReq,@RequestParam int staffId);
+	
+	@RequestMapping(path="/dao/delete-staff",method=RequestMethod.DELETE)
+	public void deleteStaff(@RequestParam int staffId,@RequestParam int shopId);
 	
 	@RequestMapping(path="/dao/find-staff/email",method=RequestMethod.GET)
 	public Staffinfo findStaffByEmail(@RequestParam String email,@RequestParam int shopId);

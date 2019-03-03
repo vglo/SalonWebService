@@ -18,12 +18,14 @@ import com.habbib.dao.JPArepository.StaffInfoRepository;
 import com.habbib.dao.entitiy.Appointment;
 import com.habbib.dao.entitiy.Bill;
 import com.habbib.dao.entitiy.Customerinfo;
+import com.habbib.dao.entitiy.Paymenttype;
 import com.habbib.dao.entitiy.Salonservice;
 import com.habbib.dao.entitiy.Shopinfo;
 import com.habbib.dao.entitiy.Staffinfo;
 import com.habbib.dao.model.AppointmentRequest;
 import com.habbib.dao.model.BillRequest;
 import com.habbib.dao.model.CustomerRequest;
+import com.habbib.dao.model.PaymenttypeRequest;
 import com.habbib.dao.model.SalonserviceRequest;
 import com.habbib.dao.model.ShopinfoRequest;
 import com.habbib.dao.model.StaffinfoRequest;
@@ -72,6 +74,7 @@ public class DBService {
 
 	public Customerinfo convertModelToEntityCustomer(CustomerRequest cust) {
 		Customerinfo custInfo = new Customerinfo();
+		
 		custInfo.setAddress(cust.getAddress());
 		custInfo.setDob(cust.getDob());
 		custInfo.setEmail(cust.getEmail());
@@ -153,5 +156,13 @@ public class DBService {
 		service.setPrice(salonServiceReq.getPrice());
 		service.setShopinfo(daoShop.getOne(salonServiceReq.getShopId()));
 		return service;
+	}
+
+	public Paymenttype convertPaymentModelToEntity(PaymenttypeRequest paymentReq) {
+		Paymenttype payment = new Paymenttype();
+		payment.setIntegrationKey(paymentReq.getIntegrationKey());
+		payment.setShopId(paymentReq.getShopId());
+		payment.setType(paymentReq.getType());
+		return payment;
 	}
 }

@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -40,7 +39,7 @@ public class StaffController {
 		DefaultMessage<Staffinfo> defualt = new DefaultMessage<Staffinfo>();
 		if(staffInfoReq == null)
 			throw new NullPointerException();
-		
+		try {
 		Optional<Shopinfo> shopInfo = dbFeignClient.findByShopId(staffInfoReq.getShopId());
 		if(!shopInfo.isPresent()) {
 			defualt.setResponseCode("404");
@@ -73,7 +72,12 @@ public class StaffController {
 			return new ResponseEntity<DefaultMessage<Staffinfo>>(defualt,HttpStatus.CREATED);
 		
 		}
-
+	}catch (Exception e) {
+		defualt.setResponse(null);
+		defualt.setResponseCode("500");
+		defualt.setResponseMessage("error occured"+e.getLocalizedMessage());
+		return new ResponseEntity<DefaultMessage<Staffinfo>>(defualt,HttpStatus.INTERNAL_SERVER_ERROR);
+	}
 	}
 	
 	@RequestMapping(path="/find-staff/shop-id",method=RequestMethod.GET)
@@ -96,12 +100,12 @@ public class StaffController {
 		}
 	}
 	
-	@RequestMapping(path="/find-staff/staff-id/{staffId}",method=RequestMethod.GET)
-	public ResponseEntity<DefaultMessage<Staffinfo>> fetchStaffByStaffId(@PathVariable int staffId){
+	@RequestMapping(path="/find-staff/staff-id",method=RequestMethod.GET)
+	public ResponseEntity<DefaultMessage<Staffinfo>> fetchStaffByStaffId(@RequestParam int staffId,@RequestParam int shopId){
 		
 	DefaultMessage<Staffinfo> defaultResponse = new DefaultMessage<Staffinfo>();
 		
-		Staffinfo staff = dbFeignClient.findStaffByid(staffId);
+		Staffinfo staff = dbFeignClient.findStaffByid(staffId, shopId);
 		
 		if(staff != null) {
 			defaultResponse.setResponse(staff);
@@ -172,6 +176,69 @@ public class StaffController {
 			return new  ResponseEntity<DefaultMessage<Staffinfo>>(defaultResponse,HttpStatus.NOT_FOUND);
 		}
 		
+	}
+	
+	@RequestMapping(path="/update-staff",method=RequestMethod.PUT)
+	public ResponseEntity<DefaultMessage<Staffinfo>> updateStaff(@Valid @ModelAttribute StaffinfoRequest staffInfoReq,@RequestParam(required=true) int staffId){
+
+
+		DefaultMessage<Staffinfo> defualt = new DefaultMessage<Staffinfo>();
+		if(staffInfoReq == null)
+			throw new NullPointerException();
+		try {
+		Optional<Shopinfo> shopInfo = dbFeignClient.findByShopId(staffInfoReq.getShopId());
+		if(!shopInfo.isPresent()) {
+			defualt.setResponseCode("404");
+			defualt.setResponseMessage("Shop with given id is not present/registered, please enter valid shop id");
+			return new ResponseEntity<DefaultMessage<Staffinfo>>(defualt,HttpStatus.BAD_REQUEST);
+		}
+		Role role = dbFeignClient.findRoleByid(staffInfoReq.getRoleId());
+		if(null == role) {
+			defualt.setResponseCode("404");
+			defualt.setResponseMessage("Role with given id is not present/registered, please enter valid Role id");
+			return new ResponseEntity<DefaultMessage<Staffinfo>>(defualt,HttpStatus.BAD_REQUEST);
+		}
+		
+		//check if customer already exists or not
+		Staffinfo staffCheck = dbFeignClient.findStaffByid(staffId, staffInfoReq.getShopId());
+		
+		if(null != staffCheck) {
+			Staffinfo newStaff = dbFeignClient.updateStaff(staffInfoReq,staffId);
+			defualt.setResponseCode("200");
+			defualt.setResponseMessage("staff updated with staff id:"+staffCheck.getIdStaffInfo());
+			defualt.setResponse(newStaff);
+			return new ResponseEntity<DefaultMessage<Staffinfo>>(defualt,HttpStatus.OK);
+		}else {
+			defualt.setResponseCode("200");
+			defualt.setResponseMessage("Staff not updated:");
+			defualt.setResponse(staffCheck);
+			return new ResponseEntity<DefaultMessage<Staffinfo>>(defualt,HttpStatus.OK);
+		
+		}
+	}catch (Exception e) {
+		defualt.setResponse(null);
+		defualt.setResponseCode("500");
+		defualt.setResponseMessage("error occured"+e.getLocalizedMessage());
+		return new ResponseEntity<DefaultMessage<Staffinfo>>(defualt,HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	}
+	
+	
+	@RequestMapping(path="/delete-staff",method=RequestMethod.DELETE)
+	public ResponseEntity<DefaultMessage<Boolean>> deleteStaff(@RequestParam int staffId,@RequestParam int shopId){
+		DefaultMessage<Boolean> defaultMsg= new DefaultMessage<Boolean>();
+		try {
+			dbFeignClient.deleteStaff(staffId, shopId);
+		}catch (Exception e) {
+			defaultMsg.setResponse(false);
+			defaultMsg.setResponseCode("400");
+			defaultMsg.setResponseMessage("error occured in delete the staff"+e.getLocalizedMessage());
+			return new ResponseEntity<DefaultMessage<Boolean>>(defaultMsg,HttpStatus.BAD_REQUEST);
+		}
+		defaultMsg.setResponse(true);
+		defaultMsg.setResponseCode("200");
+		defaultMsg.setResponseMessage("staff deleted with given id");
+		return new ResponseEntity<DefaultMessage<Boolean>>(defaultMsg,HttpStatus.OK);
 	}
 }
 

@@ -14,7 +14,9 @@ import com.habbib.dao.entitiy.Shopinfo;
 @Repository
 public interface BillRepository extends JpaRepository<Bill, Integer>{
 
-	public Optional<Bill> findByBillNo(String billNumber);
+	public Optional<Bill> findByBillNoAndShopinfo(String billNumber,Shopinfo shopInfo);
+	
+	public Optional<Bill> findByIdBillAndShopinfo(int billId,Shopinfo shopInfo);
 	
 	public List<Bill> findByDateAndShopinfo(Date date,Shopinfo shopinfo);
 	

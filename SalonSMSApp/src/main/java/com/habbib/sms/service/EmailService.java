@@ -9,5 +9,5 @@ public interface EmailService {
 		      String to, String subject, String text);
 	
 	  public void sendMessageWithAttachment(
-		      String to, String subject, String text, String pathToAttachment);
+		      String to, String subject, String text);
 }

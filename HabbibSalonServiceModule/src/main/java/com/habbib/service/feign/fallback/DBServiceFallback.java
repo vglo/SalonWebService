@@ -34,7 +34,7 @@ public class DBServiceFallback implements DBServiceFeignClient {
 	}
 
 	@Override
-	public Optional<Salonservice> getServiceInfo(int serviceId) {
+	public Optional<Salonservice> getServiceInfo(int serviceId,int shopId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -49,6 +49,18 @@ public class DBServiceFallback implements DBServiceFeignClient {
 	public Salonservice validateService(String name, double price, int shopId) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public Salonservice updateService(SalonserviceRequest salonServiceReq, int serviceId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void deleteService(int serviceId, int shopId) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

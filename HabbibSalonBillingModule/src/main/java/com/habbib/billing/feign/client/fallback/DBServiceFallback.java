@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.habbib.billing.dbrequest.model.BillRequest;
 import com.habbib.billing.feign.clients.DBServiceFeignClient;
@@ -62,7 +63,7 @@ public class DBServiceFallback implements DBServiceFeignClient {
 	 * @see com.habbib.billing.feign.clients.DBServiceFeignClient#findByBillId(int)
 	 */
 	@Override
-	public Optional<Bill> findByBillId(int billId) {
+	public Optional<Bill> findByBillId(int billId, int shopId) {
 		
 		return null;
 	}
@@ -71,7 +72,7 @@ public class DBServiceFallback implements DBServiceFeignClient {
 	 * @see com.habbib.billing.feign.clients.DBServiceFeignClient#findByBillNum(java.lang.String)
 	 */
 	@Override
-	public Optional<Bill> findByBillNum(String billNumber) {
+	public Optional<Bill> findByBillNum(String billNumber, int shopId) {
 		return null;
 	}
 

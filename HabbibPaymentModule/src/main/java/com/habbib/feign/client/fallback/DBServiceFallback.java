@@ -25,7 +25,7 @@ public class DBServiceFallback implements DBServiceFeignClient {
 	}
 
 	@Override
-	public Paymenttype fetchByPaymentTypeID(int id) {
+	public Paymenttype fetchByPaymentTypeID(int id,int shopId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -46,6 +46,18 @@ public class DBServiceFallback implements DBServiceFeignClient {
 	public List<Paymenttype> fetchPaymentTypeByShopId(int shopId) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public Paymenttype updatePayment(PaymentTypeRequest paymentReq, int paymentId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void deletePayment(int paymentId, int shopId) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	

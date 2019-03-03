@@ -47,11 +47,9 @@ public class SMSEmailSenderController {
 	
 	
 	//to reciev any msg
-	@RequestMapping(value="/sms-app")
+	@RequestMapping(value="/email",method=RequestMethod.GET)
 	public void SmsApp() {
-		
-		
-		
+		emailService.sendMessageWithAttachment("agrawaly52@gmail.com", "Order", "Please find the bill");
 	}
 
 }

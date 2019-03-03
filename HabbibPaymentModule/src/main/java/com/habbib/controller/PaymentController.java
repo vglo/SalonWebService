@@ -69,15 +69,38 @@ public class PaymentController {
 	}
 	
 	@RequestMapping(path="/delete-type",method=RequestMethod.DELETE)
-	public ResponseEntity<DefaultMessage<Boolean>> deletePaymentType(@RequestParam(required=true) int paymentTypeId){
-		return null;
-		
+	public ResponseEntity<DefaultMessage<Boolean>> deletePaymentType(@RequestParam(required=true) int paymentTypeId,@RequestParam(required=true) int shopId){
+		DefaultMessage<Boolean> defaultMsg= new DefaultMessage<Boolean>();
+		try {
+			dbserviceFeignClient.deletePayment(paymentTypeId, shopId);
+		}catch (Exception e) {
+			defaultMsg.setResponse(false);
+			defaultMsg.setResponseCode("400");
+			defaultMsg.setResponseMessage("error occured in delete the staff"+e.getLocalizedMessage());
+			return new ResponseEntity<DefaultMessage<Boolean>>(defaultMsg,HttpStatus.BAD_REQUEST);
+		}
+		defaultMsg.setResponse(true);
+		defaultMsg.setResponseCode("200");
+		defaultMsg.setResponseMessage("staff deleted with given id");
+		return new ResponseEntity<DefaultMessage<Boolean>>(defaultMsg,HttpStatus.OK);
 	}
 	
 	@RequestMapping(path="/update-type",method=RequestMethod.PUT)
-	public ResponseEntity<DefaultMessage<Paymenttype>> updatePaymentType(@ModelAttribute Paymenttype paymentType){
-		return null;
-		
+	public ResponseEntity<DefaultMessage<Paymenttype>> updatePaymentType(@ModelAttribute PaymentTypeRequest paymentType,@RequestParam(required=true) int paymentId){
+		DefaultMessage<Paymenttype> defaultResponse = new DefaultMessage<Paymenttype>();
+		Paymenttype type = dbserviceFeignClient.fetchByPaymentTypeID(paymentId, paymentType.getShopId());
+		if(type != null) {
+			Paymenttype newpaymentType = dbserviceFeignClient.savePaymentType(paymentType);
+			defaultResponse.setResponse(newpaymentType);
+	 		defaultResponse.setResponseCode("200");
+	 		defaultResponse.setResponseMessage(" payment type updated ");
+	 		return new ResponseEntity<DefaultMessage<Paymenttype>>(defaultResponse,HttpStatus.OK);
+		}else {
+			defaultResponse.setResponse(type);
+	 		defaultResponse.setResponseCode("200");
+	 		defaultResponse.setResponseMessage("payment type not updated");
+	 		return new ResponseEntity<DefaultMessage<Paymenttype>>(defaultResponse,HttpStatus.OK);
+		}
 	}
 
 	

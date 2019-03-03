@@ -219,9 +219,9 @@ public class BillingController {
 	}
 	
 	@RequestMapping(path="/find-bill/bill-number",method=RequestMethod.GET)
-	public ResponseEntity<DefaultMessage<Bill>> fetchBillByBillNum(@RequestParam String billNum){
+	public ResponseEntity<DefaultMessage<Bill>> fetchBillByBillNum(@RequestParam(required=true) String billNum,@RequestParam(required=true) int shopId){
 		DefaultMessage<Bill> defaultResponse = new DefaultMessage<Bill>();
-		Optional<Bill> listofBill = dbserviceFeignClient.findByBillNum(billNum);
+		Optional<Bill> listofBill = dbserviceFeignClient.findByBillNum(billNum, shopId);
 		if(listofBill.isPresent()) {
 			defaultResponse.setResponse(listofBill.get());
 	 		defaultResponse.setResponseCode("200");
@@ -260,9 +260,9 @@ public class BillingController {
 	}
 	
 	@RequestMapping(path="/find-bill/bill-id",method=RequestMethod.GET)
-	public ResponseEntity<DefaultMessage<Bill>> fetchBillById(@RequestParam int billId){
+	public ResponseEntity<DefaultMessage<Bill>> fetchBillById(@RequestParam(required=true) int billId,@RequestParam(required=true) int shopId){
 		DefaultMessage<Bill> defaultResponse = new DefaultMessage<Bill>();
-		Optional<Bill> listofBill = dbserviceFeignClient.findByBillId(billId);
+		Optional<Bill> listofBill = dbserviceFeignClient.findByBillId(billId, shopId);
 		if(listofBill.isPresent()) {
 			defaultResponse.setResponse(listofBill.get());
 	 		defaultResponse.setResponseCode("200");

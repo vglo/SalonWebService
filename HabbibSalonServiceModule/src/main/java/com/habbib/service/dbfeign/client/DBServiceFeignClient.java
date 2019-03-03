@@ -26,7 +26,7 @@ public interface DBServiceFeignClient {
 	public List<Salonservice> getSalonServices(@PathVariable int shopId);
 	
 	@RequestMapping(path="/dao/get-service-info/{serviceId}",method=RequestMethod.GET)
-	public Optional<Salonservice> getServiceInfo(@PathVariable int serviceId);
+	public Optional<Salonservice> getServiceInfo(@PathVariable int serviceId,@RequestParam int shopId);
 	
 	
 	@RequestMapping(path="/dao/save-service",method=RequestMethod.POST)
@@ -35,5 +35,10 @@ public interface DBServiceFeignClient {
 	@RequestMapping(path="/dao/validate-service",method=RequestMethod.GET)
 	public Salonservice validateService(@RequestParam String name,@RequestParam double price,@RequestParam int shopId);
 	
+	@RequestMapping(path="/dao/update-service",method=RequestMethod.PUT)
+	public Salonservice updateService(@RequestBody SalonserviceRequest salonServiceReq,@RequestParam int serviceId);
+	
+	@RequestMapping(path="/dao/delete-service",method=RequestMethod.DELETE)
+	public void deleteService(@RequestParam int serviceId,@RequestParam int shopId);
 	
 }

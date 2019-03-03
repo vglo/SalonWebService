@@ -42,7 +42,7 @@ public class DBServiceFallback implements DBServiceFeignClient {
 	}
 
 	@Override
-	public Staffinfo findStaffByid(int staffId) {
+	public Staffinfo findStaffByid(int staffId,int shopid) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -69,6 +69,18 @@ public class DBServiceFallback implements DBServiceFeignClient {
 	public Role findRoleByid(int id) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public Staffinfo updateStaff(StaffinfoRequest staffInfoReq, int staffId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void deleteStaff(int staffId, int shopId) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

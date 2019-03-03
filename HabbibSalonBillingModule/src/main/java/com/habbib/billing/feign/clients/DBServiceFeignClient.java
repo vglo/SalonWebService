@@ -37,10 +37,10 @@ public interface DBServiceFeignClient {
 	
 	
 	@RequestMapping(path="/dao/fetch/billById/{id}",method=RequestMethod.GET)
-	public Optional<Bill> findByBillId(@PathVariable("id") int billId);
+	public Optional<Bill> findByBillId(@PathVariable("id") int billId,@RequestParam int shopId);
 	
 	@RequestMapping(path="/dao/fetch/billByBillNum/{bill-number}",method=RequestMethod.GET)
-	public Optional<Bill> findByBillNum(@PathVariable("bill-number") String billNumber);
+	public Optional<Bill> findByBillNum(@PathVariable("bill-number") String billNumber,@RequestParam int shopId);
 	
 	@RequestMapping(path="/dao/get-service-info/{serviceId}",method=RequestMethod.GET)
 	public Optional<Salonservice> getServiceInfo(@PathVariable int serviceId);
