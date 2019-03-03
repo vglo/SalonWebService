@@ -82,7 +82,7 @@ public class DBServiceFallback implements DBServiceFeignClient {
 	 * @see com.habbib.billing.feign.clients.DBServiceFeignClient#getServiceInfo(int)
 	 */
 	@Override
-	public Optional<Salonservice> getServiceInfo(int serviceId) {
+	public Optional<Salonservice> getServiceInfo(int serviceId,int shopId) {
 		return null;
 	}
 
@@ -92,7 +92,7 @@ public class DBServiceFallback implements DBServiceFeignClient {
 	 * @see com.habbib.billing.feign.clients.DBServiceFeignClient#findByCustId(int)
 	 */
 	@Override
-	public Optional<Customerinfo> findByCustId(int customerId) {
+	public Optional<Customerinfo> findByCustId(int customerId,int shopId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -139,7 +139,7 @@ public class DBServiceFallback implements DBServiceFeignClient {
 	 * @see com.habbib.billing.feign.clients.DBServiceFeignClient#findStaffByid(int)
 	 */
 	@Override
-	public Staffinfo findStaffByid(int staffId) {
+	public Staffinfo findStaffByid(int staffId,int shopId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -148,7 +148,7 @@ public class DBServiceFallback implements DBServiceFeignClient {
 	 * @see com.habbib.billing.feign.clients.DBServiceFeignClient#fetchByPaymentTypeID(int)
 	 */
 	@Override
-	public Paymenttype fetchByPaymentTypeID(int id) {
+	public Paymenttype fetchByPaymentTypeID(int id,int shopid) {
 		// TODO Auto-generated method stub
 		return null;
 	}

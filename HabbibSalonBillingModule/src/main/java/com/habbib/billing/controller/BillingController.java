@@ -67,7 +67,7 @@ public class BillingController {
 		LOG.info("start Billing #BillingController");
 		
 		try {
-			Optional<Customerinfo> customerInfo = dbserviceFeignClient.findByCustId(billRequest.getCustomerId());
+			Optional<Customerinfo> customerInfo = dbserviceFeignClient.findByCustId(billRequest.getCustomerId(),billRequest.getShopId());
 			if(!customerInfo.isPresent()) {
 				dfault.setResponseCode("400");
 				dfault.setResponseMessage("Customer with given id is not registered, please register the customer");
@@ -81,14 +81,14 @@ public class BillingController {
 				return new ResponseEntity<DefaultMessage<Bill>>(dfault,HttpStatus.BAD_REQUEST);
 			}
 			dbBillRequest.setShopId(billRequest.getShopId());
-			Staffinfo staff = dbserviceFeignClient.findStaffByid(billRequest.getServiceStaffId());
+			Staffinfo staff = dbserviceFeignClient.findStaffByid(billRequest.getServiceStaffId(),billRequest.getShopId());
 			if(staff == null) {
 				dfault.setResponseCode("400");
 				dfault.setResponseMessage("Staff with given id is not present/registered, please enter valid staff id");
 				return new ResponseEntity<DefaultMessage<Bill>>(dfault,HttpStatus.BAD_REQUEST);
 			}
 			dbBillRequest.setServingStaff(billRequest.getServiceStaffId());
-			Paymenttype paymentType = dbserviceFeignClient.fetchByPaymentTypeID(billRequest.getType());
+			Paymenttype paymentType = dbserviceFeignClient.fetchByPaymentTypeID(billRequest.getType(),billRequest.getShopId());
 			if(paymentType ==null) {
 				dfault.setResponseCode("400");
 				dfault.setResponseMessage("Payment method with given id is not avialable, please choose valid payment type");
@@ -97,7 +97,7 @@ public class BillingController {
 			dbBillRequest.setPaymentType(billRequest.getType());
 			billHasServiceList = billRequest.getBillHasService();
 			for(BillHasService billHasService: billHasServiceList ) {
-			Optional<Salonservice> salonService = dbserviceFeignClient.getServiceInfo(billHasService.getServiceId());
+			Optional<Salonservice> salonService = dbserviceFeignClient.getServiceInfo(billHasService.getServiceId(),billRequest.getShopId());
 			
 				if(salonService.isPresent()) {
 					totalServicePay += salonService.get().getPrice()*billHasService.getQuant();
@@ -137,9 +137,9 @@ public class BillingController {
 			}
 				  
 		}catch(Exception exception) {
-			dfault.setResponseMessage(exception.getLocalizedMessage());
-			dfault.setResponseCode("403");
-			return new ResponseEntity<DefaultMessage<Bill>>(HttpStatus.FORBIDDEN);
+			dfault.setResponseMessage(exception.getMessage());
+			dfault.setResponseCode("500");
+			return new ResponseEntity<DefaultMessage<Bill>>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
 	}
@@ -236,9 +236,9 @@ public class BillingController {
 	}
 	
 	@RequestMapping(path="/find-bill/cust-id",method=RequestMethod.GET)
-	public ResponseEntity<DefaultMessage<List<Bill>>> fetchBillByCustId(@RequestParam int custId){
+	public ResponseEntity<DefaultMessage<List<Bill>>> fetchBillByCustId(@RequestParam(required=true) int custId,@RequestParam(required=true) int shopId){
 		DefaultMessage<List<Bill>> defaultResponse = new DefaultMessage<List<Bill>>();
-		Optional<Customerinfo> customerInfo = dbserviceFeignClient.findByCustId(custId);
+		Optional<Customerinfo> customerInfo = dbserviceFeignClient.findByCustId(custId,shopId);
 		if(!customerInfo.isPresent()) {
 			defaultResponse.setResponseCode("404");
 			defaultResponse.setResponseMessage("Customer with given id is not registered, please register the customer");

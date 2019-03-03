@@ -43,10 +43,10 @@ public interface DBServiceFeignClient {
 	public Optional<Bill> findByBillNum(@PathVariable("bill-number") String billNumber,@RequestParam int shopId);
 	
 	@RequestMapping(path="/dao/get-service-info/{serviceId}",method=RequestMethod.GET)
-	public Optional<Salonservice> getServiceInfo(@PathVariable int serviceId);
+	public Optional<Salonservice> getServiceInfo(@PathVariable int serviceId,@RequestParam int shopId);
 	
 	@RequestMapping(path="/dao/fetch/customerById/{id}",method=RequestMethod.GET)
-	public Optional<Customerinfo> findByCustId(@PathVariable("id") int customerId);
+	public Optional<Customerinfo> findByCustId(@PathVariable("id") int customerId,@RequestParam int shopId);
 	
 	@RequestMapping(path="/dao/filter-date-range",method=RequestMethod.GET)
 	public List<Bill> filterByDateRange(@RequestParam String startDate,@RequestParam String endDate,@RequestParam int shopId);
@@ -62,10 +62,10 @@ public interface DBServiceFeignClient {
 	public Optional<Shopinfo> findByShopId(@PathVariable() int shopId);
 	
 	@RequestMapping(path="/dao/find-staff/{staffId}", method=RequestMethod.GET)
-	public Staffinfo findStaffByid(@PathVariable int staffId);
+	public Staffinfo findStaffByid(@PathVariable int staffId,@RequestParam int shopId);
 	
 	@RequestMapping(path="/dao/fetch/payment-type/{id}",method=RequestMethod.GET)
-	public Paymenttype fetchByPaymentTypeID(@PathVariable int id);
+	public Paymenttype fetchByPaymentTypeID(@PathVariable int id,@RequestParam int shopId);
 	
 	@RequestMapping(path="/dao/find-bill/cust-id",method=RequestMethod.GET)
 	public List<Bill> fetchBillByCustId(@RequestParam int custId);
