@@ -65,18 +65,11 @@ public class SMSEmailSenderController {
 		Optional<Customerinfo> customer = dbClient.findByCustId(emailContent.getCustId(), emailContent.getShopId());
 		
 		if(bill.isPresent() && customer.isPresent()) {
-			boolean mailSend = emailService.sendSimpleMessage(emailContent.getToEmailId(),bill.get(),customer.get());
-			if(mailSend) {
+			emailService.sendMessageWithAttachment(bill.get(), customer.get());
 				dfaultMsg.setResponseCode("200");
 				dfaultMsg.setResponseMessage("Email send succuessFully");
-				
 				return new ResponseEntity<DefaultMessage<String>>(HttpStatus.OK);
-			}else {
-				dfaultMsg.setResponseCode("400");
-				dfaultMsg.setResponseMessage("Email not send");
-				
-				return new ResponseEntity<DefaultMessage<String>>(HttpStatus.BAD_REQUEST);
-			}
+			
 		}
 		dfaultMsg.setResponseCode("500");
 		dfaultMsg.setResponseMessage("Error occured");
@@ -88,7 +81,7 @@ public class SMSEmailSenderController {
 	//to reciev any msg
 	@RequestMapping(value="/email",method=RequestMethod.GET)
 	public void SmsApp() {
-		emailService.sendMessageWithAttachment("agrawaly52@gmail.com", "Order", "Please find the bill");
+		//emailService.sendMessageWithAttachment("agrawaly52@gmail.com");
 	}
 
 }
