@@ -34,7 +34,7 @@ public class EmailServiceImpl implements EmailService {
         MimeMessage message = emailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message,true);
         
-        helper.setTo(new InternetAddress("agrawaly52@gmail.com"));
+        helper.setTo(new InternetAddress(customer.getEmail()));
       //  helper.setCc(new InternetAddress("agrawaly52@gmail.com"));
         helper.setSubject("Thanks for visting Habbib salon");
         helper.setText("<html><body style='background-color:#F7F6F6;'><br><h2>Hi "
