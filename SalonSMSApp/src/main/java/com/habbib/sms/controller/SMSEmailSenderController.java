@@ -68,7 +68,7 @@ public class SMSEmailSenderController {
 			emailService.sendMessageWithAttachment(bill.get(), customer.get());
 				dfaultMsg.setResponseCode("200");
 				dfaultMsg.setResponseMessage("Email send succuessFully");
-				return new ResponseEntity<DefaultMessage<String>>(HttpStatus.OK);
+				return new ResponseEntity<DefaultMessage<String>>(dfaultMsg,HttpStatus.OK);
 			
 		}
 		dfaultMsg.setResponseCode("500");
