@@ -57,19 +57,19 @@ public class CustomerController {
 		Optional<Customerinfo> custExists = dbFeignClient.validateCust(customer.getMobile(),customer.getIdShopInfo());
 		
 		if(custExists.isPresent()) {
-			defualt.setResponseCode("200");
+			defualt.setResponseCode("400");
 			defualt.setResponseMessage("Customer already registered");
 			defualt.setResponse(custExists.get());
-			return new ResponseEntity<DefaultMessage<Customerinfo>>(defualt,HttpStatus.OK);
+			return new ResponseEntity<DefaultMessage<Customerinfo>>(defualt,HttpStatus.BAD_REQUEST);
 		}else {
 			//to convert date into specific date formate 
 			customer.setDob(util.convertDateFormate(customer.getDob()));
 			//saving customer
 			Customerinfo newCust = dbFeignClient.saveCustomer(customer);
-			defualt.setResponseCode("201");
+			defualt.setResponseCode("200");
 			defualt.setResponseMessage("Customer registered successfuly");
 			defualt.setResponse(newCust);
-			return new ResponseEntity<DefaultMessage<Customerinfo>>(defualt,HttpStatus.CREATED);
+			return new ResponseEntity<DefaultMessage<Customerinfo>>(defualt,HttpStatus.OK);
 		}
 		}catch (Exception e) {
 			defualt.setResponse(null);
