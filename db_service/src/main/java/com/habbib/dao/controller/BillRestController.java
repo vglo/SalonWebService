@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,8 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.habbib.dao.JPArepository.BillHasServiceRepository;
 import com.habbib.dao.JPArepository.BillRepository;
 import com.habbib.dao.JPArepository.CustomerInfoRepository;
-import com.habbib.dao.JPArepository.SalonServiceRepository;
 import com.habbib.dao.JPArepository.ShopInfoRepository;
+import com.habbib.dao.JPArepository.StaffInfoRepository;
 import com.habbib.dao.entitiy.Bill;
 import com.habbib.dao.entitiy.Billhasservice;
 import com.habbib.dao.entitiy.Customerinfo;
@@ -43,9 +42,9 @@ public class BillRestController {
 	
 	@Autowired
 	private DBService dbService;
-	
+
 	@Autowired
-	private SalonServiceRepository salonService;
+	private StaffInfoRepository staffInfoRepo;
 
 	@Autowired
 	private ShopInfoRepository shopinfoRepo;
@@ -64,7 +63,11 @@ public class BillRestController {
 			Billhasservice billHasService = new Billhasservice();
 			billHasService.setBill(bill);
 			billHasService.setQuantity(billHasRequst.getQuantity());
-			billHasService.setSalonservice(salonService.getOne(billHasRequst.getIdSalonService()));
+			billHasService.setPrice(billHasRequst.getPrice());
+			billHasService.setAmount(billHasRequst.getPrice()*billHasRequst.getQuantity());
+			billHasService.setName(billHasRequst.getName());
+			billHasService.setShopinfo(shopinfoRepo.getOne(billModel.getShopId()));
+			billHasService.setStaffinfo(staffInfoRepo.getOne(billHasRequst.getServiceStaffId()));
 			billHasServiceList.add(billHasService);
 		}
 		bill.setBillhasservices(billHasServiceList);

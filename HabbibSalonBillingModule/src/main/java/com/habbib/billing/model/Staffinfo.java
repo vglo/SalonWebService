@@ -1,11 +1,16 @@
 package com.habbib.billing.model;
 
 import java.io.Serializable;
+import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
 
-public class Staffinfo  {
+/**
+ * The persistent class for the staffinfo database table.
+ * 
+ */
+public class Staffinfo {
 
 	private int idStaffInfo;
 
@@ -19,9 +24,9 @@ public class Staffinfo  {
 
 	private String mobile;
 
-	private List<Bill> bills;
+	private List<Role> roles;
 
-	private Role roleBean;
+	private Shopinfo shopinfo;
 
 
 	public Staffinfo() {
@@ -75,24 +80,22 @@ public class Staffinfo  {
 		this.mobile = mobile;
 	}
 
-	public List<Bill> getBills() {
-		return this.bills;
+	public List<Role> getRoles() {
+		return this.roles;
 	}
 
-	public void setBills(List<Bill> bills) {
-		this.bills = bills;
+	public void setRoles(List<Role> roles) {
+		this.roles = roles;
 	}
+
+	public Shopinfo getShopinfo() {
+		return this.shopinfo;
+	}
+
+	public void setShopinfo(Shopinfo shopinfo) {
+		this.shopinfo = shopinfo;
+	}
+
 
 	
-
-	public Role getRoleBean() {
-		return this.roleBean;
-	}
-
-	public void setRoleBean(Role roleBean) {
-		this.roleBean = roleBean;
-	}
-
-	
-
 }

@@ -25,9 +25,9 @@ public class Role implements Serializable {
 
 	private String role;
 
-	//bi-directional many-to-one association to Staffinfo
+	//bi-directional many-to-many association to Staffinfo
 	@JsonIgnore
-	@OneToMany(mappedBy="roleBean")
+	@ManyToMany(mappedBy="roles")
 	private List<Staffinfo> staffinfos;
 
 	public Role() {
@@ -63,20 +63,6 @@ public class Role implements Serializable {
 
 	public void setStaffinfos(List<Staffinfo> staffinfos) {
 		this.staffinfos = staffinfos;
-	}
-
-	public Staffinfo addStaffinfo(Staffinfo staffinfo) {
-		getStaffinfos().add(staffinfo);
-		staffinfo.setRoleBean(this);
-
-		return staffinfo;
-	}
-
-	public Staffinfo removeStaffinfo(Staffinfo staffinfo) {
-		getStaffinfos().remove(staffinfo);
-		staffinfo.setRoleBean(null);
-
-		return staffinfo;
 	}
 
 }

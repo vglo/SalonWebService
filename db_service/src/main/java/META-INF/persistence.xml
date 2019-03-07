@@ -13,5 +13,6 @@
 		<class>com.habbib.dao.entitiy.Shopinfo</class>
 		<class>com.habbib.dao.entitiy.Shoptype</class>
 		<class>com.habbib.dao.entitiy.Staffinfo</class>
+		<class>com.habbib.dao.entitiy.Usercredential</class>
 	</persistence-unit>
 </persistence>

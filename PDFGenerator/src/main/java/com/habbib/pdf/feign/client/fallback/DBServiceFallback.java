@@ -26,7 +26,7 @@ public class DBServiceFallback implements DBServiceFeignClient {
 
 	
 	@Override
-	public Optional<Customerinfo> findByCustId(int customerId) {
+	public Optional<Customerinfo> findByCustId(int customerId,int shopId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -47,7 +47,7 @@ public class DBServiceFallback implements DBServiceFeignClient {
 
 
 	@Override
-	public Optional<Bill> findByBillId(int billId) {
+	public Optional<Bill> findByBillId(int billId,int shopId) {
 		// TODO Auto-generated method stub
 		return null;
 	}

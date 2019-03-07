@@ -11,7 +11,6 @@ import java.util.List;
 
 public class BillRequest  {
 
-
 	private String billNo;
 
 	private double cgstPer;
@@ -38,8 +37,6 @@ public class BillRequest  {
 	
 	private int shopId;
 	
-	private int servingStaff;
-
 	private List<BillhasserviceRequest> billhasservices;
 
 	private int paymentType;
@@ -181,24 +178,6 @@ public class BillRequest  {
 	 */
 	public void setShopId(int shopId) {
 		this.shopId = shopId;
-	}
-
-
-
-	/**
-	 * @return the servingStaff
-	 */
-	public int getServingStaff() {
-		return servingStaff;
-	}
-
-
-
-	/**
-	 * @param servingStaff the servingStaff to set
-	 */
-	public void setServingStaff(int servingStaff) {
-		this.servingStaff = servingStaff;
 	}
 
 

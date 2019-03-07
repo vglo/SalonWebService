@@ -1,28 +1,20 @@
 package com.habbib.dao.entitiy;
 
 import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import java.util.Date;
+import java.util.List;
 
 
 /**
  * The persistent class for the customerinfo database table.
  * 
  */
-@Entity(name="CustomerInfo")
+@Entity
+@NamedQuery(name="Customerinfo.findAll", query="SELECT c FROM Customerinfo c")
 public class Customerinfo implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -43,21 +35,27 @@ public class Customerinfo implements Serializable {
 
 	private String mobile;
 
+	//bi-directional many-to-one association to Appointment
+	@JsonIgnore
+	@OneToMany(mappedBy="customerinfo")
+	private List<Appointment> appointments;
+
 	//bi-directional many-to-one association to Bill
 	@JsonIgnore
 	@OneToMany(mappedBy="customerinfo")
 	private List<Bill> bills;
 
 	//bi-directional many-to-one association to Shopinfo
-	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name="shopId")
 	private Shopinfo shopinfo;
 
-	//bi-directional many-to-one association to Appointment
+	//bi-directional many-to-one association to Usercredential
 	@JsonIgnore
-	@OneToMany(mappedBy="customerinfo")
-	private List<Appointment> appointments;
+	@ManyToOne
+	@JoinColumn(name="userCredentials")
+	private Usercredential usercredential;
 
 	public Customerinfo() {
 	}
@@ -118,6 +116,28 @@ public class Customerinfo implements Serializable {
 		this.mobile = mobile;
 	}
 
+	public List<Appointment> getAppointments() {
+		return this.appointments;
+	}
+
+	public void setAppointments(List<Appointment> appointments) {
+		this.appointments = appointments;
+	}
+
+	public Appointment addAppointment(Appointment appointment) {
+		getAppointments().add(appointment);
+		appointment.setCustomerinfo(this);
+
+		return appointment;
+	}
+
+	public Appointment removeAppointment(Appointment appointment) {
+		getAppointments().remove(appointment);
+		appointment.setCustomerinfo(null);
+
+		return appointment;
+	}
+
 	public List<Bill> getBills() {
 		return this.bills;
 	}
@@ -148,26 +168,12 @@ public class Customerinfo implements Serializable {
 		this.shopinfo = shopinfo;
 	}
 
-	public List<Appointment> getAppointments() {
-		return this.appointments;
+	public Usercredential getUsercredential() {
+		return this.usercredential;
 	}
 
-	public void setAppointments(List<Appointment> appointments) {
-		this.appointments = appointments;
-	}
-
-	public Appointment addAppointment(Appointment appointment) {
-		getAppointments().add(appointment);
-		appointment.setCustomerinfo(this);
-
-		return appointment;
-	}
-
-	public Appointment removeAppointment(Appointment appointment) {
-		getAppointments().remove(appointment);
-		appointment.setCustomerinfo(null);
-
-		return appointment;
+	public void setUsercredential(Usercredential usercredential) {
+		this.usercredential = usercredential;
 	}
 
 }

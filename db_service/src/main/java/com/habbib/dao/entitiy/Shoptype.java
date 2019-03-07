@@ -12,7 +12,8 @@ import java.util.List;
  * The persistent class for the shoptype database table.
  * 
  */
-@Entity(name="ShopType")
+@Entity
+@NamedQuery(name="Shoptype.findAll", query="SELECT s FROM Shoptype s")
 public class Shoptype implements Serializable {
 	private static final long serialVersionUID = 1L;
 

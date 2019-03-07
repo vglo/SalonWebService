@@ -3,7 +3,7 @@ package com.habbib.dao.entitiy;
 import java.io.Serializable;
 import javax.persistence.*;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.Date;
 
@@ -38,7 +38,7 @@ public class Campaign implements Serializable {
 	private String title;
 
 	//bi-directional many-to-one association to Shopinfo
-	@JsonIgnore
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@ManyToOne
 	@JoinColumn(name="shopId")
 	private Shopinfo shopinfo;

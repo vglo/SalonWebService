@@ -3,9 +3,11 @@
  */
 package com.habbib.dao.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.aspectj.weaver.ast.And;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,14 +16,19 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import com.habbib.dao.JPArepository.RoleRepository;
 import com.habbib.dao.JPArepository.ShopInfoRepository;
 import com.habbib.dao.JPArepository.StaffInfoRepository;
+import com.habbib.dao.entitiy.QShopinfo;
+import com.habbib.dao.entitiy.QStaffinfo;
 import com.habbib.dao.entitiy.Role;
 import com.habbib.dao.entitiy.Shopinfo;
 import com.habbib.dao.entitiy.Staffinfo;
 import com.habbib.dao.model.StaffinfoRequest;
 import com.habbib.dao.service.DBService;
+import com.querydsl.core.types.Predicate;
 
 /**
  * @author yash
@@ -120,14 +127,20 @@ public class StaffDBController {
 		return null;
 	}
 	
-	@RequestMapping(path="/find-staff/roles",method=RequestMethod.GET)
-	public List<Staffinfo> findStaffByRole(@RequestParam int roleId,@RequestParam int shopid){
-		Shopinfo shop = shopInfo.getOne(shopid);
-		Role role = roleInfo.getOne(roleId);
-		List<Staffinfo> staffList = staffInfo.findByRoleBeanAndShopinfo(role, shop);
-		if(staffList != null)
-			return staffList;
-		return null;
-		
-	}
+	
+	  @RequestMapping(path="/find-staff/roles",method=RequestMethod.GET)
+	  public List<Staffinfo> findStaffByRole(@RequestParam int roleId,@RequestParam int shopid){
+		  QStaffinfo qSatff = QStaffinfo.staffinfo;
+		  Optional<Role> role = roleInfo.findById(roleId);
+		  Optional<Shopinfo> shop = shopInfo.findById(shopid);
+		  if(role != null && shop != null) {
+			Predicate predicate = qSatff.roles.contains(role.get()).and(qSatff.shopinfo.eq(shop.get()));
+			Iterable<Staffinfo> staffList = staffInfo.findAll(predicate);
+			List<Staffinfo> mutableList = ImmutableList.copyOf(staffList);
+			return mutableList;  
+		  }
+		  return null;
+		  
+	  }
+	 
 }

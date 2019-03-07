@@ -21,8 +21,8 @@ import com.habbib.pdf.model.Shopinfo;
 @FeignClient(name="db-service", fallback = DBServiceFallback.class)
 public interface DBServiceFeignClient {
 
-	@RequestMapping(path="/dao/fetch/customerById/{id}", method=RequestMethod.GET)
-	public Optional<Customerinfo> findByCustId(@PathVariable("id") int customerId);
+	@RequestMapping(path="/dao/fetch/customerById/{id}",method=RequestMethod.GET)
+	public Optional<Customerinfo> findByCustId(@PathVariable("id") int customerId,@RequestParam int shopId);
 	
 	@RequestMapping(path="/dao/find-appointment/custmer-id",method=RequestMethod.GET)
 	public List<Appointment> fetchByCustomerId(@RequestParam int custid);
@@ -30,8 +30,9 @@ public interface DBServiceFeignClient {
 	@RequestMapping(path="/dao/fetch/shopById/{shopId}",method=RequestMethod.GET)
 	public Optional<Shopinfo> findByShopId(@PathVariable() int shopId);
 	
-	@RequestMapping(path="/dao/fetch/billById/{id}", method=RequestMethod.GET)
-	public Optional<Bill> findByBillId(@PathVariable("id") int billId);
+	@RequestMapping(path="/dao/fetch/billById/{id}",method=RequestMethod.GET)
+	public Optional<Bill> findByBillId(@PathVariable("id") int billId,@RequestParam int shopId);
+	
 	
 	@RequestMapping(path="/dao/get-service-info/{serviceId}",method=RequestMethod.GET)
 	public Optional<Salonservice> getServiceInfo(@PathVariable int serviceId);

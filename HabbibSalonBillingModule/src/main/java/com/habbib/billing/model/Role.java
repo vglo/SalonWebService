@@ -48,18 +48,6 @@ public class Role{
 		this.staffinfos = staffinfos;
 	}
 
-	public Staffinfo addStaffinfo(Staffinfo staffinfo) {
-		getStaffinfos().add(staffinfo);
-		staffinfo.setRoleBean(this);
-
-		return staffinfo;
-	}
-
-	public Staffinfo removeStaffinfo(Staffinfo staffinfo) {
-		getStaffinfos().remove(staffinfo);
-		staffinfo.setRoleBean(null);
-
-		return staffinfo;
-	}
+	
 
 }

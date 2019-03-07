@@ -3,8 +3,6 @@ package com.habbib.dao.model;
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.format.annotation.DateTimeFormat;
-
 
 /**
  * The persistent class for the staffinfo database table.
@@ -22,7 +20,7 @@ public class StaffinfoRequest {
 
 	private String mobile;
 
-	private int roleId;
+	private List<Integer> roleId;
 
 	private int shopId;
 
@@ -70,21 +68,6 @@ public class StaffinfoRequest {
 		this.mobile = mobile;
 	}
 
-	
-
-	/**
-	 * @return the roleId
-	 */
-	public int getRoleId() {
-		return roleId;
-	}
-
-	/**
-	 * @param roleId the roleId to set
-	 */
-	public void setRoleId(int roleId) {
-		this.roleId = roleId;
-	}
 
 	/**
 	 * @return the shopId
@@ -98,6 +81,22 @@ public class StaffinfoRequest {
 	 */
 	public void setShopId(int shopId) {
 		this.shopId = shopId;
+	}
+
+
+	/**
+	 * @return the roleId
+	 */
+	public List<Integer> getRoleId() {
+		return roleId;
+	}
+
+
+	/**
+	 * @param roleId the roleId to set
+	 */
+	public void setRoleId(List<Integer> roleId) {
+		this.roleId = roleId;
 	}
 
 	

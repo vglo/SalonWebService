@@ -4,7 +4,7 @@ import java.io.Serializable;
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.List;
 
@@ -13,7 +13,8 @@ import java.util.List;
  * The persistent class for the shopinfo database table.
  * 
  */
-@Entity(name="ShopInfo")
+@Entity
+@NamedQuery(name="Shopinfo.findAll", query="SELECT s FROM Shopinfo s")
 public class Shopinfo implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -29,10 +30,20 @@ public class Shopinfo implements Serializable {
 
 	private String phone2;
 
+	//bi-directional many-to-one association to Appointment
+	@JsonIgnore
+	@OneToMany(mappedBy="shopinfo")
+	private List<Appointment> appointments;
+
 	//bi-directional many-to-one association to Bill
 	@JsonIgnore
 	@OneToMany(mappedBy="shopinfo")
 	private List<Bill> bills;
+
+	//bi-directional many-to-one association to Billhasservice
+	@JsonIgnore
+	@OneToMany(mappedBy="shopinfo")
+	private List<Billhasservice> billhasservices;
 
 	//bi-directional many-to-one association to Campaign
 	@JsonIgnore
@@ -75,7 +86,8 @@ public class Shopinfo implements Serializable {
 	private List<Shopinfo> shopinfos;
 
 	//bi-directional many-to-one association to Shoptype
-	@ManyToOne(fetch=FetchType.EAGER)
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+	@ManyToOne
 	@JoinColumn(name="type")
 	private Shoptype shoptype;
 
@@ -83,11 +95,6 @@ public class Shopinfo implements Serializable {
 	@JsonIgnore
 	@OneToMany(mappedBy="shopinfo")
 	private List<Staffinfo> staffinfos;
-
-	//bi-directional many-to-one association to Appointment
-	@JsonIgnore
-	@OneToMany(mappedBy="shopinfo")
-	private List<Appointment> appointments;
 
 	public Shopinfo() {
 	}
@@ -132,6 +139,28 @@ public class Shopinfo implements Serializable {
 		this.phone2 = phone2;
 	}
 
+	public List<Appointment> getAppointments() {
+		return this.appointments;
+	}
+
+	public void setAppointments(List<Appointment> appointments) {
+		this.appointments = appointments;
+	}
+
+	public Appointment addAppointment(Appointment appointment) {
+		getAppointments().add(appointment);
+		appointment.setShopinfo(this);
+
+		return appointment;
+	}
+
+	public Appointment removeAppointment(Appointment appointment) {
+		getAppointments().remove(appointment);
+		appointment.setShopinfo(null);
+
+		return appointment;
+	}
+
 	public List<Bill> getBills() {
 		return this.bills;
 	}
@@ -152,6 +181,28 @@ public class Shopinfo implements Serializable {
 		bill.setShopinfo(null);
 
 		return bill;
+	}
+
+	public List<Billhasservice> getBillhasservices() {
+		return this.billhasservices;
+	}
+
+	public void setBillhasservices(List<Billhasservice> billhasservices) {
+		this.billhasservices = billhasservices;
+	}
+
+	public Billhasservice addBillhasservice(Billhasservice billhasservice) {
+		getBillhasservices().add(billhasservice);
+		billhasservice.setShopinfo(this);
+
+		return billhasservice;
+	}
+
+	public Billhasservice removeBillhasservice(Billhasservice billhasservice) {
+		getBillhasservices().remove(billhasservice);
+		billhasservice.setShopinfo(null);
+
+		return billhasservice;
 	}
 
 	public List<Campaign> getCampaigns() {
@@ -286,28 +337,6 @@ public class Shopinfo implements Serializable {
 		staffinfo.setShopinfo(null);
 
 		return staffinfo;
-	}
-
-	public List<Appointment> getAppointments() {
-		return this.appointments;
-	}
-
-	public void setAppointments(List<Appointment> appointments) {
-		this.appointments = appointments;
-	}
-
-	public Appointment addAppointment(Appointment appointment) {
-		getAppointments().add(appointment);
-		appointment.setShopinfo(this);
-
-		return appointment;
-	}
-
-	public Appointment removeAppointment(Appointment appointment) {
-		getAppointments().remove(appointment);
-		appointment.setShopinfo(null);
-
-		return appointment;
 	}
 
 }

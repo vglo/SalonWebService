@@ -3,17 +3,15 @@ package com.habbib.dao.entitiy;
 import java.io.Serializable;
 import javax.persistence.*;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import java.util.List;
 
 
 /**
  * The persistent class for the salonservice database table.
  * 
  */
-@Entity(name="SalonService")
+@Entity
+@NamedQuery(name="Salonservice.findAll", query="SELECT s FROM Salonservice s")
 public class Salonservice implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -24,11 +22,6 @@ public class Salonservice implements Serializable {
 	private String name;
 
 	private double price;
-
-	//bi-directional many-to-one association to Billhasservice
-	@JsonIgnore
-	@OneToMany(mappedBy="salonservice")
-	private List<Billhasservice> billhasservices;
 
 	//bi-directional many-to-one association to Shopinfo
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
@@ -61,28 +54,6 @@ public class Salonservice implements Serializable {
 
 	public void setPrice(double price) {
 		this.price = price;
-	}
-
-	public List<Billhasservice> getBillhasservices() {
-		return this.billhasservices;
-	}
-
-	public void setBillhasservices(List<Billhasservice> billhasservices) {
-		this.billhasservices = billhasservices;
-	}
-
-	public Billhasservice addBillhasservice(Billhasservice billhasservice) {
-		getBillhasservices().add(billhasservice);
-		billhasservice.setSalonservice(this);
-
-		return billhasservice;
-	}
-
-	public Billhasservice removeBillhasservice(Billhasservice billhasservice) {
-		getBillhasservices().remove(billhasservice);
-		billhasservice.setSalonservice(null);
-
-		return billhasservice;
 	}
 
 	public Shopinfo getShopinfo() {

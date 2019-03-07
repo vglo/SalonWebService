@@ -14,7 +14,8 @@ import java.util.List;
  * The persistent class for the staffinfo database table.
  * 
  */
-@Entity(name="StaffInfo")
+@Entity
+@NamedQuery(name="Staffinfo.findAll", query="SELECT s FROM Staffinfo s")
 public class Staffinfo implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -33,22 +34,36 @@ public class Staffinfo implements Serializable {
 
 	private String mobile;
 
-	//bi-directional many-to-one association to Bill
+	//bi-directional many-to-one association to Billhasservice
 	@JsonIgnore
 	@OneToMany(mappedBy="staffinfo")
-	private List<Bill> bills;
+	private List<Billhasservice> billhasservices;
 
-	//bi-directional many-to-one association to Role
-	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-	@ManyToOne(fetch=FetchType.EAGER)
-	@JoinColumn(name="role")
-	private Role roleBean;
+	//bi-directional many-to-many association to Role
+	@JsonIgnore
+	@ManyToMany
+	@JoinTable(
+		name="staffinfo_has_role"
+		, joinColumns={
+			@JoinColumn(name="StaffInfo_idStaffInfo")
+			}
+		, inverseJoinColumns={
+			@JoinColumn(name="Role_idRole")
+			}
+		)
+	private List<Role> roles;
 
 	//bi-directional many-to-one association to Shopinfo
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@ManyToOne
 	@JoinColumn(name="shopId")
 	private Shopinfo shopinfo;
+
+	//bi-directional many-to-one association to Usercredential
+	@JsonIgnore
+	@ManyToOne
+	@JoinColumn(name="userCredentials")
+	private Usercredential usercredential;
 
 	public Staffinfo() {
 	}
@@ -101,34 +116,34 @@ public class Staffinfo implements Serializable {
 		this.mobile = mobile;
 	}
 
-	public List<Bill> getBills() {
-		return this.bills;
+	public List<Billhasservice> getBillhasservices() {
+		return this.billhasservices;
 	}
 
-	public void setBills(List<Bill> bills) {
-		this.bills = bills;
+	public void setBillhasservices(List<Billhasservice> billhasservices) {
+		this.billhasservices = billhasservices;
 	}
 
-	public Bill addBill(Bill bill) {
-		getBills().add(bill);
-		bill.setStaffinfo(this);
+	public Billhasservice addBillhasservice(Billhasservice billhasservice) {
+		getBillhasservices().add(billhasservice);
+		billhasservice.setStaffinfo(this);
 
-		return bill;
+		return billhasservice;
 	}
 
-	public Bill removeBill(Bill bill) {
-		getBills().remove(bill);
-		bill.setStaffinfo(null);
+	public Billhasservice removeBillhasservice(Billhasservice billhasservice) {
+		getBillhasservices().remove(billhasservice);
+		billhasservice.setStaffinfo(null);
 
-		return bill;
+		return billhasservice;
 	}
 
-	public Role getRoleBean() {
-		return this.roleBean;
+	public List<Role> getRoles() {
+		return this.roles;
 	}
 
-	public void setRoleBean(Role roleBean) {
-		this.roleBean = roleBean;
+	public void setRoles(List<Role> roles) {
+		this.roles = roles;
 	}
 
 	public Shopinfo getShopinfo() {
@@ -137,6 +152,14 @@ public class Staffinfo implements Serializable {
 
 	public void setShopinfo(Shopinfo shopinfo) {
 		this.shopinfo = shopinfo;
+	}
+
+	public Usercredential getUsercredential() {
+		return this.usercredential;
+	}
+
+	public void setUsercredential(Usercredential usercredential) {
+		this.usercredential = usercredential;
 	}
 
 }

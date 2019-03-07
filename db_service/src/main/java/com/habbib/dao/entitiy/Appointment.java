@@ -3,7 +3,7 @@ package com.habbib.dao.entitiy;
 import java.io.Serializable;
 import javax.persistence.*;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.Date;
 
@@ -27,13 +27,13 @@ public class Appointment implements Serializable {
 	private String time;
 
 	//bi-directional many-to-one association to Customerinfo
-	@JsonIgnore
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@ManyToOne
 	@JoinColumn(name="custId")
 	private Customerinfo customerinfo;
 
 	//bi-directional many-to-one association to Shopinfo
-	@JsonIgnore
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@ManyToOne
 	@JoinColumn(name="shopId")
 	private Shopinfo shopinfo;

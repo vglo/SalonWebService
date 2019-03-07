@@ -7,11 +7,13 @@ package com.habbib.billing.request.model;
  * @author yash
  *
  */
-public class BillHasService {
+public class BillhasserviceClientReq {
 
 	private int serviceId;
 	
 	private int quant;
+	
+	private int staffId;
 
 	/**
 	 * @return the serviceId
@@ -39,6 +41,20 @@ public class BillHasService {
 	 */
 	public void setQuant(int quant) {
 		this.quant = quant;
+	}
+
+	/**
+	 * @return the staffId
+	 */
+	public int getStaffId() {
+		return staffId;
+	}
+
+	/**
+	 * @param staffId the staffId to set
+	 */
+	public void setStaffId(int staffId) {
+		this.staffId = staffId;
 	}
 	
 	

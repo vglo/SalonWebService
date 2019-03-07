@@ -28,9 +28,8 @@ import com.habbib.billing.model.Customerinfo;
 import com.habbib.billing.model.Paymenttype;
 import com.habbib.billing.model.Salonservice;
 import com.habbib.billing.model.Shopinfo;
-import com.habbib.billing.model.Staffinfo;
 import com.habbib.billing.request.model.BillClientRequest;
-import com.habbib.billing.request.model.BillHasService;
+import com.habbib.billing.request.model.BillhasserviceClientReq;
 import com.habbib.billing.service.BillingService;
 import com.habib.utility.DefaultMessage;
 
@@ -59,13 +58,16 @@ public class BillingController {
 	@ExceptionHandler
 	public ResponseEntity<DefaultMessage<Bill>> saveBill(@Valid @ModelAttribute BillClientRequest billRequest) {
 		DefaultMessage<Bill> dfault = new DefaultMessage<Bill>();
-		List<BillHasService> billHasServiceList = new ArrayList<BillHasService>();
+		List<BillhasserviceClientReq> clientReqList = new ArrayList<BillhasserviceClientReq>();
 		List<BillhasserviceRequest> dbBillHasServiceList = new ArrayList<BillhasserviceRequest>();
 		double totalServicePay = 0;
 		BillRequest dbBillRequest = new BillRequest();
 		LOG.info("Inside save bill method #BillingController");
 		LOG.info("start Billing #BillingController");
 		
+		if(billRequest.getBillHasService().size() == 0 && billRequest.getBillHasService() == null || billRequest == null)
+			throw new NullPointerException();
+			
 		try {
 			Optional<Customerinfo> customerInfo = dbserviceFeignClient.findByCustId(billRequest.getCustomerId(),billRequest.getShopId());
 			if(!customerInfo.isPresent()) {
@@ -81,29 +83,26 @@ public class BillingController {
 				return new ResponseEntity<DefaultMessage<Bill>>(dfault,HttpStatus.BAD_REQUEST);
 			}
 			dbBillRequest.setShopId(billRequest.getShopId());
-			Staffinfo staff = dbserviceFeignClient.findStaffByid(billRequest.getServiceStaffId(),billRequest.getShopId());
-			if(staff == null) {
-				dfault.setResponseCode("400");
-				dfault.setResponseMessage("Staff with given id is not present/registered, please enter valid staff id");
-				return new ResponseEntity<DefaultMessage<Bill>>(dfault,HttpStatus.BAD_REQUEST);
-			}
-			dbBillRequest.setServingStaff(billRequest.getServiceStaffId());
-			Paymenttype paymentType = dbserviceFeignClient.fetchByPaymentTypeID(billRequest.getType(),billRequest.getShopId());
+		
+			Paymenttype paymentType = dbserviceFeignClient.fetchByPaymentTypeID(billRequest.getPaymentType(),billRequest.getShopId());
 			if(paymentType ==null) {
 				dfault.setResponseCode("400");
 				dfault.setResponseMessage("Payment method with given id is not avialable, please choose valid payment type");
 				return new ResponseEntity<DefaultMessage<Bill>>(dfault,HttpStatus.BAD_REQUEST);
 			}
-			dbBillRequest.setPaymentType(billRequest.getType());
-			billHasServiceList = billRequest.getBillHasService();
-			for(BillHasService billHasService: billHasServiceList ) {
+			dbBillRequest.setPaymentType(billRequest.getPaymentType());
+			clientReqList = billRequest.getBillHasService();
+			for(BillhasserviceClientReq billHasService: clientReqList ) {
 			Optional<Salonservice> salonService = dbserviceFeignClient.getServiceInfo(billHasService.getServiceId(),billRequest.getShopId());
 			
 				if(salonService.isPresent()) {
 					totalServicePay += salonService.get().getPrice()*billHasService.getQuant();
 					BillhasserviceRequest dbBillHasServiceRequest = new BillhasserviceRequest();
-					dbBillHasServiceRequest.setIdSalonService(billHasService.getServiceId());
+					dbBillHasServiceRequest.setName(salonService.get().getName());
+					dbBillHasServiceRequest.setPrice(salonService.get().getPrice());
 					dbBillHasServiceRequest.setQuantity(billHasService.getQuant());
+					dbBillHasServiceRequest.setAmount(salonService.get().getPrice()*billHasService.getQuant());
+					dbBillHasServiceRequest.setServiceStaffId(billHasService.getStaffId());
 					dbBillHasServiceList.add(dbBillHasServiceRequest);
 				}else {
 					dfault.setResponseCode("404");

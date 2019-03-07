@@ -1,11 +1,13 @@
 package com.habbib.sms.service;
 
+import java.io.File;
 import java.time.LocalDate;
 
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailParseException;
 import org.springframework.mail.MailSendException;
@@ -32,12 +34,13 @@ public class EmailServiceImpl implements EmailService {
         // ...
         try {
         MimeMessage message = emailSender.createMimeMessage();
+              
         MimeMessageHelper helper = new MimeMessageHelper(message,true);
         
         helper.setTo(new InternetAddress(customer.getEmail()));
       //  helper.setCc(new InternetAddress("agrawaly52@gmail.com"));
         helper.setSubject("Thanks for visting Habbib salon");
-        helper.setText("<html><body style='background-color:#F7F6F6;'><br><h2>Hi "
+        helper.setText("<html><body style='background-color:#F7F6F6;'><img src='cid:habbiblogo'><br><h2>Hi "
         		+ customer.getFirstName()+" "+customer.getLastName()+",</h2>"
         		+ "Visited Habbib Salon on "+LocalDate.now()+"<br><h4>Your Bill Summary with bill number: "+bill.getBillNo()+"</h4><h1>Total ₹"+bill.getGrandTotal()+"</h1>"
         		+ "<br><br><h3>Salon service total: "+bill.getTotal()+"</h3>"
@@ -46,6 +49,12 @@ public class EmailServiceImpl implements EmailService {
         		+ "<br>Discount: "+bill.getDiscountVal()
         		+ "<br><br>Amount charged: "+bill.getGrandTotal()
         		+ "<br> <p>paid in cash.</p><br><p><h5>Thanks,<br>Habbib Salon</h5></p></body></html>", true);
+        String fileName = "config/habbib_logo.jpeg";
+        
+        ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+        FileSystemResource file = new FileSystemResource(new File(classLoader.getResource(fileName).getFile()));
+        helper.addInline("habbiblogo", file);
+        
         emailSender.send(message);
         }catch(Exception e) {
         	e.printStackTrace();

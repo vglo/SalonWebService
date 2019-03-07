@@ -24,54 +24,18 @@ public class BillClientRequest {
 	private double discountVal;
 
 	@NotEmpty
-	private List<BillHasService> billHasService;
+	private List<BillhasserviceClientReq> billHasService;
 	
 	@NotNull
 	private int customerId;
 	
-	@NotNull
-	private int serviceStaffId;
 	
 	@NotNull
 	private int shopId;
 	
 	@NotNull
-	private int type;
+	private int paymentType;
 	
-	
-	
-	
-
-	/**
-	 * @return the type
-	 */
-	public int getType() {
-		return type;
-	}
-
-	/**
-	 * @param type the type to set
-	 */
-	public void setType(int type) {
-		this.type = type;
-	}
-
-	
-
-
-	/**
-	 * @return the billHasService
-	 */
-	public List<BillHasService> getBillHasService() {
-		return billHasService;
-	}
-
-	/**
-	 * @param billHasService the billHasService to set
-	 */
-	public void setBillHasService(List<BillHasService> billHasService) {
-		this.billHasService = billHasService;
-	}
 
 	/**
 	 * @return the customerId
@@ -87,19 +51,6 @@ public class BillClientRequest {
 		this.customerId = customerId;
 	}
 
-	/**
-	 * @return the serviceStaffId
-	 */
-	public int getServiceStaffId() {
-		return serviceStaffId;
-	}
-
-	/**
-	 * @param serviceStaffId the serviceStaffId to set
-	 */
-	public void setServiceStaffId(int serviceStaffId) {
-		this.serviceStaffId = serviceStaffId;
-	}
 
 	/**
 	 * @return the shopId
@@ -169,6 +120,34 @@ public class BillClientRequest {
 	 */
 	public void setDiscountVal(double discountVal) {
 		this.discountVal = discountVal;
+	}
+
+	/**
+	 * @return the paymentType
+	 */
+	public int getPaymentType() {
+		return paymentType;
+	}
+
+	/**
+	 * @param paymentType the paymentType to set
+	 */
+	public void setPaymentType(int paymentType) {
+		this.paymentType = paymentType;
+	}
+
+	/**
+	 * @return the billHasService
+	 */
+	public List<BillhasserviceClientReq> getBillHasService() {
+		return billHasService;
+	}
+
+	/**
+	 * @param billHasService the billHasService to set
+	 */
+	public void setBillHasService(List<BillhasserviceClientReq> billHasService) {
+		this.billHasService = billHasService;
 	}
 	
 	

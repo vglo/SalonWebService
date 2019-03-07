@@ -12,7 +12,8 @@ import java.util.List;
  * The persistent class for the paymenttype database table.
  * 
  */
-@Entity(name="PaymentType")
+@Entity
+@NamedQuery(name="Paymenttype.findAll", query="SELECT p FROM Paymenttype p")
 public class Paymenttype implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -27,8 +28,8 @@ public class Paymenttype implements Serializable {
 	private String type;
 
 	//bi-directional many-to-one association to Bill
-	@JsonIgnore
 	@OneToMany(mappedBy="paymenttype")
+	@JsonIgnore
 	private List<Bill> bills;
 
 	public Paymenttype() {

@@ -3,6 +3,7 @@ package com.habbib.dao.service;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -19,6 +20,7 @@ import com.habbib.dao.entitiy.Appointment;
 import com.habbib.dao.entitiy.Bill;
 import com.habbib.dao.entitiy.Customerinfo;
 import com.habbib.dao.entitiy.Paymenttype;
+import com.habbib.dao.entitiy.Role;
 import com.habbib.dao.entitiy.Salonservice;
 import com.habbib.dao.entitiy.Shopinfo;
 import com.habbib.dao.entitiy.Staffinfo;
@@ -64,7 +66,6 @@ public class DBService {
 		bill.setGrandTotal(billRequest.getGrandTotal());
 		bill.setShopinfo(daoShop.getOne(billRequest.getShopId()));
 		bill.setCustomerinfo(daoCustomer.getOne(billRequest.getCustId()));
-		bill.setStaffinfo(daoStaff.getOne(billRequest.getServingStaff()));
 		bill.setPaymenttype(daoPayment.getOne(billRequest.getPaymentType()));
 		bill.setDiscountPer(billRequest.getDiscountPer());
 		bill.setDiscountVal(billRequest.getDiscountVal());
@@ -140,13 +141,20 @@ public class DBService {
 
 	public Staffinfo convertstaffModelToEntity(StaffinfoRequest staffInfoReq) {
 		Staffinfo staffInfo = new Staffinfo();
+		List<Role> roles = new ArrayList<Role>();
 		staffInfo.setDob(staffInfoReq.getDob());
 		staffInfo.setEmail(staffInfoReq.getEmail());
 		staffInfo.setFirstName(staffInfoReq.getFirstName());
 		staffInfo.setLastName(staffInfoReq.getLastName());
 		staffInfo.setMobile(staffInfoReq.getMobile());
 		staffInfo.setShopinfo(daoShop.getOne(staffInfoReq.getShopId()));
-		staffInfo.setRoleBean(daoRole.getOne(staffInfoReq.getRoleId()));
+		for(Integer roleIds : staffInfoReq.getRoleId()) {
+			roles.add(daoRole.getOne(roleIds));
+		}
+		staffInfo.setRoles(roles);
+		if(null != staffInfoReq) {
+			
+		}
 		return staffInfo;
 	}
 

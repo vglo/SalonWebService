@@ -5,13 +5,22 @@ package com.habbib.pdf.controller;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.habbib.pdf.feign.client.DBServiceFeignClient;
@@ -46,9 +55,9 @@ public class PDFGenerator {
 	public void getBillContent(@ModelAttribute PDFRequest pdfRequest) {
 		 Document document = new Document();
 		try {
-			Optional<Customerinfo> cust = dbClient.findByCustId(pdfRequest.getCustomerId());
+			Optional<Customerinfo> cust = dbClient.findByCustId(pdfRequest.getCustomerId(),pdfRequest.getShopId());
 			Optional<Shopinfo> shop = dbClient.findByShopId(pdfRequest.getShopId());
-			Optional<Bill> bill = dbClient.findByBillId(pdfRequest.getBillId());
+			Optional<Bill> bill = dbClient.findByBillId(pdfRequest.getBillId(), pdfRequest.getShopId());
 			//Document is not auto-closable hence need to close it separately
 			if(shop.isPresent() && bill.isPresent() && cust.isPresent()) {
 				 PdfWriter.getInstance(document, new FileOutputStream(TITLE+PDF_EXTENSION));
@@ -75,5 +84,20 @@ public class PDFGenerator {
 
 	}	
 
-    
+	@ResponseBody
+	@RequestMapping(value = "get/pdf", headers="Accept=*/*", method = RequestMethod.POST)
+	public ResponseEntity<InputStreamResource> getPdfContractById(@ModelAttribute PDFRequest pdfRequest) throws IOException{
+	        // Get the remove file based on the fileaddress
+			ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+	        // Set the input stream
+	        InputStream inputstream = classLoader.getResourceAsStream("resources/invoice.pdf");
+	        // asume that it was a PDF file
+	        HttpHeaders responseHeaders = new HttpHeaders();
+	        InputStreamResource inputStreamResource = new InputStreamResource(inputstream);
+	        responseHeaders.setContentLength(inputStreamResource.contentLength());
+	        responseHeaders.setContentType(MediaType.valueOf("application/pdf"));
+	        return new ResponseEntity<InputStreamResource> (inputStreamResource,
+	                                   responseHeaders,
+	                                   HttpStatus.OK);
+	}
 }

@@ -3,9 +3,7 @@ package com.habbib.dao.entitiy;
 import java.io.Serializable;
 import javax.persistence.*;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.util.Date;
 import java.util.List;
@@ -25,6 +23,8 @@ public class Bill implements Serializable {
 	private int idBill;
 
 	private String billNo;
+
+	private String billType;
 
 	private double cgstPer;
 
@@ -47,33 +47,28 @@ public class Bill implements Serializable {
 
 	private double total;
 
+	//bi-directional many-to-one association to Customerinfo
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@ManyToOne
 	@JoinColumn(name="custId")
 	private Customerinfo customerinfo;
-
-	//bi-directional many-to-one association to Shopinfo
-	@JsonIgnore
-	@ManyToOne
-	@JoinColumn(name="shopId")
-	private Shopinfo shopinfo;
-
-	//bi-directional many-to-one association to Staffinfo
-	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-	@ManyToOne
-	@JoinColumn(name="servingStaff")
-	private Staffinfo staffinfo;
-
-	//bi-directional many-to-one association to Billhasservice
-	@JsonManagedReference
-	@OneToMany(mappedBy="bill",cascade=CascadeType.ALL)
-	private List<Billhasservice> billhasservices;
 
 	//bi-directional many-to-one association to Paymenttype
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@ManyToOne
 	@JoinColumn(name="paymentType")
 	private Paymenttype paymenttype;
+
+	//bi-directional many-to-one association to Shopinfo
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+	@ManyToOne
+	@JoinColumn(name="shopId")
+	private Shopinfo shopinfo;
+
+	//bi-directional many-to-one association to Billhasservice
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+	@OneToMany(mappedBy="bill")
+	private List<Billhasservice> billhasservices;
 
 	public Bill() {
 	}
@@ -92,6 +87,14 @@ public class Bill implements Serializable {
 
 	public void setBillNo(String billNo) {
 		this.billNo = billNo;
+	}
+
+	public String getBillType() {
+		return this.billType;
+	}
+
+	public void setBillType(String billType) {
+		this.billType = billType;
 	}
 
 	public double getCgstPer() {
@@ -182,20 +185,20 @@ public class Bill implements Serializable {
 		this.customerinfo = customerinfo;
 	}
 
+	public Paymenttype getPaymenttype() {
+		return this.paymenttype;
+	}
+
+	public void setPaymenttype(Paymenttype paymenttype) {
+		this.paymenttype = paymenttype;
+	}
+
 	public Shopinfo getShopinfo() {
 		return this.shopinfo;
 	}
 
 	public void setShopinfo(Shopinfo shopinfo) {
 		this.shopinfo = shopinfo;
-	}
-
-	public Staffinfo getStaffinfo() {
-		return this.staffinfo;
-	}
-
-	public void setStaffinfo(Staffinfo staffinfo) {
-		this.staffinfo = staffinfo;
 	}
 
 	public List<Billhasservice> getBillhasservices() {
@@ -218,14 +221,6 @@ public class Bill implements Serializable {
 		billhasservice.setBill(null);
 
 		return billhasservice;
-	}
-
-	public Paymenttype getPaymenttype() {
-		return this.paymenttype;
-	}
-
-	public void setPaymenttype(Paymenttype paymenttype) {
-		this.paymenttype = paymenttype;
 	}
 
 }

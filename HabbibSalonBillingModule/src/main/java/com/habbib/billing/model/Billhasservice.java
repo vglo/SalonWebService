@@ -1,24 +1,50 @@
 package com.habbib.billing.model;
 
+/**
+ * The persistent class for the billhasservice database table.
+ * 
+ */
 public class Billhasservice {
 
-	private int idBillHasService;
+	private double amount;
+
+	private String name;
+
+	private double price;
 
 	private int quantity;
 
-	private Bill bill;
+	private Shopinfo shopinfo;
 
-	private Salonservice salonservice;
+	private Staffinfo staffinfo;
 
 	public Billhasservice() {
 	}
 
-	public int getIdBillHasService() {
-		return this.idBillHasService;
+	
+
+	public double getAmount() {
+		return this.amount;
 	}
 
-	public void setIdBillHasService(int idBillHasService) {
-		this.idBillHasService = idBillHasService;
+	public void setAmount(double amount) {
+		this.amount = amount;
+	}
+
+	public String getName() {
+		return this.name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public double getPrice() {
+		return this.price;
+	}
+
+	public void setPrice(double price) {
+		this.price = price;
 	}
 
 	public int getQuantity() {
@@ -29,29 +55,21 @@ public class Billhasservice {
 		this.quantity = quantity;
 	}
 
-	public Bill getBill() {
-		return this.bill;
+
+	public Shopinfo getShopinfo() {
+		return this.shopinfo;
 	}
 
-	public void setBill(Bill bill) {
-		this.bill = bill;
+	public void setShopinfo(Shopinfo shopinfo) {
+		this.shopinfo = shopinfo;
 	}
 
-	/**
-	 * @return the salonservice
-	 */
-	public Salonservice getSalonservice() {
-		return salonservice;
+	public Staffinfo getStaffinfo() {
+		return this.staffinfo;
 	}
 
-	/**
-	 * @param salonservice the salonservice to set
-	 */
-	public void setSalonservice(Salonservice salonservice) {
-		this.salonservice = salonservice;
+	public void setStaffinfo(Staffinfo staffinfo) {
+		this.staffinfo = staffinfo;
 	}
 
-	
-
-	
 }

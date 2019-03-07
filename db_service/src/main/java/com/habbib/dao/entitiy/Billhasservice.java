@@ -11,13 +11,20 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * The persistent class for the billhasservice database table.
  * 
  */
-@Entity(name="BillHasService")
+@Entity
+@NamedQuery(name="Billhasservice.findAll", query="SELECT b FROM Billhasservice b")
 public class Billhasservice implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int idBillHasService;
+	private long idBillHasService;
+
+	private double amount;
+
+	private String name;
+
+	private double price;
 
 	private int quantity;
 
@@ -27,21 +34,63 @@ public class Billhasservice implements Serializable {
 	@JoinColumn(name="idBill")
 	private Bill bill;
 
-	//bi-directional many-to-one association to Salonservice
+	//bi-directional many-to-one association to Shopinfo
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-	@ManyToOne()
-	@JoinColumn(name="idSalonService")
-	private Salonservice salonservice;
+	@ManyToOne
+	@JoinColumn(name="shopId")
+	private Shopinfo shopinfo;
+
+	//bi-directional many-to-one association to Staffinfo
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+	@ManyToOne
+	@JoinColumn(name="staffInfo")
+	private Staffinfo staffinfo;
 
 	public Billhasservice() {
 	}
 
-	public int getIdBillHasService() {
-		return this.idBillHasService;
+	
+
+	/**
+	 * @return the idBillHasService
+	 */
+	public long getIdBillHasService() {
+		return idBillHasService;
 	}
 
-	public void setIdBillHasService(int idBillHasService) {
+
+
+	/**
+	 * @param idBillHasService the idBillHasService to set
+	 */
+	public void setIdBillHasService(long idBillHasService) {
 		this.idBillHasService = idBillHasService;
+	}
+
+
+
+	public double getAmount() {
+		return this.amount;
+	}
+
+	public void setAmount(double amount) {
+		this.amount = amount;
+	}
+
+	public String getName() {
+		return this.name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public double getPrice() {
+		return this.price;
+	}
+
+	public void setPrice(double price) {
+		this.price = price;
 	}
 
 	public int getQuantity() {
@@ -60,12 +109,20 @@ public class Billhasservice implements Serializable {
 		this.bill = bill;
 	}
 
-	public Salonservice getSalonservice() {
-		return this.salonservice;
+	public Shopinfo getShopinfo() {
+		return this.shopinfo;
 	}
 
-	public void setSalonservice(Salonservice salonservice) {
-		this.salonservice = salonservice;
+	public void setShopinfo(Shopinfo shopinfo) {
+		this.shopinfo = shopinfo;
+	}
+
+	public Staffinfo getStaffinfo() {
+		return this.staffinfo;
+	}
+
+	public void setStaffinfo(Staffinfo staffinfo) {
+		this.staffinfo = staffinfo;
 	}
 
 }
