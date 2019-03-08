@@ -8,13 +8,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.common.collect.ImmutableList;
 import com.habbib.dao.JPArepository.ModuleInfoRepository;
 import com.habbib.dao.JPArepository.RoleRepository;
 import com.habbib.dao.entitiy.Moduleinfo;
+import com.habbib.dao.entitiy.QRole;
 import com.habbib.dao.entitiy.Role;
 import com.habbib.dao.model.RoleRequest;
+import com.querydsl.core.types.Predicate;
 
 @RestController
 @RequestMapping("/dao")
@@ -45,7 +49,13 @@ public class RoleController {
 	
 	
 	
-
+	@RequestMapping(path="/find-role-list",method=RequestMethod.GET)
+	public List<Role> findRoleListByIds(@RequestParam List<Integer> rolesId){
+		QRole  qRole = QRole.role1;
+		Predicate predicate = qRole.idRole.in(rolesId);
+		Iterable<Role> iterable = role.findAll(predicate);
+		return ImmutableList.copyOf(iterable);
+	}
 	
 	
 	

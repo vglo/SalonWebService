@@ -1,6 +1,7 @@
 package com.habbib.staff.response.model;
 
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -21,10 +22,10 @@ public class Staffinfo{
 
 	private String mobile;
 
-	private Role roleBean;
+	private List<Role> roles;
 
 	private Shopinfo shopinfo;
-
+	
 	public Staffinfo() {
 	}
 
@@ -77,13 +78,18 @@ public class Staffinfo{
 	}
 
 
-
-	public Role getRoleBean() {
-		return this.roleBean;
+	/**
+	 * @return the roles
+	 */
+	public List<Role> getRoles() {
+		return roles;
 	}
 
-	public void setRoleBean(Role roleBean) {
-		this.roleBean = roleBean;
+	/**
+	 * @param roles the roles to set
+	 */
+	public void setRoles(List<Role> roles) {
+		this.roles = roles;
 	}
 
 	public Shopinfo getShopinfo() {

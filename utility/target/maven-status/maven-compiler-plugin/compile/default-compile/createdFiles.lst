@@ -1,1 +1,5 @@
+com\habib\utility\token\ITokenGenerator.class
 com\habib\utility\DefaultMessage.class
+com\habib\utility\hashcode\ICodeGenerator.class
+com\habib\utility\hashcode\HashGenerator.class
+com\habib\utility\token\TokenGeneratorByDateTime.class

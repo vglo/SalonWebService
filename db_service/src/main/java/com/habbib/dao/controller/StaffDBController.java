@@ -3,11 +3,9 @@
  */
 package com.habbib.dao.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.aspectj.weaver.ast.And;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,15 +15,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 import com.habbib.dao.JPArepository.RoleRepository;
 import com.habbib.dao.JPArepository.ShopInfoRepository;
 import com.habbib.dao.JPArepository.StaffInfoRepository;
-import com.habbib.dao.entitiy.QShopinfo;
+import com.habbib.dao.JPArepository.UserCrendentialRepository;
 import com.habbib.dao.entitiy.QStaffinfo;
 import com.habbib.dao.entitiy.Role;
 import com.habbib.dao.entitiy.Shopinfo;
 import com.habbib.dao.entitiy.Staffinfo;
+import com.habbib.dao.entitiy.Usercredential;
+import com.habbib.dao.model.StaffCrendentialRequest;
+import com.habbib.dao.model.StaffUpdatedCredential;
 import com.habbib.dao.model.StaffinfoRequest;
 import com.habbib.dao.service.DBService;
 import com.querydsl.core.types.Predicate;
@@ -38,6 +38,9 @@ import com.querydsl.core.types.Predicate;
 @RequestMapping("/dao")
 public class StaffDBController {
 
+	@Autowired
+	private UserCrendentialRepository userCrendentialRepo;
+	
 	@Autowired
 	private ShopInfoRepository shopInfo;
 	
@@ -62,6 +65,23 @@ public class StaffDBController {
 		}
 		return null;
 		
+	}
+	
+	@RequestMapping(path="find-staff/username",method=RequestMethod.GET)
+	public Staffinfo findStaffByUsername(@RequestParam String username,@RequestParam String password) {
+		QStaffinfo staff  =  QStaffinfo.staffinfo;
+		Optional<Usercredential> user = userCrendentialRepo.findByUsername(username);
+		Predicate predicate;
+		if(user.isPresent()) {
+			 predicate = staff.usercredential.eq(user.get());
+		}else {
+			 predicate = staff.mobile.eq(username).or(staff.email.eq(username));
+		}
+		Iterable<Staffinfo> staffList = staffInfo.findAll(predicate);
+		List<Staffinfo> mutableList = ImmutableList.copyOf(staffList);
+		if(mutableList != null && mutableList.size()>0)
+			return mutableList.get(0);  
+		return null;
 	}
 	
 	@RequestMapping(path="/save-staff",method=RequestMethod.POST)
@@ -105,6 +125,8 @@ public class StaffDBController {
 		return staff;
 	}
 	
+	
+	
 	@RequestMapping(path="/delete-staff",method=RequestMethod.DELETE)
 	public void deleteStaff(@RequestParam int staffId,@RequestParam int shopId) {
 		try {
@@ -143,4 +165,45 @@ public class StaffDBController {
 		  
 	  }
 	 
+	@RequestMapping(path="/register-staff",method=RequestMethod.POST)
+	public Staffinfo registerStaffInfo(@RequestBody StaffCrendentialRequest crendential,@RequestParam String salt) {
+		if(crendential == null && salt == null)
+			throw new NullPointerException();
+		
+		Staffinfo staffDetails = dbService.convertstaffCredentialModelToEntity(crendential);
+		Usercredential user = new Usercredential();
+		user.setPassword(crendential.getPassword());
+		user.setSalt(salt);
+		user.setUsername(crendential.getUserName());
+		staffDetails.setUsercredential(user);
+		Staffinfo staff = staffInfo.save(staffDetails);
+		return staff;
+	}
+	
+
+	@RequestMapping(path="/update-staff/credentials",method=RequestMethod.PUT)
+	public Staffinfo saveStaffCredential(@RequestBody StaffUpdatedCredential staffCredential) {
+	
+		Optional<Staffinfo> staffOptional = staffInfo.findById(staffCredential.getStaffId());
+		if(staffOptional.isPresent()) {
+			Staffinfo staff = staffOptional.get();
+			Usercredential user = new Usercredential();
+			user.setUsername(staffCredential.getUsername());
+			user.setPassword(staffCredential.getPassword());
+			user.setSalt(staffCredential.getSalt());
+			staff.setUsercredential(user);
+			Staffinfo newStaff = staffInfo.save(staff);
+			return newStaff;
+		}
+		return null;
+	}
+	
+	@RequestMapping(path="/check-staff/credential",method=RequestMethod.GET)
+	public boolean checkStaffCredentials(@RequestParam int idStaffInfo) {
+		Optional<Staffinfo> staff = staffInfo.findById(idStaffInfo);
+		if(null != staff.get().getUsercredential())
+			return true;
+		return false;
+	}
+	
 }

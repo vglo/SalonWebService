@@ -67,7 +67,7 @@ public class Bill implements Serializable {
 
 	//bi-directional many-to-one association to Billhasservice
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-	@OneToMany(mappedBy="bill")
+	@OneToMany(mappedBy="bill",cascade=CascadeType.PERSIST)
 	private List<Billhasservice> billhasservices;
 
 	public Bill() {

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.habbib.staff.request.model;
+package com.habbib.dao.model;
 
 import java.util.Date;
 import java.util.List;
@@ -12,8 +12,8 @@ import org.springframework.format.annotation.DateTimeFormat;
  * @author yash
  *
  */
-public class StaffinfoRequest {
-	
+public class StaffCrendentialRequest {
+
 	@DateTimeFormat(pattern="dd-MM-yyyy")
 	private Date dob;
 
@@ -28,6 +28,10 @@ public class StaffinfoRequest {
 	private List<Integer> roleId;
 
 	private int shopId;
+
+	private String userName;
+	
+	private String password;
 
 	/**
 	 * @return the dob
@@ -129,6 +133,33 @@ public class StaffinfoRequest {
 		this.shopId = shopId;
 	}
 
+	/**
+	 * @return the userName
+	 */
+	public String getUserName() {
+		return userName;
+	}
 
+	/**
+	 * @param userName the userName to set
+	 */
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
 
+	/**
+	 * @return the password
+	 */
+	public String getPassword() {
+		return password;
+	}
+
+	/**
+	 * @param password the password to set
+	 */
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	
+	
 }

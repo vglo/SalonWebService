@@ -24,13 +24,16 @@ import com.habbib.dao.entitiy.Role;
 import com.habbib.dao.entitiy.Salonservice;
 import com.habbib.dao.entitiy.Shopinfo;
 import com.habbib.dao.entitiy.Staffinfo;
+import com.habbib.dao.entitiy.Usercredential;
 import com.habbib.dao.model.AppointmentRequest;
 import com.habbib.dao.model.BillRequest;
 import com.habbib.dao.model.CustomerRequest;
 import com.habbib.dao.model.PaymenttypeRequest;
 import com.habbib.dao.model.SalonserviceRequest;
 import com.habbib.dao.model.ShopinfoRequest;
+import com.habbib.dao.model.StaffCrendentialRequest;
 import com.habbib.dao.model.StaffinfoRequest;
+import com.habbib.dao.model.UsercredentialRequest;
 
 @Service
 public class DBService {
@@ -69,6 +72,7 @@ public class DBService {
 		bill.setPaymenttype(daoPayment.getOne(billRequest.getPaymentType()));
 		bill.setDiscountPer(billRequest.getDiscountPer());
 		bill.setDiscountVal(billRequest.getDiscountVal());
+		bill.setBillType("SERVICE");
 		return bill;
 		
 	}
@@ -152,9 +156,7 @@ public class DBService {
 			roles.add(daoRole.getOne(roleIds));
 		}
 		staffInfo.setRoles(roles);
-		if(null != staffInfoReq) {
-			
-		}
+		
 		return staffInfo;
 	}
 
@@ -172,5 +174,31 @@ public class DBService {
 		payment.setShopId(paymentReq.getShopId());
 		payment.setType(paymentReq.getType());
 		return payment;
+	}
+
+	public Usercredential convertyUserModelToEntity(UsercredentialRequest crendentialRequest) {
+		Usercredential user = new Usercredential();
+		user.setPassword(crendentialRequest.getPassword());
+		user.setSalt(crendentialRequest.getSalt());
+		user.setUsername(crendentialRequest.getUsername());
+		return user;
+	}
+
+	public Staffinfo convertstaffCredentialModelToEntity(StaffCrendentialRequest staffInfoReq) {
+		// TODO Auto-generated method stub
+		Staffinfo staffInfo = new Staffinfo();
+		List<Role> roles = new ArrayList<Role>();
+		staffInfo.setDob(staffInfoReq.getDob());
+		staffInfo.setEmail(staffInfoReq.getEmail());
+		staffInfo.setFirstName(staffInfoReq.getFirstName());
+		staffInfo.setLastName(staffInfoReq.getLastName());
+		staffInfo.setMobile(staffInfoReq.getMobile());
+		staffInfo.setShopinfo(daoShop.getOne(staffInfoReq.getShopId()));
+		for(Integer roleIds : staffInfoReq.getRoleId()) {
+			roles.add(daoRole.getOne(roleIds));
+		}
+		staffInfo.setRoles(roles);
+		
+		return staffInfo;
 	}
 }

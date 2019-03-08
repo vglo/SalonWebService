@@ -4,4 +4,18 @@
   <artifactId>utility</artifactId>
   <version>0.1.0</version>
   <name>UtilityLibrary</name>
+  
+  	<properties>
+		<java.version>1.8</java.version>
+	</properties>
+
+	<dependencies>
+		<!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on -->
+		<dependency>
+		    <groupId>org.bouncycastle</groupId>
+		    <artifactId>bcprov-jdk15on</artifactId>
+		    <version>1.60</version>
+		</dependency>
+
+	</dependencies>
 </project>

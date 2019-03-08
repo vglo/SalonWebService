@@ -40,7 +40,7 @@ public class Staffinfo implements Serializable {
 	private List<Billhasservice> billhasservices;
 
 	//bi-directional many-to-many association to Role
-	@JsonIgnore
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@ManyToMany
 	@JoinTable(
 		name="staffinfo_has_role"
@@ -61,11 +61,26 @@ public class Staffinfo implements Serializable {
 
 	//bi-directional many-to-one association to Usercredential
 	@JsonIgnore
-	@ManyToOne
+	@ManyToOne(cascade=CascadeType.PERSIST,fetch=FetchType.EAGER)
 	@JoinColumn(name="userCredentials")
 	private Usercredential usercredential;
 
 	public Staffinfo() {
+	}
+
+	public Staffinfo(int idStaffInfo, Date dob, String email, String firstName, String lastName, String mobile,
+			List<Billhasservice> billhasservices, List<Role> roles, Shopinfo shopinfo, Usercredential usercredential) {
+		super();
+		this.idStaffInfo = idStaffInfo;
+		this.dob = dob;
+		this.email = email;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.mobile = mobile;
+		this.billhasservices = billhasservices;
+		this.roles = roles;
+		this.shopinfo = shopinfo;
+		this.usercredential = usercredential;
 	}
 
 	public int getIdStaffInfo() {
