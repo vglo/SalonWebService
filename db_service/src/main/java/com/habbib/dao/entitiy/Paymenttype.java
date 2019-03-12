@@ -12,8 +12,8 @@ import java.util.List;
  * The persistent class for the paymenttype database table.
  * 
  */
-@Entity
-@NamedQuery(name="Paymenttype.findAll", query="SELECT p FROM Paymenttype p")
+@Entity(name="PaymentType")
+@NamedQuery(name="PaymentType.findAll", query="SELECT p FROM PaymentType p")
 public class Paymenttype implements Serializable {
 	private static final long serialVersionUID = 1L;
 

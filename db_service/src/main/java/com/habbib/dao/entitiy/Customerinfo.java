@@ -13,8 +13,8 @@ import java.util.List;
  * The persistent class for the customerinfo database table.
  * 
  */
-@Entity
-@NamedQuery(name="Customerinfo.findAll", query="SELECT c FROM Customerinfo c")
+@Entity(name="CustomerInfo")
+@NamedQuery(name="CustomerInfo.findAll", query="SELECT c FROM CustomerInfo c")
 public class Customerinfo implements Serializable {
 	private static final long serialVersionUID = 1L;
 

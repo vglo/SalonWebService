@@ -13,8 +13,8 @@ import java.util.List;
  * The persistent class for the shopinfo database table.
  * 
  */
-@Entity
-@NamedQuery(name="Shopinfo.findAll", query="SELECT s FROM Shopinfo s")
+@Entity(name="ShopInfo")
+@NamedQuery(name="ShopInfo.findAll", query="SELECT s FROM ShopInfo s")
 public class Shopinfo implements Serializable {
 	private static final long serialVersionUID = 1L;
 

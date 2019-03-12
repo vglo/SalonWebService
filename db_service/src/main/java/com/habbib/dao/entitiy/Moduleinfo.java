@@ -12,8 +12,8 @@ import java.util.List;
  * The persistent class for the moduleinfo database table.
  * 
  */
-@Entity
-@NamedQuery(name="Moduleinfo.findAll", query="SELECT m FROM Moduleinfo m")
+@Entity(name="ModuleInfo")
+@NamedQuery(name="ModuleInfo.findAll", query="SELECT m FROM ModuleInfo m")
 public class Moduleinfo implements Serializable {
 	private static final long serialVersionUID = 1L;
 

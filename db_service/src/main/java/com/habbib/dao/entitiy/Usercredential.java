@@ -19,9 +19,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * The persistent class for the usercredentials database table.
  * 
  */
-@Entity
-@Table(name="usercredentials")
-@NamedQuery(name="Usercredential.findAll", query="SELECT u FROM Usercredential u")
+@Entity(name="UserCredentials")
+@NamedQuery(name="UserCredentials.findAll", query="SELECT u FROM UserCredentials u")
 public class Usercredential implements Serializable {
 	private static final long serialVersionUID = 1L;
 

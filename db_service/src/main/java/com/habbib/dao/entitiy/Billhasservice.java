@@ -11,8 +11,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * The persistent class for the billhasservice database table.
  * 
  */
-@Entity
-@NamedQuery(name="Billhasservice.findAll", query="SELECT b FROM Billhasservice b")
+@Entity(name="BillHasService")
+@NamedQuery(name="BillHasService.findAll", query="SELECT b FROM BillHasService b")
 public class Billhasservice implements Serializable {
 	private static final long serialVersionUID = 1L;
 

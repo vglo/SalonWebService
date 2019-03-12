@@ -10,8 +10,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * The persistent class for the salonservice database table.
  * 
  */
-@Entity
-@NamedQuery(name="Salonservice.findAll", query="SELECT s FROM Salonservice s")
+@Entity(name="SalonService")
+@NamedQuery(name="SalonService.findAll", query="SELECT s FROM SalonService s")
 public class Salonservice implements Serializable {
 	private static final long serialVersionUID = 1L;
 
