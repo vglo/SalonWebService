@@ -43,7 +43,7 @@ public class Staffinfo implements Serializable {
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@ManyToMany
 	@JoinTable(
-		name="staffinfo_has_role"
+		name="StaffInfo_has_Role"
 		, joinColumns={
 			@JoinColumn(name="StaffInfo_idStaffInfo")
 			}
