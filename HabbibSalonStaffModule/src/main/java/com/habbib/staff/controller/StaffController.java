@@ -238,7 +238,7 @@ public class StaffController {
 					defualt.setResponseMessage("Staff saved successfuly, with username");
 					defualt.setResponse(newStaff);
 					
-					return new ResponseEntity<DefaultMessage<Staffinfo>>(defualt,HttpStatus.CREATED);
+					return new ResponseEntity<DefaultMessage<Staffinfo>>(defualt,HttpStatus.OK);
 				
 				}
 			}else {
