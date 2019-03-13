@@ -73,7 +73,7 @@ public class StaffController {
 			defualt.setResponseCode("302");
 			defualt.setResponseMessage("staff already present with id:"+staffCheck.get().getIdStaffInfo());
 			defualt.setResponse(null);
-			return new ResponseEntity<DefaultMessage<Staffinfo>>(defualt,HttpStatus.OK);
+			return new ResponseEntity<DefaultMessage<Staffinfo>>(defualt,HttpStatus.FOUND);
 		}else {
 			//to convert date into specific date formate 
 			staffInfoReq.setDob(util.convertDateFormate(staffInfoReq.getDob()));
@@ -82,7 +82,7 @@ public class StaffController {
 			defualt.setResponseCode("201");
 			defualt.setResponseMessage("Staff created successfuly");
 			defualt.setResponse(newStaff);
-			return new ResponseEntity<DefaultMessage<Staffinfo>>(defualt,HttpStatus.CREATED);
+			return new ResponseEntity<DefaultMessage<Staffinfo>>(defualt,HttpStatus.OK);
 		
 		}
 	}catch (Exception e) {
