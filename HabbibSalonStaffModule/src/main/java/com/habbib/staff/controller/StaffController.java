@@ -213,21 +213,11 @@ public class StaffController {
 				}
 				//check if customer already exists or not
 				Optional<Staffinfo> staffCheck = dbFeignClient.validateStaff(staffCredential.getMobile(),staffCredential.getShopId());
-				if(staffCheck.isPresent() && null != staffCredential.getUserName()) {
-					
-					if(dbFeignClient.checkStaffCredentials(staffCheck.get().getIdStaffInfo())){
-						defualt.setResponseCode("200");
-						defualt.setResponseMessage("staff already register with credentials ");
-						defualt.setResponse(null);
-						return new ResponseEntity<DefaultMessage<Staffinfo>>(defualt,HttpStatus.OK);
-					}else {
-						StaffUpdatedCredential staffReq = service.generateStaffUpdatedReq(staffCredential,staffCheck.get().getIdStaffInfo());
-						Staffinfo newStaff = dbFeignClient.saveStaffCredential(staffReq);
-						defualt.setResponseCode("201");
-						defualt.setResponseMessage("Staff credentials stored successfully");
-						defualt.setResponse(newStaff);
-						return new ResponseEntity<DefaultMessage<Staffinfo>>(defualt,HttpStatus.CREATED);
-					}
+				if(staffCheck.isPresent()) {
+					defualt.setResponseCode("302");
+					defualt.setResponseMessage("staff already present with id:"+staffCheck.get().getIdStaffInfo());
+					defualt.setResponse(null);
+					return new ResponseEntity<DefaultMessage<Staffinfo>>(defualt,HttpStatus.FOUND);
 				}else {
 					//saving customer
 					String salt = PasswordEncoder.getSalt();
