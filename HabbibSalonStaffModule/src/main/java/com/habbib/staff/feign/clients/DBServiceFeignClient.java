@@ -3,6 +3,7 @@ package com.habbib.staff.feign.clients;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.cloud.netflix.ribbon.RibbonClient;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +22,7 @@ import com.habbib.staff.response.model.Usercredential;
 
 
 @FeignClient(name="db-service", fallback = DBServiceFallback.class)
+@RibbonClient(name="db-service")
 public interface DBServiceFeignClient {
 	
 	@RequestMapping(path="/dao/find-staff/mobile&shopId",method=RequestMethod.GET)
