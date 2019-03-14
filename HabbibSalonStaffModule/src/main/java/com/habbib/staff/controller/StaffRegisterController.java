@@ -73,10 +73,13 @@ public class StaffRegisterController {
 				} else {
 
 					// saving customer
-
+					System.out.println("Hi i am mad\n");
 					String salt = BCrypt.gensalt(10, SecureRandom.getInstanceStrong());
+					System.out.println("Hi i am mad not\n"+salt);
 					staffCredential = service.generateCredential(staffCredential, salt);
+					System.out.println("Hi i am mad also \n"+staffCredential);
 					staffCredential.setDob(util.convertDateFormate(staffCredential.getDob()));
+					System.out.println("Hi i am mad not\n");
 					Staffinfo newStaff = dbFeignClient.registerStaffInfo(staffCredential, salt);
 
 					defualt.setResponseCode("201");
