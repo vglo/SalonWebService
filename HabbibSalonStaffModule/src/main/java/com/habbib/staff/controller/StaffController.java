@@ -198,7 +198,7 @@ public class StaffController {
 		Staffinfo staff = dbFeignClient.findStaffByUsername(username, password);
 		if(null != staff) {
 			Usercredential user = dbFeignClient.findStaffCredentials(username);
-			if(service.checkHash(password, user.getPassword())) {
+			if(service.checkHash(password, user.getPassword(),user.getSalt())) {
 				defaultmsg.setResponseCode("200");
 				defaultmsg.setResponseMessage("staff authenticated successfully:  userName:"+user.getUsername());
 				defaultmsg.setResponse(staff);
