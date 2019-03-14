@@ -30,7 +30,7 @@ public class StaffService {
 			throw new NullPointerException();
 		HashGenerator hash = new HashGenerator();
 		String pass = hash.generateCode(password+salt);
-		if(pass == hashedPassword)
+		if(pass.equals(hashedPassword))
 			return true;
 		return false;
 	}

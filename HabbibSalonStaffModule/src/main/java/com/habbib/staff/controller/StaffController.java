@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.habbib.staff.feign.clients.DBServiceFeignClient;
+import com.habbib.staff.request.model.StaffCrendentialRequest;
 import com.habbib.staff.request.model.StaffUpdatedCredential;
 import com.habbib.staff.request.model.StaffinfoRequest;
 import com.habbib.staff.response.model.Role;
@@ -185,6 +186,68 @@ public class StaffController {
 		}
 		
 	}
+	
+	@RequestMapping(path = "/register-staff", method = RequestMethod.POST)
+	public ResponseEntity<DefaultMessage<Staffinfo>> saveAndRegister(
+			@ModelAttribute StaffCrendentialRequest staffCredential) {
+		if (null == staffCredential.getUserName())
+			return new ResponseEntity<DefaultMessage<Staffinfo>>(HttpStatus.BAD_REQUEST);
+
+		DefaultMessage<Staffinfo> defualt = new DefaultMessage<Staffinfo>();
+		try {
+			if (!dbFeignClient.checkUsername(staffCredential.getUserName())) {
+				Optional<Shopinfo> shopInfo = dbFeignClient.findByShopId(staffCredential.getShopId());
+				if (!shopInfo.isPresent()) {
+					defualt.setResponseCode("404");
+					defualt.setResponseMessage(
+							"Shop with given id is not present/registered, please enter valid shop id");
+					return new ResponseEntity<DefaultMessage<Staffinfo>>(defualt, HttpStatus.BAD_REQUEST);
+				}
+				List<Role> role = dbFeignClient.findRoleListByIds(staffCredential.getRoleId());
+				if (null == role) {
+					defualt.setResponseCode("404");
+					defualt.setResponseMessage(
+							"Role with given id is not present/registered, please enter valid Role id");
+					return new ResponseEntity<DefaultMessage<Staffinfo>>(defualt, HttpStatus.BAD_REQUEST);
+				}
+				// check if customer already exists or not
+				Optional<Staffinfo> staffCheck = dbFeignClient.validateStaff(staffCredential.getMobile(),
+						staffCredential.getShopId());
+				if (staffCheck.isPresent()) {
+					defualt.setResponseCode("302");
+					defualt.setResponseMessage("staff already present with id:" + staffCheck.get().getIdStaffInfo());
+					defualt.setResponse(null);
+					return new ResponseEntity<DefaultMessage<Staffinfo>>(defualt, HttpStatus.FOUND);
+				} else {
+
+					String salt = service.getSalt();
+					staffCredential = service.generateCredential(staffCredential, salt);
+					staffCredential.setDob(util.convertDateFormate(staffCredential.getDob()));
+					System.out.println("Hi i am mad not\n");
+					Staffinfo newStaff = dbFeignClient.registerStaffInfo(staffCredential, salt);
+
+					defualt.setResponseCode("201");
+					defualt.setResponseMessage("Staff saved successfuly, with username");
+					defualt.setResponse(newStaff);
+
+					return new ResponseEntity<DefaultMessage<Staffinfo>>(defualt, HttpStatus.OK);
+
+				}
+			} else {
+				defualt.setResponseCode("400");
+				defualt.setResponseMessage("Username already exists");
+				defualt.setResponse(null);
+				return new ResponseEntity<DefaultMessage<Staffinfo>>(defualt, HttpStatus.BAD_REQUEST);
+			}
+
+		} catch (Exception e) {
+			defualt.setResponse(null);
+			defualt.setResponseCode("500");
+			defualt.setResponseMessage("error occured" + e.getLocalizedMessage());
+			return new ResponseEntity<DefaultMessage<Staffinfo>>(defualt, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
 	
 	@RequestMapping(path="/validate-staff",method=RequestMethod.GET)
 	public ResponseEntity<DefaultMessage<Staffinfo>> validateStaff(@RequestParam String username,@RequestParam String password) throws NoSuchAlgorithmException{
