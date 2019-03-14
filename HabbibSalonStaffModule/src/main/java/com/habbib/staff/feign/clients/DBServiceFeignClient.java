@@ -28,7 +28,7 @@ public interface DBServiceFeignClient {
 	@RequestMapping(path="/dao/find-staff/mobile&shopId",method=RequestMethod.GET)
 	public Optional<Staffinfo> validateStaff(@RequestParam String mobileNum,@RequestParam int shopId);
 	
-	@RequestMapping(path="/dao/register-staff",method=RequestMethod.POST)
+	@RequestMapping(path="/dao/register-staffDetails",method=RequestMethod.POST)
 	public Staffinfo registerStaffInfo(@RequestBody StaffCrendentialRequest crendential,@RequestParam String salt);
 	
 	@RequestMapping(path="/dao/save-staff",method=RequestMethod.POST)

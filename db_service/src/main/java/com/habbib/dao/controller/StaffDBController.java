@@ -165,7 +165,7 @@ public class StaffDBController {
 		  
 	  }
 	 
-	@RequestMapping(path="/register-staff",method=RequestMethod.POST)
+	@RequestMapping(path="/register-staffDetails",method=RequestMethod.POST)
 	public Staffinfo registerStaffInfo(@RequestBody StaffCrendentialRequest crendential,@RequestParam String salt) {
 		if(crendential == null && salt == null)
 			throw new NullPointerException();
