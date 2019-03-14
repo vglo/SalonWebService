@@ -13,8 +13,8 @@ import java.util.List;
  * The persistent class for the customerinfo database table.
  * 
  */
+
 @Entity(name="CustomerInfo")
-@NamedQuery(name="CustomerInfo.findAll", query="SELECT c FROM CustomerInfo c")
 public class Customerinfo implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -56,6 +56,11 @@ public class Customerinfo implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="userCredentials")
 	private Usercredential usercredential;
+
+	//bi-directional many-to-one association to Productbill
+	@JsonIgnore
+	@OneToMany(mappedBy="customerinfo")
+	private List<Productbill> productbills;
 
 	public Customerinfo() {
 	}
@@ -174,6 +179,28 @@ public class Customerinfo implements Serializable {
 
 	public void setUsercredential(Usercredential usercredential) {
 		this.usercredential = usercredential;
+	}
+
+	public List<Productbill> getProductbills() {
+		return this.productbills;
+	}
+
+	public void setProductbills(List<Productbill> productbills) {
+		this.productbills = productbills;
+	}
+
+	public Productbill addProductbill(Productbill productbill) {
+		getProductbills().add(productbill);
+		productbill.setCustomerinfo(this);
+
+		return productbill;
+	}
+
+	public Productbill removeProductbill(Productbill productbill) {
+		getProductbills().remove(productbill);
+		productbill.setCustomerinfo(null);
+
+		return productbill;
 	}
 
 }

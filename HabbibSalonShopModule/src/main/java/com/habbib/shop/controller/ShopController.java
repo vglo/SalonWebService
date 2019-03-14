@@ -127,4 +127,21 @@ public class ShopController {
 	}
 	
 	
+	@RequestMapping(path="/find-shop/shop-type",method=RequestMethod.GET)
+	public ResponseEntity<DefaultMessage<List<Shopinfo>>> findshopByTypeId(@RequestParam(required=true) int shopTypeId){
+		DefaultMessage<List<Shopinfo>> defaultResponse = new DefaultMessage<List<Shopinfo>>();
+		List<Shopinfo> shopList = dbService.fetchShopByShopType(shopTypeId);
+		if(shopList.size() != 0 && shopList != null) {
+			defaultResponse.setResponse(shopList);
+			defaultResponse.setResponseCode("200");
+			defaultResponse.setResponseMessage("Shop details ");
+			return new ResponseEntity<DefaultMessage<List<Shopinfo>>>(defaultResponse,HttpStatus.OK);
+		}else {
+			defaultResponse.setResponse(null);
+			defaultResponse.setResponseCode("404");
+			defaultResponse.setResponseMessage("Shop details not found");
+			return new ResponseEntity<DefaultMessage<List<Shopinfo>>>(defaultResponse,HttpStatus.NOT_FOUND);
+		}
+	}
+	
 }

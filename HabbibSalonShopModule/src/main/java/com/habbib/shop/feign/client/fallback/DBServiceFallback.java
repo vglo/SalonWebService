@@ -56,5 +56,11 @@ public class DBServiceFallback implements DBServiceFeignClient{
 		return null;
 	}
 
+	@Override
+	public List<Shopinfo> fetchShopByShopType(int shopTypeId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	
 }

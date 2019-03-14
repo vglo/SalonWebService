@@ -13,7 +13,6 @@ import java.util.List;
  * 
  */
 @Entity(name="PaymentType")
-@NamedQuery(name="PaymentType.findAll", query="SELECT p FROM PaymentType p")
 public class Paymenttype implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -28,9 +27,14 @@ public class Paymenttype implements Serializable {
 	private String type;
 
 	//bi-directional many-to-one association to Bill
-	@OneToMany(mappedBy="paymenttype")
 	@JsonIgnore
+	@OneToMany(mappedBy="paymenttype")
 	private List<Bill> bills;
+
+	//bi-directional many-to-one association to Productbill
+	@JsonIgnore
+	@OneToMany(mappedBy="paymenttype")
+	private List<Productbill> productbills;
 
 	public Paymenttype() {
 	}
@@ -87,6 +91,28 @@ public class Paymenttype implements Serializable {
 		bill.setPaymenttype(null);
 
 		return bill;
+	}
+
+	public List<Productbill> getProductbills() {
+		return this.productbills;
+	}
+
+	public void setProductbills(List<Productbill> productbills) {
+		this.productbills = productbills;
+	}
+
+	public Productbill addProductbill(Productbill productbill) {
+		getProductbills().add(productbill);
+		productbill.setPaymenttype(this);
+
+		return productbill;
+	}
+
+	public Productbill removeProductbill(Productbill productbill) {
+		getProductbills().remove(productbill);
+		productbill.setPaymenttype(null);
+
+		return productbill;
 	}
 
 }

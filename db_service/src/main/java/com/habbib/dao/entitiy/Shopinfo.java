@@ -14,7 +14,6 @@ import java.util.List;
  * 
  */
 @Entity(name="ShopInfo")
-@NamedQuery(name="ShopInfo.findAll", query="SELECT s FROM ShopInfo s")
 public class Shopinfo implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -55,24 +54,25 @@ public class Shopinfo implements Serializable {
 	@OneToMany(mappedBy="shopinfo")
 	private List<Customerinfo> customerinfos;
 
+	//bi-directional many-to-one association to Productbill
+	@JsonIgnore
+	@OneToMany(mappedBy="shopinfo")
+	private List<Productbill> productbills;
+
+	//bi-directional many-to-one association to Productinfo
+	@JsonIgnore
+	@OneToMany(mappedBy="shopinfo")
+	private List<Productinfo> productinfos;
+
+	//bi-directional many-to-one association to Productpurchase
+	@JsonIgnore
+	@OneToMany(mappedBy="shopinfo")
+	private List<Productpurchase> productpurchases;
+
 	//bi-directional many-to-one association to Salonservice
 	@JsonIgnore
 	@OneToMany(mappedBy="shopinfo")
 	private List<Salonservice> salonservices;
-
-	//bi-directional many-to-many association to Moduleinfo
-	@JsonIgnore
-	@ManyToMany
-	@JoinTable(
-		name="shopinfo_has_moduleinfo"
-		, joinColumns={
-			@JoinColumn(name="idShopInfo")
-			}
-		, inverseJoinColumns={
-			@JoinColumn(name="idModuleInfo")
-			}
-		)
-	private List<Moduleinfo> moduleinfos;
 
 	//bi-directional many-to-one association to Shopinfo
 	@JsonIgnore
@@ -90,6 +90,20 @@ public class Shopinfo implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="type")
 	private Shoptype shoptype;
+
+	//bi-directional many-to-many association to Moduleinfo
+	@JsonIgnore
+	@ManyToMany
+	@JoinTable(
+		name="shopinfo_has_moduleinfo"
+		, joinColumns={
+			@JoinColumn(name="idShopInfo")
+			}
+		, inverseJoinColumns={
+			@JoinColumn(name="idModuleInfo")
+			}
+		)
+	private List<Moduleinfo> moduleinfos;
 
 	//bi-directional many-to-one association to Staffinfo
 	@JsonIgnore
@@ -249,6 +263,72 @@ public class Shopinfo implements Serializable {
 		return customerinfo;
 	}
 
+	public List<Productbill> getProductbills() {
+		return this.productbills;
+	}
+
+	public void setProductbills(List<Productbill> productbills) {
+		this.productbills = productbills;
+	}
+
+	public Productbill addProductbill(Productbill productbill) {
+		getProductbills().add(productbill);
+		productbill.setShopinfo(this);
+
+		return productbill;
+	}
+
+	public Productbill removeProductbill(Productbill productbill) {
+		getProductbills().remove(productbill);
+		productbill.setShopinfo(null);
+
+		return productbill;
+	}
+
+	public List<Productinfo> getProductinfos() {
+		return this.productinfos;
+	}
+
+	public void setProductinfos(List<Productinfo> productinfos) {
+		this.productinfos = productinfos;
+	}
+
+	public Productinfo addProductinfo(Productinfo productinfo) {
+		getProductinfos().add(productinfo);
+		productinfo.setShopinfo(this);
+
+		return productinfo;
+	}
+
+	public Productinfo removeProductinfo(Productinfo productinfo) {
+		getProductinfos().remove(productinfo);
+		productinfo.setShopinfo(null);
+
+		return productinfo;
+	}
+
+	public List<Productpurchase> getProductpurchases() {
+		return this.productpurchases;
+	}
+
+	public void setProductpurchases(List<Productpurchase> productpurchases) {
+		this.productpurchases = productpurchases;
+	}
+
+	public Productpurchase addProductpurchas(Productpurchase productpurchas) {
+		getProductpurchases().add(productpurchas);
+		productpurchas.setShopinfo(this);
+
+		return productpurchas;
+	}
+
+	public Productpurchase removeProductpurchas(Productpurchase productpurchas) {
+		getProductpurchases().remove(productpurchas);
+		productpurchas.setShopinfo(null);
+
+		return productpurchas;
+	}
+
 	public List<Salonservice> getSalonservices() {
 		return this.salonservices;
 	}
@@ -269,14 +349,6 @@ public class Shopinfo implements Serializable {
 		salonservice.setShopinfo(null);
 
 		return salonservice;
-	}
-
-	public List<Moduleinfo> getModuleinfos() {
-		return this.moduleinfos;
-	}
-
-	public void setModuleinfos(List<Moduleinfo> moduleinfos) {
-		this.moduleinfos = moduleinfos;
 	}
 
 	public Shopinfo getShopinfo() {
@@ -315,6 +387,14 @@ public class Shopinfo implements Serializable {
 
 	public void setShoptype(Shoptype shoptype) {
 		this.shoptype = shoptype;
+	}
+
+	public List<Moduleinfo> getModuleinfos() {
+		return this.moduleinfos;
+	}
+
+	public void setModuleinfos(List<Moduleinfo> moduleinfos) {
+		this.moduleinfos = moduleinfos;
 	}
 
 	public List<Staffinfo> getStaffinfos() {

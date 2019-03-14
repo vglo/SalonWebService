@@ -78,4 +78,13 @@ public class ShopRestController {
 			throw new NullPointerException();
 		return shopTypes;
 	}
+	
+	@RequestMapping(path="/fetch-shops/shop-type",method=RequestMethod.GET)
+	public List<Shopinfo> fetchShopByShopType(@RequestParam int shopTypeId){
+		Shoptype shopType = shopTypeRepo.getOne(shopTypeId);
+		List<Shopinfo> shopList = shopInfo.findByShoptype(shopType);
+		if(shopList == null)
+			return null;
+		return shopList;
+	}
 }

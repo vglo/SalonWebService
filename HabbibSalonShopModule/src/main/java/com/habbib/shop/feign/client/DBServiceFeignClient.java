@@ -40,5 +40,8 @@ public interface DBServiceFeignClient {
 	
 	@RequestMapping(path="/dao/update-shop",method=RequestMethod.PUT)
 	public void uddateShop(@RequestBody Shopinfo shop);
+
+	@RequestMapping(path="/dao/fetch-shops/shop-type",method=RequestMethod.GET)
+	public List<Shopinfo> fetchShopByShopType(@RequestParam int shopTypeId);
 	
 }

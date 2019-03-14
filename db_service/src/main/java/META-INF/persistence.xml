@@ -14,5 +14,10 @@
 		<class>com.habbib.dao.entitiy.Shoptype</class>
 		<class>com.habbib.dao.entitiy.Staffinfo</class>
 		<class>com.habbib.dao.entitiy.Usercredential</class>
+		<class>com.habbib.dao.entitiy.Productbill</class>
+		<class>com.habbib.dao.entitiy.Productbilllist</class>
+		<class>com.habbib.dao.entitiy.Productinfo</class>
+		<class>com.habbib.dao.entitiy.Productpurchase</class>
+		<class>com.habbib.dao.entitiy.Productstock</class>
 	</persistence-unit>
 </persistence>
