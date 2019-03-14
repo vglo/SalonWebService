@@ -67,13 +67,15 @@ public class StaffRegisterController {
 					return new ResponseEntity<DefaultMessage<Staffinfo>>(defualt,HttpStatus.FOUND);
 				}else {
 					//saving customer
-					String salt = PasswordEncoder.getSalt();
-					staffCredential = service.generateCredential(staffCredential, salt);
-					staffCredential.setDob(util.convertDateFormate(staffCredential.getDob()));
-					Staffinfo newStaff = dbFeignClient.registerStaffInfo(staffCredential,salt);
+					/*
+					 * String salt = PasswordEncoder.getSalt(); staffCredential =
+					 * service.generateCredential(staffCredential, salt);
+					 * staffCredential.setDob(util.convertDateFormate(staffCredential.getDob()));
+					 * Staffinfo newStaff = dbFeignClient.registerStaffInfo(staffCredential,salt);
+					 */
 					defualt.setResponseCode("201");
 					defualt.setResponseMessage("Staff saved successfuly, with username");
-					defualt.setResponse(newStaff);
+					defualt.setResponse(null);
 					
 					return new ResponseEntity<DefaultMessage<Staffinfo>>(defualt,HttpStatus.OK);
 				
