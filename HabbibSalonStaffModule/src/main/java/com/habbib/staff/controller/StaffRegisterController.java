@@ -1,8 +1,10 @@
 package com.habbib.staff.controller;
 
+import java.security.SecureRandom;
 import java.util.List;
 import java.util.Optional;
 
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -72,7 +74,7 @@ public class StaffRegisterController {
 
 					// saving customer
 
-					String salt = PasswordEncoder.getSalt();
+					String salt = BCrypt.gensalt(10, SecureRandom.getInstanceStrong());
 					staffCredential = service.generateCredential(staffCredential, salt);
 					staffCredential.setDob(util.convertDateFormate(staffCredential.getDob()));
 					Staffinfo newStaff = dbFeignClient.registerStaffInfo(staffCredential, salt);
