@@ -25,12 +25,11 @@ public class StaffService {
 		return inputCredential;
 	}
 
-	public boolean checkHash(String password,String hashedPassword) throws NoSuchAlgorithmException {
+	public boolean checkHash(String password,String hashedPassword,String salt) throws NoSuchAlgorithmException {
 		if(null ==password)
 			throw new NullPointerException();
 		HashGenerator hash = new HashGenerator();
-		SaltGenerator salt1 = new SaltGenerator();
-		String pass = hash.generateCode(password)+salt1.getSalt(10);
+		String pass = hash.generateCode(password+salt);
 		if(pass == hashedPassword)
 			return true;
 		return false;
@@ -45,18 +44,8 @@ public class StaffService {
 		HashGenerator hash = new HashGenerator();
 		SaltGenerator salt1 = new SaltGenerator();
 		
-		return hash.generateCode(password)+salt1.getSalt(10);
+		return hash.generateCode(password+salt1.getSalt(10));
 	}
 	
-	/*
-	 * public StaffUpdatedCredential generateStaffUpdatedReq(StaffCrendentialRequest
-	 * staffCredential, int idStaffInfo) throws NoSuchAlgorithmException { String
-	 * salt = PasswordEncoder.getSalt(); StaffUpdatedCredential staff = new
-	 * StaffUpdatedCredential(); staff.setStaffId(idStaffInfo);
-	 * staff.setPassword(BCrypt.hashpw(staffCredential.getPassword(), salt));
-	 * staff.setUsername(staffCredential.getUserName()); staff.setSalt(salt);
-	 * 
-	 * return staff; }
-	 */
 	
 }
