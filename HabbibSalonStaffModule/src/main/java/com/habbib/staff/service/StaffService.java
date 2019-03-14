@@ -5,12 +5,11 @@ package com.habbib.staff.service;
 
 import java.security.NoSuchAlgorithmException;
 
-import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
-import com.habbib.staff.config.PasswordEncoder;
 import com.habbib.staff.request.model.StaffCrendentialRequest;
-import com.habbib.staff.request.model.StaffUpdatedCredential;
+import com.habbib.utility.salt.SaltGenerator;
+import com.habib.utility.hashcode.HashGenerator;
 
 /**
  * @author yash
@@ -21,21 +20,43 @@ public class StaffService {
 	
 	
 	public StaffCrendentialRequest  generateCredential(StaffCrendentialRequest inputCredential,String salt) throws NoSuchAlgorithmException {
-		
-		inputCredential.setPassword(BCrypt.hashpw(inputCredential.getPassword(), salt));
+		HashGenerator hash = new HashGenerator();
+		inputCredential.setPassword(hash.generateCode(inputCredential.getPassword()+salt));
 		return inputCredential;
 	}
 
-	public StaffUpdatedCredential generateStaffUpdatedReq(StaffCrendentialRequest staffCredential, int idStaffInfo) throws NoSuchAlgorithmException {
-		String salt = PasswordEncoder.getSalt();
-		StaffUpdatedCredential staff = new StaffUpdatedCredential();
-		staff.setStaffId(idStaffInfo);
-		staff.setPassword(BCrypt.hashpw(staffCredential.getPassword(), salt));
-		staff.setUsername(staffCredential.getUserName());
-		staff.setSalt(salt);
-		
-		return staff;
+	public boolean checkHash(String password,String hashedPassword) throws NoSuchAlgorithmException {
+		if(null ==password)
+			throw new NullPointerException();
+		HashGenerator hash = new HashGenerator();
+		SaltGenerator salt1 = new SaltGenerator();
+		String pass = hash.generateCode(password)+salt1.getSalt(10);
+		if(pass == hashedPassword)
+			return true;
+		return false;
 	}
-
+	
+	public  String getSalt() throws NoSuchAlgorithmException {
+		SaltGenerator salt = new SaltGenerator();
+		 return salt.getSalt(10);
+	}
+	
+	public String generatePass(String password,String salt) {
+		HashGenerator hash = new HashGenerator();
+		SaltGenerator salt1 = new SaltGenerator();
+		
+		return hash.generateCode(password)+salt1.getSalt(10);
+	}
+	
+	/*
+	 * public StaffUpdatedCredential generateStaffUpdatedReq(StaffCrendentialRequest
+	 * staffCredential, int idStaffInfo) throws NoSuchAlgorithmException { String
+	 * salt = PasswordEncoder.getSalt(); StaffUpdatedCredential staff = new
+	 * StaffUpdatedCredential(); staff.setStaffId(idStaffInfo);
+	 * staff.setPassword(BCrypt.hashpw(staffCredential.getPassword(), salt));
+	 * staff.setUsername(staffCredential.getUserName()); staff.setSalt(salt);
+	 * 
+	 * return staff; }
+	 */
 	
 }

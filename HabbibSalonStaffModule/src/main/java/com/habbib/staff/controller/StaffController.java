@@ -7,7 +7,6 @@ import java.util.Optional;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 
-import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.habbib.staff.config.PasswordEncoder;
 import com.habbib.staff.feign.clients.DBServiceFeignClient;
-import com.habbib.staff.request.model.StaffCrendentialRequest;
 import com.habbib.staff.request.model.StaffUpdatedCredential;
 import com.habbib.staff.request.model.StaffinfoRequest;
 import com.habbib.staff.response.model.Role;
@@ -43,8 +40,6 @@ public class StaffController {
 	@Autowired
 	private Utilities util;
 	
-	@Autowired
-	private PasswordEncoder passwordEncoder;
 
 	@RequestMapping(path="/save-staff",method=RequestMethod.POST)
 	public ResponseEntity<DefaultMessage<Staffinfo>> saveStaffDetail(@Valid @ModelAttribute StaffinfoRequest staffInfoReq) {
@@ -203,7 +198,7 @@ public class StaffController {
 		Staffinfo staff = dbFeignClient.findStaffByUsername(username, password);
 		if(null != staff) {
 			Usercredential user = dbFeignClient.findStaffCredentials(username);
-			if(PasswordEncoder.checkHash(password, user.getPassword())) {
+			if(service.checkHash(password, user.getPassword())) {
 				defaultmsg.setResponseCode("200");
 				defaultmsg.setResponseMessage("staff authenticated successfully:  userName:"+user.getUsername());
 				defaultmsg.setResponse(staff);
@@ -293,10 +288,10 @@ public class StaffController {
 		DefaultMessage<String> defaultmsg = new DefaultMessage<String>();
 		try {
 			Usercredential user = dbFeignClient.findStaffCredentials(username);
-			if(PasswordEncoder.checkHash(oldPassword, user.getPassword())) {
-				String salt= PasswordEncoder.getSalt();
+			if(service.checkHash(oldPassword, user.getPassword())) {
+				String salt= service.getSalt();
 				StaffUpdatedCredential updatedCredential = new StaffUpdatedCredential();
-				updatedCredential.setPassword(BCrypt.hashpw(newPassword, salt));
+				updatedCredential.setPassword(service.generatePass(newPassword, salt));
 				updatedCredential.setSalt(salt);
 				updatedCredential.setUsername(username);
 				boolean check = dbFeignClient.changePassword(updatedCredential);

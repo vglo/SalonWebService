@@ -1,10 +1,8 @@
 package com.habbib.staff.controller;
 
-import java.security.SecureRandom;
 import java.util.List;
 import java.util.Optional;
 
-import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.habbib.staff.config.PasswordEncoder;
 import com.habbib.staff.feign.clients.DBServiceFeignClient;
 import com.habbib.staff.request.model.StaffCrendentialRequest;
 import com.habbib.staff.response.model.Role;
@@ -36,8 +33,6 @@ public class StaffRegisterController {
 	@Autowired
 	private Utilities util;
 
-	@Autowired
-	private PasswordEncoder passwordEncoder;
 
 	@RequestMapping(path = "/register-staff", method = RequestMethod.POST)
 	public ResponseEntity<DefaultMessage<Staffinfo>> saveAndRegister(
@@ -72,12 +67,8 @@ public class StaffRegisterController {
 					return new ResponseEntity<DefaultMessage<Staffinfo>>(defualt, HttpStatus.FOUND);
 				} else {
 
-					// saving customer
-					System.out.println("Hi i am mad\n");
-					String salt = BCrypt.gensalt(10, SecureRandom.getInstanceStrong());
-					System.out.println("Hi i am mad not\n"+salt);
+					String salt = service.getSalt();
 					staffCredential = service.generateCredential(staffCredential, salt);
-					System.out.println("Hi i am mad also \n"+staffCredential);
 					staffCredential.setDob(util.convertDateFormate(staffCredential.getDob()));
 					System.out.println("Hi i am mad not\n");
 					Staffinfo newStaff = dbFeignClient.registerStaffInfo(staffCredential, salt);
