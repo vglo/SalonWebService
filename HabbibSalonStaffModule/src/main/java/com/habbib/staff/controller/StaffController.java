@@ -195,7 +195,7 @@ public class StaffController {
 		
 		DefaultMessage<Staffinfo> defaultmsg = new DefaultMessage<Staffinfo>();
 		
-		Staffinfo staff = dbFeignClient.findStaffByUsername(username, password);
+		Staffinfo staff =  dbFeignClient.findStaffByUsername(username, password);
 		if(null != staff) {
 			Usercredential user = dbFeignClient.findStaffCredentials(username);
 			if(service.checkHash(password, user.getPassword(),user.getSalt())) {
@@ -288,7 +288,7 @@ public class StaffController {
 		DefaultMessage<String> defaultmsg = new DefaultMessage<String>();
 		try {
 			Usercredential user = dbFeignClient.findStaffCredentials(username);
-			if(service.checkHash(oldPassword, user.getPassword())) {
+			if(service.checkHash(oldPassword, user.getPassword(),user.getSalt())) {
 				String salt= service.getSalt();
 				StaffUpdatedCredential updatedCredential = new StaffUpdatedCredential();
 				updatedCredential.setPassword(service.generatePass(newPassword, salt));
