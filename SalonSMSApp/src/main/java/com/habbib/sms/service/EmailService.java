@@ -9,7 +9,7 @@ import com.habbib.sms.response.model.Customerinfo;
 public interface EmailService {
 
 	
-	  public void sendMessageWithAttachment(Bill bill, Customerinfo customerinfo);
+	  public String sendMessageWithAttachment(Bill bill, Customerinfo customerinfo);
 
 	public boolean sendSimpleMessage(String toEmailId, Bill bill, Customerinfo customerinfo);
 }

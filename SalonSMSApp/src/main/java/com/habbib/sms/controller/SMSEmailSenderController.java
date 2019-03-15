@@ -6,8 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -45,35 +43,39 @@ public class SMSEmailSenderController {
 	
 		Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
 
-	     Message message = Message
-	             .creator(new PhoneNumber("+918208386061"), // to
-	                     new PhoneNumber("+13347216334"), // from
-	                     "Where's Wallace?")
-	             .create();
-
+		
+		  Message message = Message .creator(new PhoneNumber("+918208386061"),
+		  new PhoneNumber("+13347216334"), "Where's Wallace?") .create();
+		 
+		/*
+		 * Message message = Message.creator( new
+		 * com.twilio.type.PhoneNumber("whatsapp:+917276050048"), new
+		 * com.twilio.type.PhoneNumber("whatsapp:+917507222645"), "Hello there!")
+		 * .create();
+		 */
 	     return message.getSid();
 	}
 	
+	
 	@RequestMapping(value="/email-sender", method=RequestMethod.POST)
 	public ResponseEntity<DefaultMessage<String>> emailSenderWithoutAttch(@ModelAttribute EmailParam emailContent) {
-		if(emailContent.getToEmailId() == null)
-			throw new NullPointerException();
 		
 		DefaultMessage<String> dfaultMsg = new DefaultMessage<String>();
 		Optional<Bill> bill = dbClient.findByBillId(emailContent.getBillId(), emailContent.getShopId());
-		
+		String successMsg = "Inside the email sender method";
 		Optional<Customerinfo> customer = dbClient.findByCustId(emailContent.getCustId(), emailContent.getShopId());
 		
 		if(bill.isPresent() && customer.isPresent()) {
-			emailService.sendMessageWithAttachment(bill.get(), customer.get());
+				successMsg = emailService.sendMessageWithAttachment(bill.get(), customer.get());
 				dfaultMsg.setResponseCode("200");
 				dfaultMsg.setResponseMessage("Email send succuessFully");
+				dfaultMsg.setResponse(successMsg);
 				return new ResponseEntity<DefaultMessage<String>>(dfaultMsg,HttpStatus.OK);
 			
 		}
 		dfaultMsg.setResponseCode("500");
 		dfaultMsg.setResponseMessage("Error occured");
-		
+		dfaultMsg.setResponse(successMsg);
 		return new ResponseEntity<DefaultMessage<String>>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	

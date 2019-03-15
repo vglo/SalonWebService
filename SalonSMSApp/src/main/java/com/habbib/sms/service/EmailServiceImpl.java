@@ -1,6 +1,10 @@
 package com.habbib.sms.service;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.time.LocalDate;
 
 import javax.mail.internet.InternetAddress;
@@ -30,35 +34,44 @@ public class EmailServiceImpl implements EmailService {
  
     
     //Sending email with attachments
-    public void sendMessageWithAttachment(Bill bill,Customerinfo customer) {
+    public String sendMessageWithAttachment(Bill bill,Customerinfo customer) {
         // ...
+    	String response  = "Started api call";
         try {
+        if(customer.getMobile() != null) {
+        	response = sendSms(customer.getMobile(),bill.getGrandTotal(),bill.getBillNo());
+            	
+           }
         MimeMessage message = emailSender.createMimeMessage();
-              
+        
         MimeMessageHelper helper = new MimeMessageHelper(message,true);
-        
-        helper.setTo(new InternetAddress(customer.getEmail()));
-      //  helper.setCc(new InternetAddress("agrawaly52@gmail.com"));
-        helper.setSubject("Thanks for visting Habbib salon");
-        helper.setText("<html><body style='background-color:#F7F6F6;'><img src='cid:habbiblogo'><br><h2>Hi "
-        		+ customer.getFirstName()+" "+customer.getLastName()+",</h2>"
-        		+ "Visited Habbib Salon on "+LocalDate.now()+"<br><h4>Your Bill Summary with bill number: "+bill.getBillNo()+"</h4><h1>Total ₹"+bill.getGrandTotal()+"</h1>"
-        		+ "<br><br><h3>Salon service total: "+bill.getTotal()+"</h3>"
-        		+ "<br>CGST(9%): "+bill.getCsgtVal()
-        		+ "<br>SGST(9%): "+bill.getSgstVal()
-        		+ "<br>Discount: "+bill.getDiscountVal()
-        		+ "<br><br>Amount charged: "+bill.getGrandTotal()
-        		+ "<br> <p>paid in cash.</p><br><p><h5>Thanks,<br>Habbib Salon</h5></p></body></html>", true);
-        String fileName = "config/habbib_logo.jpeg";
-        
-        ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-        FileSystemResource file = new FileSystemResource(new File(classLoader.getResource(fileName).getFile()));
-        helper.addInline("habbiblogo", file);
-        
-        emailSender.send(message);
-        }catch(Exception e) {
-        	e.printStackTrace();
+        if(customer.getEmail() != null) {
+        	helper.setTo(new InternetAddress(customer.getEmail()));
+            //  helper.setCc(new InternetAddress("agrawaly52@gmail.com"));
+              helper.setSubject("Thanks for visting Habbib salon");
+              helper.setText("<html><body style='background-color:#F7F6F6;'><img src='cid:habbiblogo'><br><h2>Hi "
+              		+ customer.getFirstName()+" "+customer.getLastName()+",</h2>"
+              		+ "Visited Habbib Salon on "+LocalDate.now()+"<br><h4>Your Bill Summary with bill number: "+bill.getBillNo()+"</h4><h1>Total ₹"+bill.getGrandTotal()+"</h1>"
+              		+ "<br><br><h3>Salon service total: "+bill.getTotal()+"</h3>"
+              		+ "<br>CGST(9%): "+bill.getCsgtVal()
+              		+ "<br>SGST(9%): "+bill.getSgstVal()
+              		+ "<br>Discount: "+bill.getDiscountVal()
+              		+ "<br><br>Amount charged: "+bill.getGrandTotal()
+              		+ "<br> <p>paid in cash.</p><br><p><h5>Thanks,<br>Habbib Salon</h5></p></body></html>", true);
+              String fileName = "config/habbib_logo.jpeg";
+              
+              ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+              FileSystemResource file = new FileSystemResource(new File(classLoader.getResource(fileName).getFile()));
+              helper.addInline("habbiblogo", file);
+              
+              emailSender.send(message);
+              
         }
+       
+        }catch(Exception e) {
+        	return response+"error in email send "+e;
+        }
+		return "success";
     }
 
 	@Override
@@ -76,6 +89,36 @@ public class EmailServiceImpl implements EmailService {
 	   }
 		return true;
 	}
+	
+	private String sendSms(String mobNumber,double BillAmount,String billNumber) {
+		try {
+			// Construct data
+			String apiKey = "apikey=" + "VcQ7xubEFEg-6ufPP2KeYvVVJWAaiQyRH4a1IsemKK";
+			String message = "&message=" + "Thanks for visiting habbib Salon, Your bill with bill number : "+billNumber+" and Your bill amount is:"+BillAmount;
+			String sender = "&sender=" + "TXTLCL";
+			String numbers = "&numbers=" + mobNumber;
+			
+			// Send data
+			HttpURLConnection conn = (HttpURLConnection) new URL("https://api.textlocal.in/send/?").openConnection();
+			String data = apiKey + numbers + message + sender;
+			conn.setDoOutput(true);
+			conn.setRequestMethod("POST");
+			conn.setRequestProperty("Content-Length", Integer.toString(data.length()));
+			conn.getOutputStream().write(data.getBytes("UTF-8"));
+			final BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			final StringBuffer stringBuffer = new StringBuffer();
+			String line;
+			while ((line = rd.readLine()) != null) {
+				stringBuffer.append(line);
+			}
+			rd.close();
+			
+			return stringBuffer.toString();
+		} catch (Exception e) {
+			return "Error "+e;
+		}
+	}
+	
 	
 	private String buildMailBody(Bill bill, Customerinfo customer) {
 		String heading = "Hi "+customer.getFirstName();
